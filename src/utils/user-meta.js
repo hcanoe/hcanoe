@@ -8,12 +8,8 @@ export const searchUser = (search_str, tableData) => {
       return false
     }
   })
-  return searchRes
-}
-
-export const generateUserObject = (searchRes, keys) => {
-  var userData = []
   const l = searchRes.length
+  var userData
   if (l == 1) {
     userData = searchRes[0]
   } else if (l > 1) {
@@ -23,10 +19,14 @@ export const generateUserObject = (searchRes, keys) => {
     console.log('no user matches search')
     return { error: 'no user matches search' }
   }
+  return userData
+}
+
+export const zipTable = (keys, data) => {
   const result = keys.reduce(
     (obj, k, i) => ({
       ...obj,
-      [k]: userData[i],
+      [k]: data[i],
     }),
     {}
   )
@@ -46,8 +46,18 @@ export const getActiveSheets = (activeYears) => {
   const activeSheets = {}
   activeYears.forEach((y) => {
     if (sheetIDs.hasOwnProperty(y)) {
-      activeSheets[y] = (sheetIDs[y])
+      activeSheets[y] = sheetIDs[y]
     }
   })
   return activeSheets
+}
+
+export const getIDsToSource = (activeSheets, type) => {
+  const result = []
+  for (const year in activeSheets) {
+    if (activeSheets[year].hasOwnProperty(type)) {
+      result.push(activeSheets[year][type])
+    }
+  }
+  return result
 }
