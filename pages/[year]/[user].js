@@ -4,13 +4,13 @@ import {
   searchUser,
   generateUserObject,
   getActiveYears,
-  getActiveSheets,
+  getActiveSpreadsheets,
   getSpreadsheetsByType,
   zipTable,
 } from '@utils/user-meta'
 import { makeEnglish } from '@utils/text'
 
-export async function sourceSheetsByID(sheets, idList, log) {
+export async function getAllSheets(sheets, idList, log) {
   const result = {}
 
   await Promise.all(
@@ -52,7 +52,6 @@ export async function getTrainingData(sheets, sheetID, sheetTitle) {
   return response
 }
 
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 export async function getServerSideProps({ query }) {
   const log = {}
   // necessary google auth code
@@ -101,31 +100,44 @@ export async function getServerSideProps({ query }) {
   // _________________________________________________________________
 
   const active_years = getActiveYears(user_metadata)
-  const active_spreadsheets = getActiveSheets(active_years)
-  const spreadsheet_ids_by_type = getSpreadsheetsByType(active_spreadsheets, 'run')
-  const training_data = await sourceSheetsByID(sheets, spreadsheet_ids_by_type, log)
-  log.active_spreadsheets = spreadsheet_ids_by_type
-  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+  const active_spreadsheets = getActiveSpreadsheets(active_years)
+  const spreadsheet_ids_by_type = getSpreadsheetsByType(
+    active_spreadsheets,
+    'run'
+  )
+  const data_all_sheets = await getAllSheets(
+    sheets,
+    spreadsheet_ids_by_type,
+    log
+  )
   /*
-  const trainingData = await sourceSheetsByID(sheets, IDsToSource, log)
-
-  const getUserTrainingData = (trainingData, User) => {
-    const result = {}
-    for (const sheetID in trainingData) {
-      result[sheetID] = {}
-      for (const date in trainingData[sheetID]) {
-        const rawTable = trainingData[sheetID][date]
-        const headers = rawTable.shift()
-        const userTrainingData = searchUser(User, rawTable)
-        result[sheetID][date] = {headers, userTrainingData}
+   * TODO: split array by [">>>"]
+   *       use shift() to get headers out
+   *       filter for name
+   *       zip table
+   */
+  const getUserTrainingData = (data_all_sheets) => {
+    const result = []
+    for (const spreadsheet_id in data_all_sheets) {
+      for (const week in data_all_sheets[spreadsheet_id]) {
+        const data_week = data_all_sheets[spreadsheet_id][week]
+        const data_day = [[]]
+        var c = 0
+        data_week.forEach((e) => {
+          if (e[0] != ">>>") {
+            data_day[c].push(e)
+          } else {
+            c += 1
+            data_day[c] = []
+          }
+        })
+        result.push(data_day)
       }
     }
     return result
   }
-
-  const userTrainingData = getUserTrainingData(trainingData, User)
-  */
+  const data_user = getUserTrainingData(data_all_sheets)
+  log.data_user = data_user
 
   log.name = name
   if (typeof log == 'undefined') {

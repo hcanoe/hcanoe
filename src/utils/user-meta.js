@@ -43,7 +43,7 @@ export const getActiveYears = (userObject) => {
   return years
 }
 
-export const getActiveSheets = (activeYears) => {
+export const getActiveSpreadsheets = (activeYears) => {
   const activeSheets = {}
   activeYears.forEach((y) => {
     if (sheetIDs.hasOwnProperty(y)) {
