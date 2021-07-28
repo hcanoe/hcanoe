@@ -1,86 +1,97 @@
 import { google } from 'googleapis'
 import sheetIDs from '@root/sheets'
-import {
-  searchUser,
-  generateUserObject,
-  expandActiveYears,
-  getActiveSheets,
-} from '@utils/user-meta'
-
-export async function sourceSheetsByID(sheets, idList) {
-  const result = []
-
-  await Promise.all(
-    idList.map(async (id) => {
-      const response = await sheets.spreadsheets.get({
-        spreadsheetId: id,
-      })
-      response.data.sheets.forEach((i) => {
-        result.push(i.properties.title)
-      })
-    })
-  )
-
-  return result
-}
 
 export async function getServerSideProps({ query }) {
-  const auth = await google.auth.getClient({
+  /*
+   * Google Authentication
+   *
+   * secret strings can be found in
+   * >> .env.local -> for localhost deployment
+   * >> vercel.com -> for production deployment
+   */
+  const { user } = query
+  const auth = new google.auth.GoogleAuth({
+    credentials: {
+      client_email: process.env.GOOGLE_CLIENT_EMAIL,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      private_key: process.env.GOOGLE_PRIVATE_KEY,
+    },
     scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
   })
   const sheets = google.sheets({ version: 'v4', auth })
 
+  const log = []
+
+  /*
+   * defining variables to use in Sheets API requests
+   */
+  const spreadsheetId = '17edrD9OALK56qoQoP_4DDwQdfpNBhH5P8NOyS0sKm2c'
   const range = `data!A:D`
 
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: sheetIDs.meta,
-    range,
-  })
+  /*
+   * spreadsheet.values.get
+   *
+   * always just take the [data] prop of the response
+   * >> response.data
+   *
+   * taking the response as a whole will somehow throw an error
+   * >> console.log(response)      -> error
+   * >> console.log(response.data) -> okie
+   */
 
-  // get an array of IDs to source
-  const getIDsToSource = (activeSheets, type) => {
-    const result = []
-    for (const year in activeSheets) {
-      if (activeSheets[year].hasOwnProperty(type)) {
-        result.push(activeSheets[year][type])
-      }
-    }
-    return result
-  }
+  const response_svg = (
+    await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range,
+    })
+  ).data
 
-  const log = []
-  const tableData = response.data.values
-  const keys = tableData.shift()
+  /*
+   * spreadsheet.get
+   * 
+   * again, always take the [data] prop
+   */
+  const response_sg = (
+    await sheets.spreadsheets.get({
+      spreadsheetId,
+    })
+  ).data
+  
+  /*
+   * TODO: write a function that reads a spreadsheet
+   *       into an object, with its root properties
+   *       being the sheet titles
+   */
 
-  const searchRes = searchUser('Chen Yi', tableData)
-  const userObject = generateUserObject(searchRes, keys)
-  const activeYears = expandActiveYears(userObject)
-  const activeSheets = getActiveSheets(activeYears)
-  const IDsToSource = getIDsToSource(activeSheets, 'run')
-  const sheetList = await sourceSheetsByID(sheets, IDsToSource)
-  log.push(sheetList)
+  log.push(response_sg)
 
   if (typeof log == 'undefined') {
     log = '(empty log)'
   }
   return {
     props: {
-      tableData,
       log,
     },
   }
 }
 
-const Page = ({ log, tableData, name, gradYear }) => {
-  console.log('-- log', log)
-  const Log = JSON.stringify(log)
+const Page = ({ log, user }) => {
+  console.log('-- log[0]', log[0])
+  const Log = JSON.stringify(log, null, 4)
+  // console.log('=============================')
+  // console.log('-- Log', Log)
   const style = {
     fontFamily: 'Courier New',
+    fontSize: 13,
   }
 
   return (
     <>
-      <p style={style}>{Log}</p>
+      <pre style={style}>{Log}</pre>
+      <pre style={style}>
+        note that console's log may appear differently from the above.
+      </pre>
+      <p style={style}>I am {user}</p>
     </>
   )
 }
