@@ -23,9 +23,9 @@ const user_metadata = (team_metadata_spreadsheet_id) => {
 }
 
 const user_run_data = (user_metadata) => {
-  const user_active_spreadsheet_ids = (sheets.js, user_metadata) => {
+  const user_active_spreadsheet_ids = (spreadsheets.js, user_metadata) => {
     /*
-     * search sheets.js for sheet ids that match
+     * search spreadsheets.js for sheet ids that match
      *  - username
      *  - type: run
      * for each match, save the spreadsheet id
@@ -33,17 +33,24 @@ const user_run_data = (user_metadata) => {
      */
     return {}
   }
-  const result = (user_active_spreadsheet_ids) => {
-    /*
-     * for each spreadsheet id,
-     * send a request for data and save it under the corresponding key
-     * return an object:
-     *   with level 1 props as spreadsheet id,
-     *   and level 2 props as sheet title
-     */
-    return {}
-  }
+  /*
+   * for each spreadsheet id,
+   * send a request for data and save it under the corresponding key
+   *
+   * return an object:
+   *   with level 1 props as spreadsheet id,
+   *   and level 2 props as sheet title
+   *   and with all data inside
+   */
   return { result }
+}
+
+const parse_user_run_data = (sheet.data.values, user) => {
+  /*
+   * takes in a sheet, with a week's worth of runs
+   * return an object
+   */
+  return {}
 }
 
 const user_run_distance_data = (user_run_data) => {
@@ -58,7 +65,7 @@ const user_run_distance_data = (user_run_data) => {
    */
 }
 
-const user_run_interval_data = (user_run_data) => {
+const user_run_intervals_data = (user_run_data) => {
   /*
    * data fields: 
    *  - sets
@@ -82,10 +89,21 @@ const user_run_onoff_data = (user_run_data) => {
    */
 }
 
+const user_run_timed_data = (user_run_data) => {
+  /*
+   * data fields: 
+   *  - duration
+   *  - distance
+   *  - average pace
+   *  - date
+   */
+}
+
 const page_user_run = (
   user_run_distance_data,
-  user_run_interval_data,
+  user_run_intervals_data,
   user_run_onoff_data
+  user_run_timed_data
 ) => {
   /*
    * hcanoe.vercel.app/profile/[user]/run
@@ -94,6 +112,7 @@ const page_user_run = (
    *  - distance
    *  - intervals
    *  - onOff
+   *  - timed
    */
 }
 

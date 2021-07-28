@@ -1,8 +1,9 @@
 import sheetIDs from '@root/sheets'
 
-export const searchUser = (search_str, tableData) => {
+export const searchUser = (User, gradYY, tableData) => {
+  const gradYear = "20" + gradYY
   const searchRes = tableData.filter((arr) => {
-    if (arr.includes(search_str)) {
+    if (arr.includes(User) && arr.includes(gradYear)) {
       return true
     } else {
       return false
