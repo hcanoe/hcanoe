@@ -1,4 +1,4 @@
-import sheetIDs from '@root/sheets'
+import sheetIDs from '@root/spreadsheets'
 
 export const searchUser = (User, gradYY, tableData) => {
   const gradYear = "20" + gradYY
@@ -34,7 +34,7 @@ export const zipTable = (keys, data) => {
   return result
 }
 
-export const expandActiveYears = (userObject) => {
+export const getActiveYears = (userObject) => {
   const start = userObject.GradYear - 5
   const years = []
   for (let i = 0; i < 6; i++) {
@@ -53,7 +53,7 @@ export const getActiveSheets = (activeYears) => {
   return activeSheets
 }
 
-export const getIDsToSource = (activeSheets, type) => {
+export const getSpreadsheetsByType = (activeSheets, type) => {
   const result = []
   for (const year in activeSheets) {
     if (activeSheets[year].hasOwnProperty(type)) {

@@ -3,9 +3,9 @@ import spreadsheet_ids from '@root/spreadsheets'
 import {
   searchUser,
   generateUserObject,
-  expandActiveYears,
+  getActiveYears,
   getActiveSheets,
-  getIDsToSource,
+  getSpreadsheetsByType,
   zipTable,
 } from '@utils/user-meta'
 import { makeEnglish } from '@utils/text'
@@ -96,17 +96,18 @@ export async function getServerSideProps({ query }) {
   ).data.values
 
   const metadata_headers = metadata.shift()
-  const metadataUser = searchUser(name, year, metadata)
-  const userObject = zipTable(metadata_headers, metadataUser)
+  const metadata_body = searchUser(name, year, metadata)
+  const user_metadata = zipTable(metadata_headers, metadata_body)
   // _________________________________________________________________
 
-  log.userObject = userObject
+  const active_years = getActiveYears(user_metadata)
+  const active_spreadsheets = getActiveSheets(active_years)
+  const spreadsheet_ids_by_type = getSpreadsheetsByType(active_spreadsheets, 'run')
+  const training_data = await sourceSheetsByID(sheets, spreadsheet_ids_by_type, log)
+  log.active_spreadsheets = spreadsheet_ids_by_type
   // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
   /*
-  const activeYears = expandActiveYears(userObject)
-  const activeSheets = getActiveSheets(activeYears)
-  const IDsToSource = getIDsToSource(activeSheets, 'run')
   const trainingData = await sourceSheetsByID(sheets, IDsToSource, log)
 
   const getUserTrainingData = (trainingData, User) => {
