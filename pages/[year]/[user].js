@@ -2,6 +2,7 @@ import { google } from 'googleapis'
 import spreadsheet_ids from '@root/spreadsheets'
 import {
   searchUser,
+  searchUserInDay,
   generateUserObject,
   getActiveYears,
   getActiveSpreadsheets,
@@ -131,7 +132,17 @@ export async function getServerSideProps({ query }) {
             data_day[c] = []
           }
         })
-        result.push(data_day)
+        // result.push(data_day)
+        const data_day_user = data_day.map((day) => {
+          const headers = day.shift()
+          const type = headers[0]
+          headers[0] = "Day"
+          const body = searchUserInDay(name, day)
+          const zipped = zipTable(headers, body)
+          zipped.type = type
+          return zipped
+        })
+        result.push('data_day_user', data_day_user)
       }
     }
     return result

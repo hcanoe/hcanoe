@@ -23,6 +23,17 @@ export const searchUser = (User, gradYY, tableData) => {
   return userData
 }
 
+export const searchUserInDay = (User, tableData) => {
+  const searchRes = tableData.filter((arr) => {
+    if (arr.includes(User)) {
+      return true
+    } else {
+      return false
+    }
+  })
+  return searchRes[0]
+}
+
 export const zipTable = (keys, data) => {
   const result = keys.reduce(
     (obj, k, i) => ({
