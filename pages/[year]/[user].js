@@ -1,5 +1,5 @@
 import { google } from 'googleapis'
-import spreadsheetIds from '@root/spreadsheets'
+import spreadsheet_ids from '@root/spreadsheets'
 import {
   searchUser,
   generateUserObject,
@@ -83,17 +83,21 @@ export async function getServerSideProps({ query }) {
 
   /*
    * retrieve user's metadata (Name, Graduation Year)
+   *   {
+   *     Name,
+   *     GradYear
+   *   }
    */
   const metadata = (
     await sheets.spreadsheets.values.get({
-      spreadsheetId: spreadsheetIds.meta,
+      spreadsheetId: spreadsheet_ids.meta,
       range: `data!A:D`,
     })
   ).data.values
 
-  const metadataHeaders = metadata.shift()
+  const metadata_headers = metadata.shift()
   const metadataUser = searchUser(name, year, metadata)
-  const userObject = zipTable(metadataHeaders, metadataUser)
+  const userObject = zipTable(metadata_headers, metadataUser)
   // _________________________________________________________________
 
   log.userObject = userObject
