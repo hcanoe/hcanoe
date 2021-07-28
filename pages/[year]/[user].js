@@ -1,5 +1,5 @@
 import { google } from 'googleapis'
-import sheetIDs from '@root/sheets'
+import spreadsheetIds from '@root/spreadsheets'
 import {
   searchUser,
   generateUserObject,
@@ -47,44 +47,57 @@ export async function getTrainingData(sheets, sheetID, sheetTitle) {
   const range = sheetTitle.concat('!A:D')
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: sheetID,
-    range
+    range,
   })
   return response
 }
 
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 export async function getServerSideProps({ query }) {
   const log = {}
   // necessary google auth code
-  const { year, user } = query
-  const User = makeEnglish(user)
-  log['user'] = User
 
+  const credentials = {
+    client_email: process.env.GOOGLE_CLIENT_EMAIL,
+    client_id: process.env.GOOGLE_CLIENT_ID,
+    private_key: process.env.GOOGLE_PRIVATE_KEY,
+  }
+  const scopes = ['https://www.googleapis.com/auth/spreadsheets.readonly']
   const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: process.env.GOOGLE_CLIENT_EMAIL,
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      private_key: process.env.GOOGLE_PRIVATE_KEY,
-    },
-    scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    credentials,
+    scopes,
   })
   const sheets = google.sheets({ version: 'v4', auth })
   // end of google auth
 
   /*
+   * grab year and user from url
+   * hcanoe.vercel.app/18/ning-yiran
+   *   {
+   *     year: 18,
+   *     user: ning-yiran
+   *   }
+   */
+  const { year, user } = query
+  const name = makeEnglish(user)
+
+  /*
    * retrieve user's metadata (Name, Graduation Year)
    */
-  const response_meta = await sheets.spreadsheets.values.get({
-    spreadsheetId: sheetIDs.meta,
-    range: `data!A:D`,
-  })
+  const metadata = (
+    await sheets.spreadsheets.values.get({
+      spreadsheetId: spreadsheetIds.meta,
+      range: `data!A:D`,
+    })
+  ).data.values
 
-  const tableData = response_meta.data.values
-  const keys = tableData.shift()
-  const userData = searchUser(User, GradYear, tableData)
-  const userObject = zipTable(keys, userData)
+  const metadataHeaders = metadata.shift()
+  const metadataUser = searchUser(name, year, metadata)
+  const userObject = zipTable(metadataHeaders, metadataUser)
   // _________________________________________________________________
 
-  log["userObject"] = userObject
+  log.userObject = userObject
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
   /*
   const activeYears = expandActiveYears(userObject)
@@ -109,34 +122,33 @@ export async function getServerSideProps({ query }) {
   const userTrainingData = getUserTrainingData(trainingData, User)
   */
 
-
-
-
-
+  log.name = name
   if (typeof log == 'undefined') {
     log = '(empty log)'
   }
   return {
     props: {
       log,
-      User,
+      name,
     },
   }
 }
 
-const Page = ({ User, log }) => {
+const Page = ({ log }) => {
   console.log(log)
   const Log = JSON.stringify(log, null, 4)
   const style = {
     fontFamily: 'Courier New',
-    fontSize: 13
+    fontSize: 13,
   }
 
   return (
     <>
       <pre style={style}>{Log}</pre>
-      <pre style={style}>note that console's log may appear differently from the above.</pre>
-      <p style={style}>I am {User}</p>
+      <pre style={style}>
+        note that console's log may appear differently from the above.
+      </pre>
+      <p style={style}>I am {log.name}</p>
     </>
   )
 }
