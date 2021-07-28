@@ -55,7 +55,7 @@ export async function getTrainingData(sheets, sheetID, sheetTitle) {
 export async function getServerSideProps({ query }) {
   const log = {}
   // necessary google auth code
-  const { GradYear, user } = query
+  const { year, user } = query
   const User = makeEnglish(user)
   log['user'] = User
 
