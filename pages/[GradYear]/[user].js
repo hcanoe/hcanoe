@@ -55,7 +55,7 @@ export async function getTrainingData(sheets, sheetID, sheetTitle) {
 export async function getServerSideProps({ query }) {
   const log = {}
   // necessary google auth code
-  const { gradYear, user } = query
+  const { GradYear, user } = query
   const User = makeEnglish(user)
   log['user'] = User
 
@@ -80,7 +80,7 @@ export async function getServerSideProps({ query }) {
 
   const tableData = response_meta.data.values
   const keys = tableData.shift()
-  const userData = searchUser(User, gradYear, tableData)
+  const userData = searchUser(User, GradYear, tableData)
   const userObject = zipTable(keys, userData)
   // _________________________________________________________________
 
