@@ -10,7 +10,7 @@ import {
 } from '@utils/user-meta'
 import { makeEnglish } from '@utils/text'
 import { getDate } from '@utils/date'
-import { prettifyDistance } from '@utils/display-data'
+import { prettifyDistance, prettifyIntervals } from '@utils/prettify-data'
 import { DistanceTable } from 'components/Table'
 import FieldBox from 'components/FieldBox'
 import { Container, Heading, Text } from '@chakra-ui/react'
