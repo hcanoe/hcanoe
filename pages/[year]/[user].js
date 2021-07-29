@@ -3,7 +3,6 @@ import spreadsheet_ids from '@root/spreadsheets'
 import {
   searchUser,
   searchUserInDay,
-  generateUserObject,
   getActiveYears,
   getActiveSpreadsheets,
   getSpreadsheetsByType,
@@ -14,8 +13,9 @@ import { getDate } from '@utils/date'
 import { prettifyDistance } from '@utils/display-data'
 import { DistanceTable } from 'components/Table'
 import FieldBox from 'components/FieldBox'
+import { Container } from '@chakra-ui/react'
 
-export async function getAllSheets(sheets, idList, log) {
+export async function getAllSheets(sheets, idList) {
   const result = {}
 
   await Promise.all(
@@ -103,11 +103,7 @@ export async function getServerSideProps({ query }) {
     active_spreadsheets,
     'run'
   )
-  const data_all_sheets = await getAllSheets(
-    sheets,
-    spreadsheet_ids_by_type,
-    log
-  )
+  const data_all_sheets = await getAllSheets(sheets, spreadsheet_ids_by_type)
   /*
    * TODO: split array by [">>>"]
    *       use shift() to get headers out
@@ -172,7 +168,8 @@ export async function getServerSideProps({ query }) {
     }
     return [user_data_by_day, user_data_by_type]
   }
-  const [user_data_by_day, user_data_by_type] = getUserTrainingData(data_all_sheets)
+  const [user_data_by_day, user_data_by_type] =
+    getUserTrainingData(data_all_sheets)
   for (const type in user_data_by_type) {
     if (type === 'DISTANCE') {
       prettifyDistance(user_data_by_type[type])
@@ -187,17 +184,20 @@ export async function getServerSideProps({ query }) {
     props: {
       log,
       name,
-      distance
+      distance,
     },
   }
 }
 
-const Page = ({ log, distance }) => {
+const Page = ({ distance }) => {
   return (
+    // TODO: sort data display by date
     <>
-      <FieldBox t="Distance">
-        <DistanceTable />
-      </FieldBox>
+      <Container size='md'>
+        <FieldBox t="Distance">
+          <DistanceTable rows={distance} />
+        </FieldBox>
+      </Container>
     </>
   )
 }

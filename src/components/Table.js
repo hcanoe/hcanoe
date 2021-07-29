@@ -1,26 +1,19 @@
-import Table from '@material-ui/core/Table'
-import Box from '@material-ui/core/Box'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
+import { Box, Th, Tbody, Tr, Td, Thead, Table } from '@chakra-ui/react'
 
 export const DistanceTable = ({ rows }) => {
   const data = () => {
     if (rows) {
       return (
-        <TableBody>
+        <Tbody>
           {rows.map((row) => (
-            <TableRow key={row.date}>
-              <TableCell>{row.Dist}</TableCell>
-              <TableCell>{row.Time}</TableCell>
-              <TableCell>{row.Pace}</TableCell>
-              <TableCell>{row.Date}</TableCell>
-            </TableRow>
+            <Tr key={row.Date}>
+              <Td>{row.Distance}</Td>
+              <Td>{row.Timing}</Td>
+              <Td>{row.Pace}</Td>
+              <Td>{row.Date}</Td>
+            </Tr>
           ))}
-        </TableBody>
+        </Tbody>
       )
     } else {
       return null
@@ -29,14 +22,14 @@ export const DistanceTable = ({ rows }) => {
   return (
     <Box overflowX="auto">
       <Table variant="simple" size="sm">
-        <TableHead>
-          <TableRow>
-            <TableCell>Distance</TableCell>
-            <TableCell>Timing</TableCell>
-            <TableCell>Pace</TableCell>
-            <TableCell>Date</TableCell>
-          </TableRow>
-        </TableHead>
+        <Thead>
+          <Tr>
+            <Th>Distance</Th>
+            <Th>Timing</Th>
+            <Th>Pace</Th>
+            <Th>Date</Th>
+          </Tr>
+        </Thead>
         {data()}
       </Table>
     </Box>
