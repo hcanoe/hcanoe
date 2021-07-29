@@ -13,7 +13,7 @@ import { getDate } from '@utils/date'
 import { prettifyDistance } from '@utils/display-data'
 import { DistanceTable } from 'components/Table'
 import FieldBox from 'components/FieldBox'
-import { Container } from '@chakra-ui/react'
+import { Container, Heading, Text } from '@chakra-ui/react'
 
 export async function getAllSheets(sheets, idList) {
   const result = {}
@@ -170,11 +170,16 @@ export async function getServerSideProps({ query }) {
       prettifyDistance(user_data_by_type[type])
     }
   }
-  const distance = user_data_by_type.DISTANCE
 
   if (typeof log == 'undefined') {
     log = '(empty log)'
   }
+
+  /*
+   * returned values
+   */
+  const distance = user_data_by_type.DISTANCE
+
   return {
     props: {
       log,
@@ -184,10 +189,14 @@ export async function getServerSideProps({ query }) {
   }
 }
 
-const Page = ({ distance }) => {
+const Page = ({ name, distance }) => {
   return (
     <>
-      <Container size='md'>
+      <Container size="md">
+        <Heading mt="1em" size="lg" isTruncated>
+          Training Stats
+        </Heading>
+        <Text>{name}</Text>
         <FieldBox t="Distance">
           <DistanceTable rows={distance} />
         </FieldBox>
