@@ -117,22 +117,35 @@ export async function getServerSideProps({ query }) {
    *       filter for name
    *       zip table
    */
+  log.week = {}
   const getUserTrainingData = (data_all_sheets) => {
     const result = []
     for (const spreadsheet_id in data_all_sheets) {
       for (const week in data_all_sheets[spreadsheet_id]) {
         const data_week = data_all_sheets[spreadsheet_id][week]
+        /*
+         * data_week is an array of the week's trainings,
+         * with each day separated by a single cell ['>>>']
+         */
         const data_day = [[]]
+        var arr = []
+        const split_day = {}
         var c = 0
         data_week.forEach((e) => {
-          if (e[0] != ">>>") {
-            data_day[c].push(e)
-          } else {
+          if (e[0] === ">>>") {
+            split_day[data_day[c][1][0]] = arr
             c += 1
+            arr = []
             data_day[c] = []
+          } else {
+            data_day[c].push(e)
+            arr.push(e)
           }
         })
-        // result.push(data_day)
+        /*
+         * at this point, data_day is an array where each element
+         * contains the entire team's data for that day
+         */
         const data_day_user = data_day.map((day) => {
           const headers = day.shift()
           const type = headers[0]
@@ -143,6 +156,7 @@ export async function getServerSideProps({ query }) {
           return zipped
         })
         result.push('data_day_user', data_day_user)
+        log.week[week] = split_day
       }
     }
     return result
