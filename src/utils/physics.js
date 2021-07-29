@@ -30,7 +30,18 @@ export const parseDistanceToSI = (string) => {
   return 'distance'
 }
 
-export const getPace = (dur, dist) => {
+export const displayDistance = (string, unit) => {
+  const d = parseDistanceToSI(string)
+  if (unit === 'km') {
+    return (d/1000).toFixed(0) + ' km'
+  } else if (unit === 'm') {
+    return d + ' m'
+  } else {
+    return 'invalid unit'
+  }
+}
+
+export const displayPace = (dur, dist) => {
   /*
    * takes in
    *  1. human readable timing ([H]:MM:SS) and
@@ -51,4 +62,19 @@ export const getPace = (dur, dist) => {
   p.SS = parseInt((p.min_per_km % 1) * 60)
   p.result = p.MM + ":" + p.SS
   return p.result
+}
+
+export const displayDuration = (dur) => {
+  const colonCount = (dur.match(/:/g)).length
+  if (colonCount === 1) {
+    return dur
+  } else if (colonCount === 2) {
+    const h = parseInt(dur.split(':')[0])
+    if (h == 0) {
+      return dur.split(':').slice(1).join(':')
+    } else {
+      return dur
+    }
+  }
+  return 'hello'
 }

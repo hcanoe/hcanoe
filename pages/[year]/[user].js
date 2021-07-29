@@ -12,6 +12,8 @@ import {
 import { makeEnglish } from '@utils/text'
 import { getDate } from '@utils/date'
 import { prettifyDistance } from '@utils/display-data'
+import { DistanceTable } from 'components/Table'
+import FieldBox from 'components/FieldBox'
 
 export async function getAllSheets(sheets, idList, log) {
   const result = {}
@@ -115,10 +117,10 @@ export async function getServerSideProps({ query }) {
   const getUserTrainingData = (data_all_sheets) => {
     const user_data_by_day = {}
     const user_data_by_type = {
-      DISTANCE: {},
-      INTERVALS: {},
-      ONOFF: {},
-      TIMED: {},
+      DISTANCE: [],
+      INTERVALS: [],
+      ONOFF: [],
+      TIMED: [],
     }
     for (const spreadsheet_id in data_all_sheets) {
       for (const week in data_all_sheets[spreadsheet_id]) {
@@ -158,7 +160,7 @@ export async function getServerSideProps({ query }) {
           zipped.Type = type
           zipped.Date = date
           delete zipped.Name
-          user_data_by_type[type][date] = zipped
+          user_data_by_type[type].push(zipped)
           user_data_by_day[week][day] = zipped
         }
         /*
@@ -176,6 +178,7 @@ export async function getServerSideProps({ query }) {
       prettifyDistance(user_data_by_type[type])
     }
   }
+  const distance = user_data_by_type.DISTANCE
 
   if (typeof log == 'undefined') {
     log = '(empty log)'
@@ -184,26 +187,17 @@ export async function getServerSideProps({ query }) {
     props: {
       log,
       name,
+      distance
     },
   }
 }
 
-const Page = ({ log }) => {
-  console.log('log -> ', log)
-  const Log = JSON.stringify(log, null, 4)
-  const style = {
-    fontFamily: 'Courier New',
-    fontSize: 13,
-  }
-  console.log("--------------------------------------------------------")
-
+const Page = ({ log, distance }) => {
   return (
     <>
-      <pre style={style}>{Log}</pre>
-      <pre style={style}>
-        note that console's log may appear differently from the above.
-      </pre>
-      <p style={style}>I am {log.name}</p>
+      <FieldBox t="Distance">
+        <DistanceTable />
+      </FieldBox>
     </>
   )
 }

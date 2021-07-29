@@ -1,16 +1,15 @@
 import moment from 'moment'
-import { parseDistanceToSI } from '@utils/physics'
+import {
+  parseDistanceToSI,
+  displayPace,
+  displayDistance,
+  displayDuration,
+} from '@utils/physics'
 
-export const prettifyDistance = (obj) => {
-  for (const date in obj) {
-    const training = obj[date]
-    /*
-     * expected existing props:
-     *  - Distance
-     *  - Timing
-     *  - Type
-     *  - Date
-     */
-    const timing = moment.duration(training.Timing, 'HH:MM:SS')
-  }
+export const prettifyDistance = (arr) => {
+  arr.forEach((training, index, _arr) => {
+    training.Pace = displayPace(training.Timing, training.Distance)
+    training.Distance = displayDistance(training.Distance, 'km')
+    training.Timing = displayDuration(training.Timing)
+  })
 }

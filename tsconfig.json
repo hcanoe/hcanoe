@@ -3,14 +3,17 @@
     "jsx": "preserve",
     "baseUrl": "src",
     "module": "commonjs",
-    "allowSyntheticDefaultImports": true,
     "paths": {
       "@utils/*": ["utils/*"],
       "@root/*": ["../*"]
     },
+    "allowSyntheticDefaultImports": true,
     "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
