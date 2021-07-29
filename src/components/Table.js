@@ -1,6 +1,6 @@
 import { Box, Th, Tbody, Tr, Td, Thead, Table } from '@chakra-ui/react'
 
-export const DistanceTable = ({ rows }) => {
+const DistanceTable = ({ rows }) => {
   const data = () => {
     if (rows) {
       return (
@@ -35,3 +35,5 @@ export const DistanceTable = ({ rows }) => {
     </Box>
   )
 }
+
+export { DistanceTable }
