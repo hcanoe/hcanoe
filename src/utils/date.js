@@ -1,7 +1,7 @@
 // prettier-ignore
 export const indexDayOfWeek = {
   Mon: 0, mon: 0, Monday: 0,    monday: 0,
-  Tue: 1, tue: 1, Tuesday: 1,   tuesday: 1,
+  Tue: 1, tue: 1, Tuesday: 1,   tuesday: 1,   Tues: 1,
   Wed: 2, wed: 2, Wednesday: 2, wednesday: 2,
   Thu: 3, thu: 3, Thursday: 3,  thursday: 3,
   Fri: 4, fri: 4, Friday: 4,    friday: 4,
@@ -11,7 +11,26 @@ export const indexDayOfWeek = {
 
 export const getDate = (date, dayOfWeek) => {
   const [D, M, Y] = date.split('/')
-  const DD = parseInt(D) + indexDayOfWeek[dayOfWeek]
-  const MM = parseInt(M) - 1 // honestly no idea why but M is weird
-  return new Date(Y, MM, DD)
+  var proc = new Date(Y, parseInt(M), parseInt(D))
+
+  /*
+   * some dank correction,
+   * honestly baffled as to why I have to do this
+   */
+  proc.setMonth(proc.getMonth() - 1)
+  proc.setDate(proc.getDate() + 1)
+
+  /*
+   * implement the shift based on day of week
+   */
+  const shift = indexDayOfWeek[dayOfWeek]
+  proc.setDate(proc.getDate() + shift)
+
+  /*
+   * fix the date before reading it into a string
+   */
+  const DD = proc.getDate() - 1
+  const MM = proc.getMonth() + 1
+  const YY = proc.getFullYear()
+  return [DD, MM, YY].join('/')
 }
