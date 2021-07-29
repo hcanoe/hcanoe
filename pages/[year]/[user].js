@@ -205,12 +205,14 @@ const Page = ({ name, distance, intervals }) => {
         <FieldBox t="Distance">
           <DistanceTable rows={distance} />
         </FieldBox>
-        <FieldBox t="Intervals">
-          <DistanceTable rows={intervals} />
-        </FieldBox>
       </Container>
     </>
   )
 }
 
 export default Page
+/*
+        <FieldBox t="Intervals">
+          <DistanceTable rows={intervals} />
+        </FieldBox>
+*/
