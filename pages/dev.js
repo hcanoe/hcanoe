@@ -57,12 +57,6 @@ export async function getServerSideProps({ query }) {
     })
   ).data
   
-  /*
-   * TODO: write a function that reads a spreadsheet
-   *       into an object, with its root properties
-   *       being the sheet titles
-   */
-
   log.push(response_sg)
 
   if (typeof log == 'undefined') {

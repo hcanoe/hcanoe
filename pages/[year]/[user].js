@@ -104,12 +104,7 @@ export async function getServerSideProps({ query }) {
     'run'
   )
   const data_all_sheets = await getAllSheets(sheets, spreadsheet_ids_by_type)
-  /*
-   * TODO: split array by [">>>"]
-   *       use shift() to get headers out
-   *       filter for name
-   *       zip table
-   */
+
   const getUserTrainingData = (data_all_sheets) => {
     const user_data_by_day = {}
     const user_data_by_type = {
@@ -191,7 +186,6 @@ export async function getServerSideProps({ query }) {
 
 const Page = ({ distance }) => {
   return (
-    // TODO: sort data display by date
     <>
       <Container size='md'>
         <FieldBox t="Distance">
