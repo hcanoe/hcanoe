@@ -1,4 +1,4 @@
-export const recentFirst = (a, b, par) => {
+const recentFirst = (a, b, par) => {
   if (a.SortDate > b.SortDate) {
     return -1
   }
@@ -7,3 +7,5 @@ export const recentFirst = (a, b, par) => {
   }
   return 0
 }
+
+export { recentFirst }

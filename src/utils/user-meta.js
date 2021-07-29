@@ -1,6 +1,6 @@
 import sheetIDs from '@root/spreadsheets'
 
-export const searchUser = (User, gradYY, tableData) => {
+const searchUser = (User, gradYY, tableData) => {
   const gradYear = "20" + gradYY
   const searchRes = tableData.filter((arr) => {
     if (arr.includes(User) && arr.includes(gradYear)) {
@@ -23,7 +23,7 @@ export const searchUser = (User, gradYY, tableData) => {
   return userData
 }
 
-export const searchUserInDay = (User, tableData) => {
+const searchUserInDay = (User, tableData) => {
   const searchRes = tableData.filter((arr) => {
     if (arr.includes(User)) {
       return true
@@ -34,7 +34,7 @@ export const searchUserInDay = (User, tableData) => {
   return searchRes[0]
 }
 
-export const zipTable = (keys, data) => {
+const zipTable = (keys, data) => {
   const result = keys.reduce(
     (obj, k, i) => ({
       ...obj,
@@ -45,7 +45,7 @@ export const zipTable = (keys, data) => {
   return result
 }
 
-export const getActiveYears = (userObject) => {
+const getActiveYears = (userObject) => {
   const start = userObject.GradYear - 5
   const years = []
   for (let i = 0; i < 6; i++) {
@@ -54,7 +54,7 @@ export const getActiveYears = (userObject) => {
   return years
 }
 
-export const getActiveSpreadsheets = (activeYears) => {
+const getActiveSpreadsheets = (activeYears) => {
   const activeSheets = {}
   activeYears.forEach((y) => {
     if (sheetIDs.hasOwnProperty(y)) {
@@ -64,7 +64,7 @@ export const getActiveSpreadsheets = (activeYears) => {
   return activeSheets
 }
 
-export const getSpreadsheetsByType = (activeSheets, type) => {
+const getSpreadsheetsByType = (activeSheets, type) => {
   const result = []
   for (const year in activeSheets) {
     if (activeSheets[year].hasOwnProperty(type)) {
@@ -72,4 +72,13 @@ export const getSpreadsheetsByType = (activeSheets, type) => {
     }
   }
   return result
+}
+
+export {
+  searchUser,
+  searchUserInDay,
+  getSpreadsheetsByType,
+  getActiveYears,
+  getActiveSpreadsheets,
+  zipTable
 }

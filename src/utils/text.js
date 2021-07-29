@@ -2,7 +2,7 @@
  * takes in "ning-yiran"
  * returns "Ning Yiran"
  */
-export const makeEnglish = (str) => {
+const makeEnglish = (str) => {
   const parts = str.split('-')
   const res = parts
     .map(
@@ -13,3 +13,5 @@ export const makeEnglish = (str) => {
     .join(' ')
   return res
 }
+
+export { makeEnglish }

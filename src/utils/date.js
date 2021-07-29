@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 // prettier-ignore
-export const indexDayOfWeek = {
+const indexDayOfWeek = {
   Mon: 0, mon: 0, Monday: 0,    monday: 0,
   Tue: 1, tue: 1, Tuesday: 1,   tuesday: 1,   Tues: 1,
   Wed: 2, wed: 2, Wednesday: 2, wednesday: 2,
@@ -11,9 +11,11 @@ export const indexDayOfWeek = {
   Sun: 6, sun: 6, Sunday: 6,    sunday: 6,
 }
 
-export const getDate = (date, dayOfWeek) => {
+const getDate = (date, dayOfWeek) => {
   const process_date = moment(date, "DD/MM/YYYY")
   process_date.add(indexDayOfWeek[dayOfWeek], 'days')
   const output = process_date.format('DD/MM/YYYY')
   return output
 }
+
+export { getDate }
