@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 // prettier-ignore
 export const indexDayOfWeek = {
   Mon: 0, mon: 0, Monday: 0,    monday: 0,
@@ -10,27 +12,8 @@ export const indexDayOfWeek = {
 }
 
 export const getDate = (date, dayOfWeek) => {
-  const [D, M, Y] = date.split('/')
-  var proc = new Date(Y, parseInt(M), parseInt(D))
-
-  /*
-   * some dank correction,
-   * honestly baffled as to why I have to do this
-   */
-  proc.setMonth(proc.getMonth() - 1)
-  proc.setDate(proc.getDate() + 1)
-
-  /*
-   * implement the shift based on day of week
-   */
-  const shift = indexDayOfWeek[dayOfWeek]
-  proc.setDate(proc.getDate() + shift)
-
-  /*
-   * fix the date before reading it into a string
-   */
-  const DD = proc.getDate() - 1
-  const MM = proc.getMonth() + 1
-  const YY = proc.getFullYear()
-  return [DD, MM, YY].join('/')
+  const process_date = moment(date, "DD/MM/YYYY")
+  process_date.add(indexDayOfWeek[dayOfWeek], 'days')
+  const output = process_date.format('DD/MM/YYYY')
+  return output
 }

@@ -127,11 +127,12 @@ export async function getServerSideProps({ query }) {
          * data_week is an array of the week's trainings,
          * with each day separated by a single cell ['>>>']
          */
-        var arr = []
         const split_day = {}
+        var arr = []
         var c = 0
         data_week.forEach((e, index) => {
-          if (e[0] === '>>>') { // the delimiter >>>
+          if (e[0] === '>>>') {
+            // the delimiter >>>
             split_day[arr[1][0]] = arr
             c += 1
             arr = []
@@ -148,12 +149,12 @@ export async function getServerSideProps({ query }) {
          */
         user_data_by_day[week] = {}
         for (const day in split_day) {
+          const date = getDate(week, day)
           const day_arr = split_day[day]
           const headers = day_arr.shift()
           const type = headers.shift()
           const body = searchUserInDay(name, day_arr).slice(1)
           const zipped = zipTable(headers, body)
-          const date = getDate(week, day)
           zipped.Type = type
           zipped.Date = date
           delete zipped.Name
@@ -165,7 +166,6 @@ export async function getServerSideProps({ query }) {
          *  key = start of week in DD/MM/YYYY format
          *  props = date of training in DD/MM/YYYY
          */
-        log.user_data_by_day = user_data_by_day
         log.user_data_by_type = user_data_by_type
       }
     }
