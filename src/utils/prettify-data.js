@@ -8,7 +8,7 @@ import {
 import { recentFirst } from '@utils/sort'
 
 const prettifyDistance = (arr) => {
-  arr.forEach((training, index, _arr) => {
+  arr.forEach((training) => {
     training.Pace = displayPace(training.Timing, training.Distance)
     training.Distance = displayDistance(training.Distance, 'km')
     training.Timing = displayDuration(training.Timing)
@@ -18,4 +18,12 @@ const prettifyDistance = (arr) => {
   arr.sort(recentFirst)
 }
 
-export { prettifyDistance }
+const prettifyIntervals = (arr) => {
+  arr.forEach((training) => {
+    const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
+    training.SortDate = process_date
+  })
+  arr.sort(recentFirst)
+}
+
+export { prettifyDistance, prettifyIntervals }

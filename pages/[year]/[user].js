@@ -168,6 +168,9 @@ export async function getServerSideProps({ query }) {
   for (const type in user_data_by_type) {
     if (type === 'DISTANCE') {
       prettifyDistance(user_data_by_type[type])
+    } else if (type === 'INTERVALS') {
+      console.log(user_data_by_type[type])
+      prettifyIntervals(user_data_by_type[type])
     }
   }
 
@@ -179,17 +182,19 @@ export async function getServerSideProps({ query }) {
    * returned values
    */
   const distance = user_data_by_type.DISTANCE
+  const intervals = user_data_by_type.INTERVALS
 
   return {
     props: {
       log,
       name,
       distance,
+      intervals,
     },
   }
 }
 
-const Page = ({ name, distance }) => {
+const Page = ({ name, distance, intervals }) => {
   return (
     <>
       <Container size="md">
@@ -199,6 +204,9 @@ const Page = ({ name, distance }) => {
         <Text>{name}</Text>
         <FieldBox t="Distance">
           <DistanceTable rows={distance} />
+        </FieldBox>
+        <FieldBox t="Intervals">
+          <DistanceTable rows={intervals} />
         </FieldBox>
       </Container>
     </>
