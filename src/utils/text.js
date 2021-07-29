@@ -13,5 +13,9 @@ const makeEnglish = (str) => {
     .join(' ')
   return res
 }
+const allCaps = (str) => {
+  const result = str.replace('-', ' ').toUpperCase()
+  return result
+}
 
-export { makeEnglish }
+export { makeEnglish, allCaps }

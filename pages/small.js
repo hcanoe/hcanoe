@@ -1,11 +1,10 @@
 import { getDate } from '@utils/date'
-import { displayDuration, displayPace } from '@utils/physics'
+import { allCaps } from '@utils/text'
 
 const Page = () => {
-  const dur = '1:35:42'
-  const dist = '21.0975km'
+  const name = "aiden-ryan"
 
-  console.log(displayDuration(dur))
+  console.log(allCaps(name))
 
   return (
     null
