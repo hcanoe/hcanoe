@@ -31,13 +31,6 @@ export async function getAllSheets(sheets, idList, log) {
           result[id][title] = trainingData
         })
       )
-      /*
-      response.data.sheets.forEach((i) => {
-        const title = i.properties.title
-        const r = getTrainingData(sheets, id, title)
-        result[id][title] = {r}
-      })
-      */
     })
   )
 
@@ -117,9 +110,9 @@ export async function getServerSideProps({ query }) {
    *       filter for name
    *       zip table
    */
-  log.week = {}
   const getUserTrainingData = (data_all_sheets) => {
     const result = []
+    const user_data_by_day = {}
     for (const spreadsheet_id in data_all_sheets) {
       for (const week in data_all_sheets[spreadsheet_id]) {
         const data_week = data_all_sheets[spreadsheet_id][week]
@@ -127,44 +120,52 @@ export async function getServerSideProps({ query }) {
          * data_week is an array of the week's trainings,
          * with each day separated by a single cell ['>>>']
          */
-        const data_day = [[]]
         var arr = []
         const split_day = {}
         var c = 0
         data_week.forEach((e) => {
-          if (e[0] === ">>>") {
-            split_day[data_day[c][1][0]] = arr
+          if (e[0] === '>>>') { // the delimiter >>>
+            split_day[arr[1][0]] = arr
             c += 1
             arr = []
-            data_day[c] = []
           } else {
-            data_day[c].push(e)
             arr.push(e)
           }
         })
         /*
-         * at this point, data_day is an array where each element
+         * at this point, split_day is an object where each key
          * contains the entire team's data for that day
          */
+        user_data_by_day[week] = {}
+        for (const day in split_day) {
+          const day_arr = split_day[day]
+          const headers = day_arr.shift()
+          const type = headers.shift()
+          const body = searchUserInDay(name, day_arr)
+          body.shift()
+          const zipped = zipTable(headers, body)
+          zipped.type = type
+          user_data_by_day[week][day] = zipped
+        }
+        /*
         const data_day_user = data_day.map((day) => {
           const headers = day.shift()
           const type = headers[0]
-          headers[0] = "Day"
+          headers[0] = 'Day'
           const body = searchUserInDay(name, day)
           const zipped = zipTable(headers, body)
           zipped.type = type
           return zipped
         })
         result.push('data_day_user', data_day_user)
-        log.week[week] = split_day
+        */
+        log.user_data_by_day = user_data_by_day
       }
     }
     return result
   }
   const data_user = getUserTrainingData(data_all_sheets)
-  log.data_user = data_user
 
-  log.name = name
   if (typeof log == 'undefined') {
     log = '(empty log)'
   }
