@@ -1,12 +1,10 @@
+import { getDate } from '@utils/date'
+
 const Page = () => {
-  const makeEnglish = (str) => {
-    const parts = str.split('-')
-    const res = parts.map((word) => 
-      // capitalizes first letter
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ')
-    return res
-  }
+  const date = '20/7/2015'
+  const day = 'thursday'
+
+  console.log(getDate(date, day))
   return (
     null
   )
