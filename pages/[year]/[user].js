@@ -11,6 +11,7 @@ import {
 } from '@utils/user-meta'
 import { makeEnglish } from '@utils/text'
 import { getDate } from '@utils/date'
+import { prettifyDistance } from '@utils/display-data'
 
 export async function getAllSheets(sheets, idList, log) {
   const result = {}
@@ -112,7 +113,6 @@ export async function getServerSideProps({ query }) {
    *       zip table
    */
   const getUserTrainingData = (data_all_sheets) => {
-    const result = []
     const user_data_by_day = {}
     const user_data_by_type = {
       DISTANCE: {},
@@ -166,12 +166,16 @@ export async function getServerSideProps({ query }) {
          *  key = start of week in DD/MM/YYYY format
          *  props = date of training in DD/MM/YYYY
          */
-        log.user_data_by_type = user_data_by_type
       }
     }
-    return result
+    return [user_data_by_day, user_data_by_type]
   }
-  const data_user = getUserTrainingData(data_all_sheets)
+  const [user_data_by_day, user_data_by_type] = getUserTrainingData(data_all_sheets)
+  for (const type in user_data_by_type) {
+    if (type === 'DISTANCE') {
+      prettifyDistance(user_data_by_type[type])
+    }
+  }
 
   if (typeof log == 'undefined') {
     log = '(empty log)'
@@ -185,12 +189,13 @@ export async function getServerSideProps({ query }) {
 }
 
 const Page = ({ log }) => {
-  console.log(log)
+  console.log('log -> ', log)
   const Log = JSON.stringify(log, null, 4)
   const style = {
     fontFamily: 'Courier New',
     fontSize: 13,
   }
+  console.log("--------------------------------------------------------")
 
   return (
     <>

@@ -1,10 +1,12 @@
 import { getDate } from '@utils/date'
+import { getPace } from '@utils/physics'
 
 const Page = () => {
-  const date = '20/7/2015'
-  const day = 'thursday'
+  const dur = '1:35:42'
+  const dist = '21.0975km'
 
-  console.log(getDate(date, day))
+  console.log(getPace(dur, dist))
+
   return (
     null
   )
