@@ -51,7 +51,6 @@ const displayPace = (dur, dist) => {
   const p = {}
   const colonCount = dur.match(/:/g).length
   if (colonCount === 1) {
-    console.log(dur)
     p.sec = moment.duration('0:' + dur).asSeconds()
   } else if (colonCount === 2) {
     p.sec = moment.duration(dur).asSeconds()

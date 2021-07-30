@@ -11,7 +11,7 @@ import {
 import { makeEnglish } from '@utils/text'
 import { getDate } from '@utils/date'
 import { prettifyDistance, prettifyIntervals } from '@utils/prettify-data'
-import { DistanceTable } from 'components/Table'
+import { DistanceTable, IntervalsTable } from 'components/Table'
 import FieldBox from 'components/FieldBox'
 import { Container, Heading, Text } from '@chakra-ui/react'
 
@@ -169,8 +169,8 @@ export async function getServerSideProps({ query }) {
     if (type === 'DISTANCE') {
       prettifyDistance(user_data_by_type[type])
     } else if (type === 'INTERVALS') {
-      console.log(user_data_by_type[type])
       prettifyIntervals(user_data_by_type[type])
+      // console.log(user_data_by_type[type])
     }
   }
 
@@ -195,6 +195,7 @@ export async function getServerSideProps({ query }) {
 }
 
 const Page = ({ name, distance, intervals }) => {
+  console.log(intervals)
   return (
     <>
       <Container size="md">
@@ -204,6 +205,9 @@ const Page = ({ name, distance, intervals }) => {
         <Text>{name}</Text>
         <FieldBox t="Distance">
           <DistanceTable rows={distance} />
+        </FieldBox>
+        <FieldBox t="Intervals">
+          <IntervalsTable rows={intervals} />
         </FieldBox>
       </Container>
     </>
