@@ -62,6 +62,7 @@ export default function Page({ log }) {
               <FormControl>
                 <FormLabel>Graduation Year</FormLabel>
                 <NumberInput
+                  id='GraduationYear'
                   max={99}
                   min={0}
                   value={year}
@@ -75,6 +76,7 @@ export default function Page({ log }) {
                 </NumberInput>
                 <FormLabel mt="1em">Name</FormLabel>
                 <Input
+                  id='Name'
                   placeholder={name}
                   maxLength="20"
                   onChange={handleChangeName}
