@@ -40,16 +40,17 @@ export default function Page({ log }) {
             align="center"
             color="gray.600"
             fontSize="2xl"
-            fontWeight="500"
+            fontWeight="600"
             align="center"
           >
             <code>HCANOE</code>
           </Text>
           <Text
+            mt='0.5em'
             bgGradient="linear(to-r,blue.500, teal.500, green.500)"
             bgClip="text"
             fontSize="3xl"
-            fontWeight="500"
+            fontWeight="600"
             align="center"
           >
             团结一心
