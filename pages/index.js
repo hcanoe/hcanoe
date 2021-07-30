@@ -12,10 +12,10 @@ import {
   Center,
   Text,
   Input,
-  Link as ChakraLink,
+  Link,
 } from '@chakra-ui/react'
 import { useState } from 'react'
-import Link from 'next/link'
+import styles from 'styles/Homepage.module.css'
 
 const dashify = (str) => {
   return str.replace(/ /g, '-').toLowerCase()
@@ -46,7 +46,6 @@ export default function Page({ log }) {
       <Center w="inherit" alignItems="center">
         <Container>
           <Text
-            align="center"
             color="gray.600"
             fontSize="5xl"
             fontWeight="900"
@@ -94,13 +93,11 @@ export default function Page({ log }) {
             fontWeight="500"
             align="center"
           >
-            <Link
+              <a
               href={'https://hcanoe.vercel.app/' + url_year + '/' + dashify(name)}
-            >
-              <a style={user_url} className="home_to_user_url">
+                className={styles.home_to_user_url}>
                 hcanoe.vercel.app/{url_year}/{dashify(name)}
               </a>
-            </Link>
           </Text>
         </Container>
       </Center>
