@@ -22,10 +22,17 @@ const dashify = (str) => {
 }
 
 export default function Page({ log }) {
-  const [year, setYear] = useState('18')
+  const [year, setYear] = useState('')
+  const [url_year, setUrl_year] = useState('18')
   const [name, setName] = useState('nguyen vu khang')
   const handleChangeYear = (e) => {
-    setYear(e.target.value)
+    if (e < 10) {
+      setYear('0' + e)
+      setUrl_year('0' + e)
+    } else {
+      setYear(e)
+      setUrl_year(e)
+    }
   }
   const handleChangeName = (e) => {
     setName(e.target.value)
@@ -54,8 +61,13 @@ export default function Page({ log }) {
             <Box width="18rem">
               <FormControl>
                 <FormLabel>Graduation Year</FormLabel>
-                <NumberInput max={99} min={0}>
-                  <NumberInputField maxLength={2} placeholder={year} />
+                <NumberInput
+                  max={99}
+                  min={0}
+                  value={year}
+                  onChange={handleChangeYear}
+                >
+                  <NumberInputField maxLength={2} placeholder={18} />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
                     <NumberDecrementStepper />
@@ -85,7 +97,7 @@ export default function Page({ log }) {
               href={'https://hcanoe.vercel.app/' + year + '/' + dashify(name)}
             >
               <a style={user_url} className="home_to_user_url">
-                hcanoe.vercel.app/{year}/{dashify(name)}
+                hcanoe.vercel.app/{url_year}/{dashify(name)}
               </a>
             </Link>
           </Text>
