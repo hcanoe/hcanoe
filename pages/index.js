@@ -15,6 +15,10 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 
+const dashify = (str) => {
+  return str.replace(/ /g, '-').toLowerCase()
+}
+
 export default function Page({ log }) {
   const [year, setYear] = useState('18')
   const [name, setName] = useState('nguyen-vu-khang')
@@ -58,7 +62,7 @@ export default function Page({ log }) {
             自强不息
             <br />
           </Text>
-          <Box align="center" mt="2em">
+          <Box align="center" mt="4em">
             <Box width="20rem">
               <FormControl>
                 <FormLabel>Graduation Year</FormLabel>
@@ -75,6 +79,9 @@ export default function Page({ log }) {
               </FormControl>
             </Box>
           </Box>
+          <Text align="center" mt="2em">
+            See your data at
+          </Text>
           <Text
             align="center"
             bgGradient="linear(to-r,blue.500, teal.500, green.500)"
@@ -82,11 +89,10 @@ export default function Page({ log }) {
             fontSize="lg"
             fontWeight="500"
             align="center"
-            mt="2em"
           >
             <code style={user_url}>
               <a href={'https://hcanoe.vercel.app/' + year + '/' + name}>
-                hcanoe.vercel.app/{year}/nguyen-vu-khang
+                hcanoe.vercel.app/{year}/{dashify(name)}
               </a>
             </code>
           </Text>
