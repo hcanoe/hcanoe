@@ -63,6 +63,21 @@ const displayPace = (dur, dist) => {
   return p.result
 }
 
+/*
+ * takes in all SI units (seconds, meters)
+ * returns min/km, human readable again
+ */
+const displayPaceFromSI = (dur, dist) => {
+  const p = {}
+  p.sec = moment.duration(dur, 'seconds').asSeconds()
+  p.m = dist
+  p.min_per_km = (p.sec / 60 / p.m) * 1000
+  p.MM = parseInt(p.min_per_km)
+  p.SS = parseInt((p.min_per_km % 1) * 60)
+  p.result = p.MM + ':' + p.SS
+  return p.result
+}
+
 const displayDuration = (dur) => {
   const colonCount = dur.match(/:/g).length
   if (colonCount === 1) {
@@ -77,4 +92,10 @@ const displayDuration = (dur) => {
   }
 }
 
-export { displayDuration, displayDistance, displayPace, parseDistanceToSI }
+export {
+  displayDuration,
+  displayDistance,
+  displayPace,
+  displayPaceFromSI,
+  parseDistanceToSI,
+}

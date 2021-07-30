@@ -163,8 +163,10 @@ export async function getServerSideProps({ query }) {
     }
     return [user_data_by_day, user_data_by_type]
   }
+
   const [user_data_by_day, user_data_by_type] =
     getUserTrainingData(data_all_sheets)
+
   for (const type in user_data_by_type) {
     if (type === 'DISTANCE') {
       prettifyDistance(user_data_by_type[type])
@@ -195,7 +197,8 @@ export async function getServerSideProps({ query }) {
 }
 
 const Page = ({ name, distance, intervals }) => {
-  console.log(intervals)
+  // console.log(intervals)
+  console.log('----------------')
   return (
     <>
       <Container size="md">

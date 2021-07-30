@@ -1,6 +1,7 @@
 import moment from 'moment'
 import {
   parseDistanceToSI,
+  displayPaceFromSI,
   displayPace,
   displayDistance,
   displayDuration,
@@ -48,8 +49,8 @@ const prettifyIntervals = (arr) => {
         // console.log(key, training[key])
       }
     }
-    n.programme = getIntervalsProgramme(by_sets)
-    training.Programme = n.programme
+    ;[training.Programme, training.Timings, training.Paces] =
+      getIntervalsProgramme(by_sets)
     const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
     training.SortDate = process_date
 
@@ -115,17 +116,55 @@ const quoteNotation = (str) => {
   return p.result
 }
 
+const mmssNotation = (str) => {
+  const p = {}
+  const colonCount = str.match(/:/g).length
+  if (colonCount === 1) {
+    p.sec = moment.duration('0:' + str).asSeconds()
+  } else if (colonCount === 2) {
+    p.sec = moment.duration(str).asSeconds()
+  }
+  p.MM = parseInt(p.sec / 60)
+  p.SS = parseInt(p.sec % 60)
+  p.result = p.MM + ':' + p.SS
+  return p.result
+}
+
+const rawToSecond = (str) => {
+  const p = {}
+  const colonCount = str.match(/:/g).length
+  if (colonCount === 1) {
+    p.sec = moment.duration('0:' + str).asSeconds()
+  } else if (colonCount === 2) {
+    p.sec = moment.duration(str).asSeconds()
+  }
+  return p.sec
+}
+
+const secondsToMMSS = (int) => {
+  const p = {}
+  p.sec = moment.duration(int, 'seconds').asSeconds()
+  p.MM = parseInt(p.sec / 60)
+  p.SS = parseInt(p.sec % 60)
+  p.result = p.MM + ':' + p.SS
+  return p.result
+}
+
 const getIntervalsProgramme = (d) => {
   /*
       console.log('--------------')
       console.log('enter set loop')
       console.log('--------------')
       */
-  const p = []
+  const p = [] // programme
+  const r = [] // timing
+  const s = [] // pace
   var c = 0
   var t = {
+    // temp
     Set: '',
-    Rest: ''
+    Rest: '',
+    Timings: [],
   }
   d.forEach((e, index) => {
     /*
@@ -142,38 +181,70 @@ const getIntervalsProgramme = (d) => {
      * handle last
      */
     const same = (type) => {
-      if (d[index][type] === d[index-1][type]) {
+      if (d[index][type] === d[index - 1][type]) {
         return true
       }
       return false
     }
 
     if (index === 0) {
-      // console.log('-> first element')
+      // first element
       c += 1
       t.Set = e.Set
       t.Rest = e.Rest
+      t.Timings.push(rawToSecond(e.Timing))
     } else if (index === d.length - 1) {
-      // console.log('-> last element')
+      // last element
       if (same('Set') && same('Rest')) {
         c += 1
         p.push(c + 'x' + t.Set + '/' + quoteNotation(t.Rest))
+        t.Timings.push(rawToSecond(e.Timing))
+        r.push(t.Timings.map((x) => secondsToMMSS(x)))
+        // total time/total distance
+        // = timings accumulated / (sets * number of sets)
+        s.push(
+          displayPaceFromSI(
+            t.Timings.reduce((a, b) => a + b, 0),
+            parseDistanceToSI(t.Set)
+          )
+        )
       } else {
         p.push(c + 'x' + t.Set + '/' + quoteNotation(t.Rest))
         p.push(1 + 'x' + e.Set + '/' + quoteNotation(e.Rest))
+        r.push(t.Timings.map((x) => secondsToMMSS(x)))
+        s.push(
+          displayPaceFromSI(
+            t.Timings.reduce((a, b) => a + b, 0),
+            parseDistanceToSI(t.Set)
+          )
+        )
+        r.push([secondsToMMSS(rawToSecond(e.Timing))])
+        s.push(
+          displayPaceFromSI(rawToSecond(e.Timing), parseDistanceToSI(e.Set))
+        )
       }
     } else {
-      // console.log('-> in between')
+      // in between
       if (same('Set') && same('Rest')) {
         c += 1
+        t.Timings.push(rawToSecond(e.Timing))
       } else {
         p.push(c + 'x' + t.Set + '/' + quoteNotation(t.Rest))
+        r.push(t.Timings.map((x) => secondsToMMSS(x)))
+        s.push(
+          displayPaceFromSI(
+            t.Timings.reduce((a, b) => a + b, 0),
+            parseDistanceToSI(t.Set)
+          )
+        )
         t.Set = e.Set
         t.Rest = e.Rest
+        t.Timings = []
+        t.Timings.push(rawToSecond(e.Timing))
       }
     }
   })
-  return p
+  return [p, r, s]
 }
 
 export { prettifyDistance, prettifyIntervals }
