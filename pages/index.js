@@ -27,12 +27,11 @@ export default function Page({ log }) {
   const [name, setName] = useState('nguyen vu khang')
   const handleChangeYear = (e) => {
     if (e < 10) {
-      setYear('0' + e)
       setUrl_year('0' + e)
     } else {
-      setYear(e)
       setUrl_year(e)
     }
+    setYear(e)
   }
   const handleChangeName = (e) => {
     setName(e.target.value)
@@ -96,7 +95,7 @@ export default function Page({ log }) {
             align="center"
           >
             <Link
-              href={'https://hcanoe.vercel.app/' + year + '/' + dashify(name)}
+              href={'https://hcanoe.vercel.app/' + url_year + '/' + dashify(name)}
             >
               <a style={user_url} className="home_to_user_url">
                 hcanoe.vercel.app/{url_year}/{dashify(name)}
