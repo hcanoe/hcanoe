@@ -8,7 +8,7 @@ import {
   getSpreadsheetsByType,
   zipTable,
 } from '@utils/user-meta'
-import { makeEnglish } from '@utils/text'
+import { makeEnglish, makeNameCaps } from '@utils/text'
 import { getDate } from '@utils/date'
 import { prettifyDistance, prettifyIntervals } from '@utils/prettify-data'
 import { DistanceTable, IntervalsTable } from 'components/Table'
@@ -76,7 +76,6 @@ export async function getServerSideProps({ query }) {
    *   }
    */
   const { year, user } = query
-  const name = makeEnglish(user)
 
   /*
    * retrieve user's metadata (Name, Graduation Year)
@@ -88,13 +87,15 @@ export async function getServerSideProps({ query }) {
   const metadata = (
     await sheets.spreadsheets.values.get({
       spreadsheetId: spreadsheet_ids.meta,
-      range: `data!A:D`,
+      range: `data!A:F`,
     })
   ).data.values
 
+
   const metadata_headers = metadata.shift()
-  const metadata_body = searchUser(name, year, metadata)
+  const metadata_body = searchUser(user, year, metadata)
   const user_metadata = zipTable(metadata_headers, metadata_body)
+  const name = user_metadata.Name
   // _________________________________________________________________
 
   const active_years = getActiveYears(user_metadata)
@@ -146,13 +147,17 @@ export async function getServerSideProps({ query }) {
           const day_arr = split_day[day]
           const headers = day_arr.shift()
           const type = headers.shift()
-          const body = searchUserInDay(name, day_arr).slice(1)
-          const zipped = zipTable(headers, body)
-          zipped.Type = type
-          zipped.Date = date
-          delete zipped.Name
-          user_data_by_type[type].push(zipped)
-          user_data_by_day[week][day] = zipped
+          console.log(name)
+          const _body = searchUserInDay(name, day_arr)
+          if (_body) {
+            const body = _body.slice(1)
+            const zipped = zipTable(headers, body)
+            zipped.Type = type
+            zipped.Date = date
+            delete zipped.Name
+            user_data_by_type[type].push(zipped)
+            user_data_by_day[week][day] = zipped
+          }
         }
         /*
          * at this point, user_data_by_day is an object,
@@ -183,8 +188,16 @@ export async function getServerSideProps({ query }) {
   /*
    * returned values
    */
+  const output = {}
+  console.log(user_metadata.DisplayName)
+  if (user_metadata.DisplayName) {
+    output.display_name = user_metadata.DisplayName
+  } else {
+    output.display_name = makeEnglish(user_metadata.Name)
+  }
   const distance = user_data_by_type.DISTANCE
   const intervals = user_data_by_type.INTERVALS
+  const display_name = output.display_name
 
   return {
     props: {
@@ -192,11 +205,12 @@ export async function getServerSideProps({ query }) {
       name,
       distance,
       intervals,
+      display_name
     },
   }
 }
 
-const Page = ({ name, distance, intervals }) => {
+const Page = ({ display_name, distance, intervals }) => {
   // console.log(intervals)
   console.log('----------------')
   console.log(distance)
@@ -212,7 +226,7 @@ const Page = ({ name, distance, intervals }) => {
         >
           Training Stats
         </Text>
-        <Text color='gray.600'>{name}</Text>
+        <Text color='gray.600'>{display_name}</Text>
         <DistanceTable rows={distance} />
         <IntervalsTable rows={intervals} />
       </Container>

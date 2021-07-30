@@ -33,7 +33,7 @@ const parseDistanceToSI = (string) => {
 const displayDistance = (string, unit) => {
   const d = parseDistanceToSI(string)
   if (unit === 'km') {
-    return (d / 1000).toFixed(0) + ' km'
+    return (d / 1000).toFixed(2) + ' km'
   } else if (unit === 'm') {
     return d + ' m'
   } else {

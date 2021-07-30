@@ -1,9 +1,10 @@
 import sheetIDs from '@root/spreadsheets'
+import { makeEnglish, makeNameCaps } from '@utils/text'
 
 const searchUser = (User, gradYY, tableData) => {
   const gradYear = "20" + gradYY
   const searchRes = tableData.filter((arr) => {
-    if (arr.includes(User) && arr.includes(gradYear)) {
+    if ((arr.includes(User) || arr.includes(makeNameCaps(User))) && arr.includes(gradYear)) {
       return true
     } else {
       return false
@@ -31,6 +32,7 @@ const searchUserInDay = (User, tableData) => {
       return false
     }
   })
+  // console.log(searchRes[0])
   return searchRes[0]
 }
 

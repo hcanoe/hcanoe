@@ -3,7 +3,8 @@
  * returns "Ning Yiran"
  */
 const makeEnglish = (str) => {
-  const parts = str.split('-')
+  const parts = str.replace(/ /g, '-').toLowerCase().split('-')
+  console.log(parts)
   const res = parts
     .map(
       (word) =>
@@ -13,9 +14,15 @@ const makeEnglish = (str) => {
     .join(' ')
   return res
 }
+
 const allCaps = (str) => {
-  const result = str.replace('-', ' ').toUpperCase()
+  const result = str.replace(/-/g, ' ').toUpperCase()
   return result
 }
 
-export { makeEnglish, allCaps }
+const makeNameCaps = (str) => {
+  const result = str.replace(/-/g, ' ').toUpperCase()
+  return result
+}
+
+export { makeEnglish, makeNameCaps, allCaps }

@@ -9,6 +9,9 @@ export default {
   2015: {
     run: "1ypEJu0TnPooL7SaQ5OgSWKbIf3cX2bhJ0fobPZt_6sQ"
   },
+  2018: {
+    run: "1qRVAjxAQ0y0yzge2AiGDuclaugsfCgtTT2rdf-qhVOA"
+  },
   2021: {
     run: "1vDDKjjp0WeL-4KzSEAA7R6y_4NzW9FAabJBT1mmFX6M"
   }
