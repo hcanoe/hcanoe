@@ -63,7 +63,7 @@ export default function Page({ log }) {
               <FormControl>
                 <FormLabel>Graduation Year</FormLabel>
                 <NumberInput max={99} min={0}>
-                  <NumberInputField maxLength={2} placeholder={year}/>
+                  <NumberInputField maxLength={2} placeholder={year} />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
                     <NumberDecrementStepper />
@@ -90,7 +90,7 @@ export default function Page({ log }) {
             align="center"
           >
             <code style={user_url}>
-              <a href={'https://hcanoe.vercel.app/' + year + '/' + name}>
+              <a href={'https://hcanoe.vercel.app/' + year + '/' + dashify(name)}>
                 hcanoe.vercel.app/{year}/{dashify(name)}
               </a>
             </code>
