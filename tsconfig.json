@@ -5,7 +5,8 @@
     "module": "commonjs",
     "paths": {
       "@utils/*": ["utils/*"],
-      "@root/*": ["../*"]
+      "@root/*": ["../*"],
+      "@styles/*": ["styles/*"]
     },
     "allowSyntheticDefaultImports": true,
     "target": "es6",

@@ -1,21 +1,19 @@
-import { Box, Heading } from '@chakra-ui/react'
+import { Text, Box, Heading } from '@chakra-ui/react'
 
-const FieldBox = ({ t, children, c='#fc4c02' }) => {
+const FieldBox = ({ t, children, c = '#fc4c02' }) => {
   return (
-    <Box
-      borderRadius='lg'
-      mt="1.75rem"
-      shadow="lg"
-      border="1px"
-      p="1em"
-      borderColor={c}
-    >
-      <Heading size="md" mb="0.8em">
+    <Box borderRadius="lg" mt="1.75rem" shadow="base" p="1em">
+      <Text
+        bgGradient="linear(to-r, blue.500, teal.900)"
+        bgClip="text"
+        fontSize="lg"
+        fontWeight="extrabold"
+        mb="0.8em"
+      >
         {t}
-      </Heading>
+      </Text>
       {children}
     </Box>
-
   )
 }
 export default FieldBox

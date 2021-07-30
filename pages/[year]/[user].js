@@ -203,10 +203,16 @@ const Page = ({ name, distance, intervals }) => {
   return (
     <>
       <Container size="md">
-        <Heading mt="1em" size="lg" isTruncated>
+        <Text
+          mt="1em"
+          bgGradient="linear(to-r, blue.500, teal.900)"
+          bgClip="text"
+          fontSize="3xl"
+          fontWeight="extrabold"
+        >
           Training Stats
-        </Heading>
-        <Text>{name}</Text>
+        </Text>
+        <Text color='gray.600'>{name}</Text>
         <DistanceTable rows={distance} />
         <IntervalsTable rows={intervals} />
       </Container>
