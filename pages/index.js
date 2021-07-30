@@ -21,16 +21,12 @@ const dashify = (str) => {
 
 export default function Page({ log }) {
   const [year, setYear] = useState('18')
-  const [name, setName] = useState('nguyen-vu-khang')
+  const [name, setName] = useState('nguyen vu khang')
   const handleChangeYear = (e) => {
     setYear(e.target.value)
   }
   const handleChangeName = (e) => {
     setName(e.target.value)
-  }
-  const onFocusYear = (e) => {
-    const field = e.target.parentNode
-    field.removeAttribute('readonly')
   }
   const user_url = {
     fontSize: '1.1em',
@@ -42,8 +38,7 @@ export default function Page({ log }) {
         <Container>
           <Text
             align="center"
-            bgGradient="linear(to-r,blue.500, teal.500, green.500)"
-            bgClip="text"
+            color="gray.600"
             fontSize="2xl"
             fontWeight="500"
             align="center"
@@ -63,19 +58,22 @@ export default function Page({ log }) {
             <br />
           </Text>
           <Box align="center" mt="4em">
-            <Box width="20rem">
+            <Box width="18rem">
               <FormControl>
                 <FormLabel>Graduation Year</FormLabel>
-                <Input
-                  maxLength="2"
-                  readonly
-                  autoComplete="off"
-                  value={year}
-                  onFocus={onFocusYear}
-                  onChange={handleChangeYear}
-                />
+                <NumberInput max={99} min={0}>
+                  <NumberInputField maxLength={2} placeholder={year}/>
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
                 <FormLabel mt="1em">Name</FormLabel>
-                <Input value={name} onChange={handleChangeName} />
+                <Input
+                  placeholder={name}
+                  maxLength="20"
+                  onChange={handleChangeName}
+                />
               </FormControl>
             </Box>
           </Box>
