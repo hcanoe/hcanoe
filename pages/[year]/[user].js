@@ -199,6 +199,7 @@ export async function getServerSideProps({ query }) {
 const Page = ({ name, distance, intervals }) => {
   // console.log(intervals)
   console.log('----------------')
+  console.log(distance)
   return (
     <>
       <Container size="md">
@@ -206,12 +207,8 @@ const Page = ({ name, distance, intervals }) => {
           Training Stats
         </Heading>
         <Text>{name}</Text>
-        <FieldBox t="Distance">
-          <DistanceTable rows={distance} />
-        </FieldBox>
-        <FieldBox t="Intervals">
-          <IntervalsTable rows={intervals} />
-        </FieldBox>
+        <DistanceTable rows={distance} />
+        <IntervalsTable rows={intervals} />
       </Container>
     </>
   )
