@@ -219,14 +219,13 @@ const Page = ({ display_name, distance, intervals }) => {
       <Container size="md">
         <Text
           mt="1em"
-          bgClip="text"
-          bgGradient="linear(to-r,blue.500, teal.500, green.500)"
+          color="#429E90"
           fontSize="3xl"
-          fontWeight="extrabold"
+          fontWeight="800"
         >
           Training Stats
         </Text>
-        <Text color='gray.600'>{display_name}</Text>
+        <Text color='gray.500'>{display_name}</Text>
         <DistanceTable rows={distance} />
         <IntervalsTable rows={intervals} />
       </Container>

@@ -12,8 +12,10 @@ import {
   Center,
   Text,
   Input,
+  Link as ChakraLink,
 } from '@chakra-ui/react'
 import { useState } from 'react'
+import Link from 'next/link'
 
 const dashify = (str) => {
   return str.replace(/ /g, '-').toLowerCase()
@@ -30,6 +32,7 @@ export default function Page({ log }) {
   }
   const user_url = {
     fontSize: '1.1em',
+    fontFamily: 'monospace',
     marginTop: '100px',
   }
   return (
@@ -39,24 +42,13 @@ export default function Page({ log }) {
           <Text
             align="center"
             color="gray.600"
-            fontSize="2xl"
-            fontWeight="600"
+            fontSize="5xl"
+            fontWeight="900"
             align="center"
-          >
-            <code>HCANOE</code>
-          </Text>
-          <Text
-            mt='0.5em'
-            bgGradient="linear(to-r,blue.500, teal.500, green.500)"
+            bgGradient="linear(to-r,blue.700, green.400)"
             bgClip="text"
-            fontSize="3xl"
-            fontWeight="600"
-            align="center"
           >
-            团结一心
-            <br />
-            自强不息
-            <br />
+            HCANOE
           </Text>
           <Box align="center" mt="4em">
             <Box width="18rem">
@@ -83,21 +75,22 @@ export default function Page({ log }) {
           </Text>
           <Text
             align="center"
-            bgGradient="linear(to-r,blue.500, teal.500, green.500)"
+            bgGradient="linear(to-r,blue.700, green.400)"
             bgClip="text"
             fontSize="lg"
             fontWeight="500"
             align="center"
           >
-            <code style={user_url}>
-              <a href={'https://hcanoe.vercel.app/' + year + '/' + dashify(name)}>
+            <Link
+              href={'https://hcanoe.vercel.app/' + year + '/' + dashify(name)}
+            >
+              <a style={user_url} className="home_to_user_url">
                 hcanoe.vercel.app/{year}/{dashify(name)}
               </a>
-            </code>
+            </Link>
           </Text>
         </Container>
       </Center>
     </Flex>
   )
 }
-// <Center w="inherit" alignItems="center">
