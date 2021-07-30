@@ -205,8 +205,8 @@ const Page = ({ name, distance, intervals }) => {
       <Container size="md">
         <Text
           mt="1em"
-          bgGradient="linear(to-r, blue.500, teal.900)"
           bgClip="text"
+          bgGradient="linear(to-r,blue.500, teal.500, green.500)"
           fontSize="3xl"
           fontWeight="extrabold"
         >
