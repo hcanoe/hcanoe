@@ -2,14 +2,12 @@ import spreadsheet_ids from '@root/spreadsheets'
 import {
   searchUser,
   searchUserInDay,
-  getActiveYears,
-  getActiveSpreadsheets,
   getSpreadsheetsByType,
   zipTable,
 } from '@utils/user-meta'
 import { makeEnglish, makeNameCaps } from '@utils/text'
 import { getDate } from '@utils/date'
-import { prettifyDistance, prettifyIntervals } from '@utils/prettify-data'
+import { prettifyDistance, prettifyIntervals, prettifyOnOff } from '@utils/prettify-data'
 
 async function getTrainingData(sheets, sheetID, sheetTitle) {
   const range = sheetTitle.concat('!A:Z')
@@ -140,10 +138,8 @@ export async function main(query, sheets) {
   const user_metadata = zipTable(metadata_headers, metadata_body)
   const name = user_metadata.Name
 
-  const active_years = getActiveYears(user_metadata)
-  const active_spreadsheets = getActiveSpreadsheets(active_years)
   const spreadsheet_ids_by_type = getSpreadsheetsByType(
-    active_spreadsheets,
+    user_metadata,
     'run'
   )
   const data_all_sheets = await getAllSheets(sheets, spreadsheet_ids_by_type)
@@ -156,6 +152,8 @@ export async function main(query, sheets) {
       prettifyDistance(user_data_by_type[type])
     } else if (type === 'INTERVALS') {
       prettifyIntervals(user_data_by_type[type])
+    } else if (type === 'ONOFF') {
+      prettifyOnOff(user_data_by_type[type])
     }
   }
 

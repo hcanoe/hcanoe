@@ -241,4 +241,12 @@ const getIntervalsProgramme = (d) => {
   return [p, r, s]
 }
 
-export { prettifyDistance, prettifyIntervals }
+/*
+ * Prettify Distance
+ */
+const prettifyOnOff = (arr) => {
+  arr.sort(recentFirst)
+  console.log(arr)
+}
+
+export { prettifyDistance, prettifyIntervals, prettifyOnOff }

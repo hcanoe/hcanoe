@@ -65,7 +65,9 @@ const getActiveSpreadsheets = (activeYears) => {
   return activeSheets
 }
 
-const getSpreadsheetsByType = (activeSheets, type) => {
+const getSpreadsheetsByType = (user_metadata, type) => {
+  const activeYears = getActiveYears(user_metadata)
+  const activeSheets = getActiveSpreadsheets(activeYears)
   const result = []
   for (const year in activeSheets) {
     if (activeSheets[year].hasOwnProperty(type)) {
@@ -79,7 +81,5 @@ export {
   searchUser,
   searchUserInDay,
   getSpreadsheetsByType,
-  getActiveYears,
-  getActiveSpreadsheets,
   zipTable
 }
