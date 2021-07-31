@@ -2,7 +2,7 @@ import { Box, Th, Tbody, Tr, Td, Thead, Table } from '@chakra-ui/react'
 import FieldBox from 'components/FieldBox'
 import styles from '@styles/Table.module.css'
 
-const DistanceTable = ({ rows }) => {
+export const DistanceTable = ({ rows }) => {
   const data = () => {
     return (
       <Tbody>
@@ -44,7 +44,7 @@ const DistanceTable = ({ rows }) => {
   }
 }
 
-const IntervalsTable = ({ rows }) => {
+export const IntervalsTable = ({ rows }) => {
   const Subline = ({ row, subtype }) => {
     return (
       <Td>
@@ -94,5 +94,3 @@ const IntervalsTable = ({ rows }) => {
     )
   }
 }
-
-export { DistanceTable, IntervalsTable }
