@@ -48,8 +48,7 @@ const prettifyIntervals = (arr) => {
       } else {
       }
     }
-    ;[training.Programme, training.Timings, training.Paces] =
-      getIntervalsProgramme(by_sets)
+    Object.assign(training, getIntervalsProgramme(by_sets))
     const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
     training.SortDate = process_date
 
@@ -129,7 +128,7 @@ const mmssNotation = (str) => {
   return p.result
 }
 
-const rawToSecond = (str) => {
+const mmssToSeconds = (str) => {
   const p = {}
   const colonCount = str.match(/:/g).length
   if (colonCount === 1) {
@@ -150,30 +149,30 @@ const secondsToMMSS = (int) => {
 }
 
 const getIntervalsProgramme = (d) => {
-  const p = [] // programme
-  const r = [] // timing
-  const s = [] // pace
+  /*
+   * if first, skip
+   * if in between,
+   *    if same distance and time,
+   *        2x800m/1' -> 3x800m/1'
+   *    if different distance and same time,
+   *        2x800m/1' -> 2x800m/1', 1x400m/1'
+   *    if same distance and different time,
+   *        2x800m/1' -> 2x800m/1', 1x800m/2'
+   *    if different distance and different time,
+   *        2x800m/1' -> 2x800m/1', 1x200m/2'
+   * handle last
+   */
+
+  const Programme = []
+  const Timings = []
+  const Paces = []
   var c = 0
-  var t = {
-    // temp
+  var mem = {
     Set: '',
     Rest: '',
     Timings: [],
   }
   d.forEach((e, index) => {
-    /*
-     * if first, skip
-     * if in between,
-     *    if same distance and time,
-     *        2x800m/1' -> 3x800m/1'
-     *    if different distance and same time,
-     *        2x800m/1' -> 2x800m/1', 1x400m/1'
-     *    if same distance and different time,
-     *        2x800m/1' -> 2x800m/1', 1x800m/2'
-     *    if different distance and different time,
-     *        2x800m/1' -> 2x800m/1', 1x200m/2'
-     * handle last
-     */
     const same = (type) => {
       if (d[index][type] === d[index - 1][type]) {
         return true
@@ -184,61 +183,63 @@ const getIntervalsProgramme = (d) => {
     if (index === 0) {
       // first element
       c += 1
-      t.Set = e.Set
-      t.Rest = e.Rest
-      t.Timings.push(rawToSecond(e.Timing))
+      mem.Set = e.Set
+      mem.Rest = e.Rest
+      mem.Timings.push(mmssToSeconds(e.Timing))
     } else if (index === d.length - 1) {
       // last element
       if (same('Set') && same('Rest')) {
         c += 1
-        p.push(c + 'x' + t.Set + '/' + quoteNotation(t.Rest))
-        t.Timings.push(rawToSecond(e.Timing))
-        r.push(t.Timings.map((x) => secondsToMMSS(x)))
-        // total time/total distance
-        // = timings accumulated / (sets * number of sets)
-        s.push(
+        mem.Timings.push(mmssToSeconds(e.Timing))
+        Programme.push(c + 'x' + mem.Set + '/' + quoteNotation(mem.Rest))
+        Timings.push(mem.Timings.map((x) => secondsToMMSS(x)))
+        Paces.push(
           displayPaceFromSI(
-            t.Timings.reduce((a, b) => a + b, 0),
-            parseDistanceToSI(t.Set)
+            mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
+            parseDistanceToSI(mem.Set) * c // total distance in meters
           )
         )
       } else {
-        p.push(c + 'x' + t.Set + '/' + quoteNotation(t.Rest))
-        p.push(1 + 'x' + e.Set + '/' + quoteNotation(e.Rest))
-        r.push(t.Timings.map((x) => secondsToMMSS(x)))
-        s.push(
+        Programme.push(c + 'x' + mem.Set + '/' + quoteNotation(mem.Rest))
+        Timings.push(mem.Timings.map((x) => secondsToMMSS(x)))
+        Paces.push(
           displayPaceFromSI(
-            t.Timings.reduce((a, b) => a + b, 0),
-            parseDistanceToSI(t.Set)
+            mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
+            parseDistanceToSI(mem.Set) * c // total distance in meters
           )
         )
-        r.push([secondsToMMSS(rawToSecond(e.Timing))])
-        s.push(
-          displayPaceFromSI(rawToSecond(e.Timing), parseDistanceToSI(e.Set))
+        Programme.push(1 + 'x' + e.Set + '/' + quoteNotation(e.Rest))
+        Timings.push([displayDuration(e.Timing)])
+        Paces.push(
+          displayPaceFromSI(mmssToSeconds(e.Timing), parseDistanceToSI(e.Set))
         )
       }
     } else {
       // in between
       if (same('Set') && same('Rest')) {
         c += 1
-        t.Timings.push(rawToSecond(e.Timing))
+        mem.Timings.push(mmssToSeconds(e.Timing))
       } else {
-        p.push(c + 'x' + t.Set + '/' + quoteNotation(t.Rest))
-        r.push(t.Timings.map((x) => secondsToMMSS(x)))
-        s.push(
+        Programme.push(c + 'x' + mem.Set + '/' + quoteNotation(mem.Rest))
+        Timings.push(mem.Timings.map((x) => secondsToMMSS(x)))
+        Paces.push(
           displayPaceFromSI(
-            t.Timings.reduce((a, b) => a + b, 0),
-            parseDistanceToSI(t.Set)
+            mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
+            parseDistanceToSI(mem.Set) * c // total distance in meters
           )
         )
-        t.Set = e.Set
-        t.Rest = e.Rest
-        t.Timings = []
-        t.Timings.push(rawToSecond(e.Timing))
+        mem.Set = e.Set
+        mem.Rest = e.Rest
+        mem.Timings = [] // reset Timings in memory
+        mem.Timings.push(mmssToSeconds(e.Timing))
       }
     }
   })
-  return [p, r, s]
+  const output = {}
+  output.Programme = Programme
+  output.Timings = Timings
+  output.Paces = Paces
+  return output
 }
 
 /*
@@ -246,7 +247,6 @@ const getIntervalsProgramme = (d) => {
  */
 const prettifyOnOff = (arr) => {
   arr.sort(recentFirst)
-  console.log(arr)
 }
 
 export { prettifyDistance, prettifyIntervals, prettifyOnOff }
