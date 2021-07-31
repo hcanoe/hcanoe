@@ -79,14 +79,16 @@ const displayPaceFromSI = (dur, dist) => {
 }
 
 const displayDuration = (dur) => {
+  // TODO: test this with values greater than 1 hour
   const colonCount = dur.match(/:/g).length
   if (colonCount === 1) {
     return dur
   } else if (colonCount === 2) {
-    const h = parseInt(dur.split(':')[0])
-    if (h == 0) {
-      return dur.split(':').slice(1).join(':')
+    const [h, m, s] = dur.split(':')
+    if (h === '0') {
+      return parseInt(m) < 10 ? [m[1], s].join(':') : [m, s].join(':')
     } else {
+      return parseInt(h) < 10 ? [h[1], m, s].join(':') : [h, m, s].join(':')
       return dur
     }
   }
