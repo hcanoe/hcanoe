@@ -1,5 +1,6 @@
 import { Box, Th, Tbody, Tr, Td, Thead, Table } from '@chakra-ui/react'
 import FieldBox from 'components/FieldBox'
+import styles from '@styles/Table.module.css'
 
 const DistanceTable = ({ rows }) => {
   const data = () => {
@@ -44,14 +45,11 @@ const DistanceTable = ({ rows }) => {
 }
 
 const IntervalsTable = ({ rows }) => {
-  const subline_style = {
-    lineHeight: '1.4em'
-  }
   const Subline = ({ row, subtype }) => {
     return (
       <Td>
         {row[subtype].map((line, index) => (
-          <p style={subline_style} key={line + index}>{line}</p>
+          <p className={styles.subline} key={line + index}>{line}</p>
         ))}
       </Td>
     )
