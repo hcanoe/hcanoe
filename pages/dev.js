@@ -70,7 +70,6 @@ export async function getServerSideProps({ query }) {
 }
 
 const Page = ({ log, user }) => {
-  console.log('-- log[0]', log[0])
   const Log = JSON.stringify(log, null, 4)
   // console.log('=============================')
   // console.log('-- Log', Log)

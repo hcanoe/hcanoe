@@ -46,7 +46,6 @@ const prettifyIntervals = (arr) => {
         const target = subtype + 's'
         by_sets[order][subtype] = training[key]
       } else {
-        // console.log(key, training[key])
       }
     }
     ;[training.Programme, training.Timings, training.Paces] =
@@ -151,11 +150,6 @@ const secondsToMMSS = (int) => {
 }
 
 const getIntervalsProgramme = (d) => {
-  /*
-      console.log('--------------')
-      console.log('enter set loop')
-      console.log('--------------')
-      */
   const p = [] // programme
   const r = [] // timing
   const s = [] // pace

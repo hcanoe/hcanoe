@@ -4,7 +4,6 @@
  */
 const makeEnglish = (str) => {
   const parts = str.replace(/ /g, '-').toLowerCase().split('-')
-  console.log(parts)
   const res = parts
     .map(
       (word) =>

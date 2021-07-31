@@ -147,7 +147,6 @@ export async function getServerSideProps({ query }) {
           const day_arr = split_day[day]
           const headers = day_arr.shift()
           const type = headers.shift()
-          console.log(name)
           const _body = searchUserInDay(name, day_arr)
           if (_body) {
             const body = _body.slice(1)
@@ -177,7 +176,6 @@ export async function getServerSideProps({ query }) {
       prettifyDistance(user_data_by_type[type])
     } else if (type === 'INTERVALS') {
       prettifyIntervals(user_data_by_type[type])
-      // console.log(user_data_by_type[type])
     }
   }
 
@@ -189,7 +187,6 @@ export async function getServerSideProps({ query }) {
    * returned values
    */
   const output = {}
-  console.log(user_metadata.DisplayName)
   if (user_metadata.DisplayName) {
     output.display_name = user_metadata.DisplayName
   } else {
@@ -211,9 +208,6 @@ export async function getServerSideProps({ query }) {
 }
 
 const Page = ({ display_name, distance, intervals }) => {
-  // console.log(intervals)
-  console.log('----------------')
-  console.log(distance)
   return (
     <>
       <Container size="md">

@@ -32,7 +32,6 @@ const searchUserInDay = (User, tableData) => {
       return false
     }
   })
-  // console.log(searchRes[0])
   return searchRes[0]
 }
 
