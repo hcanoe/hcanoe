@@ -44,26 +44,26 @@ const DistanceTable = ({ rows }) => {
 }
 
 const IntervalsTable = ({ rows }) => {
-  const data = () => {
+  const subline_style = {
+    lineHeight: '1.4em'
+  }
+  const Subline = ({ row, subtype }) => {
+    return (
+      <Td>
+        {row[subtype].map((line, index) => (
+          <p style={subline_style} key={line + index}>{line}</p>
+        ))}
+      </Td>
+    )
+  }
+  const Data = () => {
     return (
       <Tbody>
         {rows.map((row) => (
           <Tr key={row.Date}>
-            <Td>
-              {row.Programme.map((line, index) => (
-                <p key={line + index}>{line}</p>
-              ))}
-            </Td>
-            <Td>
-              {row.Timings.map((line, index) => (
-                <p key={line + index}>{line.join(', ')}</p>
-              ))}
-            </Td>
-            <Td>
-              {row.Paces.map((line, index) => (
-                <p key={line + index}>{line}</p>
-              ))}
-            </Td>
+            <Subline row={row} subtype="Programme" />
+            <Subline row={row} subtype="Timings" />
+            <Subline row={row} subtype="Paces" />
             <Td>{row.Date}</Td>
           </Tr>
         ))}
@@ -89,7 +89,7 @@ const IntervalsTable = ({ rows }) => {
                 <Th>Date</Th>
               </Tr>
             </Thead>
-            {data()}
+            <Data />
           </Table>
         </Box>
       </FieldBox>
