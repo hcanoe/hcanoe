@@ -237,7 +237,7 @@ const getIntervalsProgramme = (d) => {
   })
   const output = {}
   output.Programme = Programme
-  output.Timings = Timings
+  output.Timings = Timings.map(x => x.join(', '))
   output.Paces = Paces
   return output
 }
