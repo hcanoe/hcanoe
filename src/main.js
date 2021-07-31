@@ -10,9 +10,6 @@ import {
 import { makeEnglish, makeNameCaps } from '@utils/text'
 import { getDate } from '@utils/date'
 import { prettifyDistance, prettifyIntervals } from '@utils/prettify-data'
-import { DistanceTable, IntervalsTable } from 'components/Table'
-import FieldBox from 'components/FieldBox'
-import { Container, Heading, Text } from '@chakra-ui/react'
 
 async function getTrainingData(sheets, sheetID, sheetTitle) {
   const range = sheetTitle.concat('!A:Z')
@@ -48,12 +45,74 @@ async function getAllSheets(sheets, idList) {
   return result
 }
 
-async function getMetadata(sheets, meta_id, range) {
+async function getMetadata(sheets) {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: spreadsheet_ids.meta,
     range: `data!A:F`,
   })
   return response.data.values
+}
+
+const getUserTrainingData = (data_all_sheets, name) => {
+  const user_data_by_day = {}
+  const user_data_by_type = {
+    DISTANCE: [],
+    INTERVALS: [],
+    ONOFF: [],
+    TIMED: [],
+  }
+  for (const spreadsheet_id in data_all_sheets) {
+    for (const week in data_all_sheets[spreadsheet_id]) {
+      const data_week = data_all_sheets[spreadsheet_id][week]
+      /*
+       * data_week is an array of the week's trainings,
+       * with each day separated by a single cell ['>>>']
+       */
+      const split_day = {}
+      var arr = []
+      var c = 0
+      data_week.forEach((e, index) => {
+        if (e[0] === '>>>') {
+          // the delimiter >>>
+          split_day[arr[1][0]] = arr
+          c += 1
+          arr = []
+        } else if (index == data_week.length - 1) {
+          arr.push(e)
+          split_day[arr[1][0]] = arr
+        } else {
+          arr.push(e)
+        }
+      })
+      /*
+       * at this point, split_day is an object where each key
+       * contains the entire team's data for that day
+       */
+      user_data_by_day[week] = {}
+      for (const day in split_day) {
+        const date = getDate(week, day)
+        const day_arr = split_day[day]
+        const headers = day_arr.shift()
+        const type = headers.shift()
+        const _body = searchUserInDay(name, day_arr)
+        if (_body) {
+          const body = _body.slice(1)
+          const zipped = zipTable(headers, body)
+          zipped.Type = type
+          zipped.Date = date
+          delete zipped.Name
+          user_data_by_type[type].push(zipped)
+          user_data_by_day[week][day] = zipped
+        }
+      }
+      /*
+       * at this point, user_data_by_day is an object,
+       *  key = start of week in DD/MM/YYYY format
+       *  props = date of training in DD/MM/YYYY
+       */
+    }
+  }
+  return [user_data_by_day, user_data_by_type]
 }
 
 export async function main(query, sheets) {
@@ -80,7 +139,6 @@ export async function main(query, sheets) {
   const metadata_body = searchUser(user, year, metadata)
   const user_metadata = zipTable(metadata_headers, metadata_body)
   const name = user_metadata.Name
-  // _________________________________________________________________
 
   const active_years = getActiveYears(user_metadata)
   const active_spreadsheets = getActiveSpreadsheets(active_years)
@@ -90,70 +148,8 @@ export async function main(query, sheets) {
   )
   const data_all_sheets = await getAllSheets(sheets, spreadsheet_ids_by_type)
 
-  const getUserTrainingData = (data_all_sheets) => {
-    const user_data_by_day = {}
-    const user_data_by_type = {
-      DISTANCE: [],
-      INTERVALS: [],
-      ONOFF: [],
-      TIMED: [],
-    }
-    for (const spreadsheet_id in data_all_sheets) {
-      for (const week in data_all_sheets[spreadsheet_id]) {
-        const data_week = data_all_sheets[spreadsheet_id][week]
-        /*
-         * data_week is an array of the week's trainings,
-         * with each day separated by a single cell ['>>>']
-         */
-        const split_day = {}
-        var arr = []
-        var c = 0
-        data_week.forEach((e, index) => {
-          if (e[0] === '>>>') {
-            // the delimiter >>>
-            split_day[arr[1][0]] = arr
-            c += 1
-            arr = []
-          } else if (index == data_week.length - 1) {
-            arr.push(e)
-            split_day[arr[1][0]] = arr
-          } else {
-            arr.push(e)
-          }
-        })
-        /*
-         * at this point, split_day is an object where each key
-         * contains the entire team's data for that day
-         */
-        user_data_by_day[week] = {}
-        for (const day in split_day) {
-          const date = getDate(week, day)
-          const day_arr = split_day[day]
-          const headers = day_arr.shift()
-          const type = headers.shift()
-          const _body = searchUserInDay(name, day_arr)
-          if (_body) {
-            const body = _body.slice(1)
-            const zipped = zipTable(headers, body)
-            zipped.Type = type
-            zipped.Date = date
-            delete zipped.Name
-            user_data_by_type[type].push(zipped)
-            user_data_by_day[week][day] = zipped
-          }
-        }
-        /*
-         * at this point, user_data_by_day is an object,
-         *  key = start of week in DD/MM/YYYY format
-         *  props = date of training in DD/MM/YYYY
-         */
-      }
-    }
-    return [user_data_by_day, user_data_by_type]
-  }
-
   const [user_data_by_day, user_data_by_type] =
-    getUserTrainingData(data_all_sheets)
+    getUserTrainingData(data_all_sheets, name)
 
   for (const type in user_data_by_type) {
     if (type === 'DISTANCE') {
@@ -172,14 +168,8 @@ export async function main(query, sheets) {
   } else {
     output.display_name = makeEnglish(user_metadata.Name)
   }
-  const distance = user_data_by_type.DISTANCE
-  const intervals = user_data_by_type.INTERVALS
-  const display_name = output.display_name
+  output.distance = user_data_by_type.DISTANCE
+  output.intervals = user_data_by_type.INTERVALS
 
-  return {
-    name,
-    distance,
-    intervals,
-    display_name,
-  }
+  return output
 }
