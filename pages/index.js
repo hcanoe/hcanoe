@@ -94,7 +94,7 @@ export default function Page({ log }) {
             align="center"
           >
               <a
-              href={'https://hcanoe.vercel.app/' + url_year + '/' + dashify(name)}
+              href={url_year + '/' + dashify(name)}
                 className={styles.home_to_user_url}>
                 hcanoe.vercel.app/{url_year}/{dashify(name)}
               </a>
