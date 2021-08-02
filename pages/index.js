@@ -16,6 +16,7 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import styles from 'styles/Homepage.module.css'
+import Router from 'next/router'
 
 const dashify = (str) => {
   return str.replace(/ /g, '-').toLowerCase()
@@ -40,6 +41,11 @@ export default function Page({ log }) {
     fontSize: '1.1em',
     fontFamily: 'monospace',
     marginTop: '100px',
+  }
+  const goToUrl = (e) => {
+    if (e.key == 'Enter') {
+      window.open(url_year + '/' + dashify(name), "_self")
+    }
   }
   return (
     <Flex h="100vh" w="100vw">
@@ -78,6 +84,7 @@ export default function Page({ log }) {
                   placeholder={name}
                   maxLength="20"
                   onChange={handleChangeName}
+                  onKeyPress={goToUrl}
                 />
               </FormControl>
             </Box>
