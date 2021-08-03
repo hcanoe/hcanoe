@@ -95,4 +95,44 @@ const IntervalsTable = ({ rows }) => {
   }
 }
 
-export { DistanceTable, IntervalsTable }
+const OnOffTable = ({ rows }) => {
+  const Data = () => {
+    return (
+      <Tbody>
+        {rows.map((row) => (
+          <Tr key={row.Date}>
+            <Td>{row.Programme}</Td>
+            <Td>{row.Distance}</Td>
+            <Td>{row.Date}</Td>
+          </Tr>
+        ))}
+      </Tbody>
+    )
+  }
+  if (rows.length === 0) {
+    return (
+      <p>
+        <code>no on-off data</code>
+      </p>
+    )
+  } else {
+    return (
+      <FieldBox t="On-Off">
+        <Box overflowX="auto">
+          <Table variant="simple" size="sm">
+            <Thead>
+              <Tr>
+                <Th>Programme</Th>
+                <Th>Distance</Th>
+                <Th>Date</Th>
+              </Tr>
+            </Thead>
+            <Data />
+          </Table>
+        </Box>
+      </FieldBox>
+    )
+  }
+}
+
+export { DistanceTable, IntervalsTable, OnOffTable }

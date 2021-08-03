@@ -114,6 +114,7 @@ const getUserTrainingData = (data_all_sheets, name) => {
 }
 
 export async function main(query, sheets) {
+  const output = {}
   /*
    * grab year and user from url
    * hcanoe.vercel.app/18/ning-yiran
@@ -142,7 +143,10 @@ export async function main(query, sheets) {
     user_metadata,
     'run'
   )
+
   const data_all_sheets = await getAllSheets(sheets, spreadsheet_ids_by_type)
+
+  output.log = ['data all sheets', data_all_sheets]
 
   const [user_data_by_day, user_data_by_type] =
     getUserTrainingData(data_all_sheets, name)
@@ -160,7 +164,6 @@ export async function main(query, sheets) {
   /*
    * returned values
    */
-  const output = {}
   if (user_metadata.DisplayName) {
     output.display_name = user_metadata.DisplayName
   } else {
@@ -168,6 +171,7 @@ export async function main(query, sheets) {
   }
   output.distance = user_data_by_type.DISTANCE
   output.intervals = user_data_by_type.INTERVALS
+  output.on_off = user_data_by_type.ONOFF
 
   return output
 }
