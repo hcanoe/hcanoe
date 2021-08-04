@@ -1,4 +1,5 @@
-- [x] rename sheets.js to spreadsheets.js
-- [x] design data entry in google sheets with Ryan
+Intervals-specific page
+  - filter by distance and sets
+write prettifyTimed()
 
-- [ ] discuss personal run submissions
+discuss personal run submissions
