@@ -135,4 +135,46 @@ const OnOffTable = ({ rows }) => {
   }
 }
 
-export { DistanceTable, IntervalsTable, OnOffTable }
+const TimedTable = ({ rows }) => {
+  const Data = () => {
+    return (
+      <Tbody>
+        {rows.map((row) => (
+          <Tr key={row.Date}>
+            <Td>{row.Programme}</Td>
+            <Td>{row.Distance}</Td>
+            <Td>{row.Pace}</Td>
+            <Td>{row.Date}</Td>
+          </Tr>
+        ))}
+      </Tbody>
+    )
+  }
+  if (rows.length === 0) {
+    return (
+      <p>
+        <code>no timed data</code>
+      </p>
+    )
+  } else {
+    return (
+      <FieldBox t="Timed">
+        <Box overflowX="auto">
+          <Table variant="simple" size="sm">
+            <Thead>
+              <Tr>
+                <Th>Programme</Th>
+                <Th>Distance</Th>
+                <Th>Pace</Th>
+                <Th>Date</Th>
+              </Tr>
+            </Thead>
+            <Data />
+          </Table>
+        </Box>
+      </FieldBox>
+    )
+  }
+}
+
+export { DistanceTable, IntervalsTable, OnOffTable, TimedTable }
