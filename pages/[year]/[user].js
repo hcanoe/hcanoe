@@ -115,3 +115,5 @@ const Page = ({ display_name, distance, intervals, on_off, timed }) => {
     </>
   )
 }
+
+export default Page
