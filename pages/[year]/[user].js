@@ -1,6 +1,7 @@
 import spreadsheet_ids from '@root/spreadsheets'
 import { google } from 'googleapis'
 import { main } from 'main'
+import { RiQuillPenLine } from 'react-icons/ri'
 import {
   Container,
   Heading,
@@ -11,6 +12,7 @@ import {
   TabPanels,
   Tab,
   TabPanel,
+  Center,
 } from '@chakra-ui/react'
 import {
   DistanceTable,
@@ -66,7 +68,7 @@ const Page = ({ display_name, distance, intervals, on_off, timed }) => {
   }
   return (
     <>
-      <Container size="md">
+      <Container size="md" mb='2'>
         <Title />
         <Name />
         <BestSplits data={distance} />
@@ -94,6 +96,9 @@ const Page = ({ display_name, distance, intervals, on_off, timed }) => {
           </TabPanels>
         </Tabs>
       </Container>
+      <Center h='100' color='teal.500'>
+        <RiQuillPenLine />
+      </Center>
     </>
   )
 }

@@ -128,7 +128,7 @@ const BestSplits = ({ data }) => {
   }
   return (
     <>
-      <Box px="2px" mt="-5" mb="8">
+      <Box px="2px" mt="-5" mb="12">
         <Flex alignItems="baseline" justifyContent="space-between">
           <Text whiteSpace='nowrap' mt="1em" color="gray.600" fontSize="xl" fontWeight="600" verticalAlign='bottom'>
             Best splits <Icon><BiTrophy /></Icon>
