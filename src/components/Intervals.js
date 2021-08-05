@@ -54,7 +54,6 @@ const getResults = (d, set, dist) => {
         result.push(training)
       }
     } else {
-      console.log('both filled')
       if (c === set && training.Set1 === dist) {
         result.push(training)
       }

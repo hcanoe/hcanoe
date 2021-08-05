@@ -37,6 +37,7 @@ const BestSplits = ({ data }) => {
     const dist = t.si_distance
     const time = t.si_time
     const p = {}
+    // TODO: make calculations accurate to the second
     for (let i = 0; i < 4; i++) {
       if (dist >= dict[i]) {
         if (by_distance[i] === undefined) {
@@ -55,7 +56,6 @@ const BestSplits = ({ data }) => {
       }
     }
   })
-  console.log('by_distance', by_distance)
 
   const BestTable = ({ rows }) => {
     const DetailsHead = () => {

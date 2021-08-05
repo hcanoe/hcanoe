@@ -19,6 +19,8 @@ import {
   TimedTable,
 } from 'components/Table'
 import Intervals from 'components/Intervals'
+import Distance from 'components/Distance'
+import BestSplits from 'components/BestSplits'
 import { useState } from 'react'
 
 export async function getServerSideProps({ query }) {
@@ -52,6 +54,13 @@ const Page = ({ display_name, distance, intervals, on_off, timed }) => {
       </Text>
     )
   }
+  const Name = () => {
+    return (
+      <Text color="gray.500" mb="10">
+        {display_name}
+      </Text>
+    )
+  }
   const changeType = (e) => {
     setType(e.target.value)
   }
@@ -59,28 +68,27 @@ const Page = ({ display_name, distance, intervals, on_off, timed }) => {
     <>
       <Container size="md">
         <Title />
-        <Text color="gray.500" mb="10">
-          {display_name}
-        </Text>
-        <Tabs variant='line' colorScheme='teal' isFitted>
-          <TabList mb='1.6em'>
-            <Tab px='0'>Distance</Tab>
-            <Tab px='0'>Intervals</Tab>
-            <Tab px='0'>On-Off</Tab>
-            <Tab px='0'>Timed</Tab>
+        <Name />
+        <BestSplits data={distance} />
+        <Tabs variant="line" colorScheme="teal" isFitted>
+          <TabList mb="1.6em">
+            <Tab px="0">Distance</Tab>
+            <Tab px="0">Intervals</Tab>
+            <Tab px="0">On-Off</Tab>
+            <Tab px="0">Timed</Tab>
           </TabList>
 
           <TabPanels>
-            <TabPanel p='0'>
-              <DistanceTable rows={distance} />
+            <TabPanel p="0">
+              <Distance rows={distance} />
             </TabPanel>
-            <TabPanel p='0'>
+            <TabPanel p="0">
               <Intervals rows={intervals} />
             </TabPanel>
-            <TabPanel p='0'>
+            <TabPanel p="0">
               <OnOffTable rows={on_off} />
             </TabPanel>
-            <TabPanel p='0'>
+            <TabPanel p="0">
               <TimedTable rows={timed} />
             </TabPanel>
           </TabPanels>
