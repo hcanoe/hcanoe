@@ -78,16 +78,14 @@ const getUserTrainingData = (data_all_sheets, name) => {
       data_week.forEach((e, index) => {
         // const training_id = week + day
         if (e[0] === '>>>') {
-          const day = arr[1][0]
-          const type = arr[0][0]
-          const training_id = day + type
+          // arr[1][0] is the day of week
+          const training_id = arr[1][0] + index
           split_day[training_id] = arr
           arr = []
         } else if (index == data_week.length - 1) {
           arr.push(e)
-          const day = arr[1][0]
-          const type = arr[0][0]
-          const training_id = day + type
+          // arr[1][0] is the day of week
+          const training_id = arr[1][0] + index
           split_day[training_id] = arr
         } else {
           arr.push(e)
