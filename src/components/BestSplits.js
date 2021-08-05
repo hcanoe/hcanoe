@@ -61,14 +61,14 @@ const BestSplits = ({ data }) => {
     const DetailsHead = () => {
       return show ? (
         <>
-          <Th>>=</Th>
+          <Th>{'>='}</Th>
           <Th>Date</Th>
           <Th>Distance</Th>
           <Th>Timing</Th>
         </>
       ) : (
         <>
-          <Th>>=</Th>
+          <Th>{'>='}</Th>
           <Th>Best Pace</Th>
           <Th>Projected Time</Th>
         </>
