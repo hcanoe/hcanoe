@@ -90,10 +90,10 @@ const Page = ({ display_name, distance, intervals, on_off, timed }) => {
         </Text>
         <Tabs variant='line' colorScheme='teal' isFitted>
           <TabList>
-            <Tab>Distance</Tab>
-            <Tab>Intervals</Tab>
-            <Tab>On-Off</Tab>
-            <Tab>Timed</Tab>
+            <Tab px='0'>Distance</Tab>
+            <Tab px='0'>Intervals</Tab>
+            <Tab px='0'>On-Off</Tab>
+            <Tab px='0'>Timed</Tab>
           </TabList>
 
           <TabPanels>
