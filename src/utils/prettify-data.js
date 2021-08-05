@@ -246,8 +246,6 @@ const getOnOffProgramme = (d) => {
     Dash: [],
     Train: false,
   }
-  console.log('============================================')
-  console.log(d)
   d.forEach((e, index) => {
     e.On = quoteNotation(e.On)
     e.Off = quoteNotation(e.Off)
@@ -324,7 +322,6 @@ const getOnOffProgramme = (d) => {
             // and set count is 1
             mem.Dash = [mem.On, e.On]
             mem.Train = true
-            console.log(mem.Dash)
           } else {
             pushSet()
             mem.On = e.On
@@ -346,7 +343,6 @@ const getOnOffProgramme = (d) => {
       }
     }
   })
-  console.log('prog ->', Programme)
   const output = {}
   output.Programme = Programme.join(', ')
   return output
@@ -377,10 +373,25 @@ const prettifyOnOff = (arr) => {
       }
     }
     Object.assign(training, getOnOffProgramme(by_sets))
+    training.Distance = displayDistance(training.Distance, 'km')
     const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
     training.SortDate = process_date
   })
   arr.sort(recentFirst)
 }
 
-export { prettifyDistance, prettifyIntervals, prettifyOnOff }
+/*
+ * Prettify Timed
+ */
+const prettifyTimed = (arr) => {
+  arr.forEach((training) => {
+    training.Pace = displayPace(training.Duration, training.Distance)
+    training.Distance = displayDistance(training.Distance, 'km')
+    training.Programme = displayDuration(training.Duration)
+    const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
+    training.SortDate = process_date
+  })
+  arr.sort(recentFirst)
+}
+
+export { prettifyDistance, prettifyIntervals, prettifyOnOff, prettifyTimed }
