@@ -88,8 +88,7 @@ const displayDuration = (dur) => {
     if (h === '0') {
       return parseInt(m) < 10 ? [m[1], s].join(':') : [m, s].join(':')
     } else {
-      return parseInt(h) < 10 ? [h[1], m, s].join(':') : [h, m, s].join(':')
-      return dur
+      return [h, m, s].join(':')
     }
   }
 }
