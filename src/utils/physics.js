@@ -30,7 +30,19 @@ const parseDistanceToSI = (string) => {
   return 'distance'
 }
 
+const parseDurationToSI = (dur) => {
+  const p = {}
+  const colonCount = dur.match(/:/g).length
+  if (colonCount === 1) {
+    p.sec = moment.duration('0:' + dur).asSeconds()
+  } else if (colonCount === 2) {
+    p.sec = moment.duration(dur).asSeconds()
+  }
+  return p.sec
+}
+
 const displayDistance = (string, unit) => {
+  console.log('displayDistance ->', string)
   const d = parseDistanceToSI(string)
   if (unit === 'km') {
     return (d / 1000).toFixed(2) + ' km'
@@ -49,18 +61,9 @@ const displayDistance = (string, unit) => {
  */
 const displayPace = (dur, dist) => {
   const p = {}
-  const colonCount = dur.match(/:/g).length
-  if (colonCount === 1) {
-    p.sec = moment.duration('0:' + dur).asSeconds()
-  } else if (colonCount === 2) {
-    p.sec = moment.duration(dur).asSeconds()
-  }
+  p.sec = parseDurationToSI(dur)
   p.m = parseDistanceToSI(dist)
-  p.min_per_km = (p.sec / 60 / p.m) * 1000
-  p.MM = parseInt(p.min_per_km)
-  p.SS = parseInt((p.min_per_km % 1) * 60)
-  p.result = p.MM + ':' + p.SS
-  return p.result
+  return displayPaceFromSI(p.sec, p.m)
 }
 
 /*
@@ -68,28 +71,36 @@ const displayPace = (dur, dist) => {
  * returns min/km, human readable again
  */
 const displayPaceFromSI = (dur, dist) => {
-  const p = {}
-  p.sec = moment.duration(dur, 'seconds').asSeconds()
-  p.m = dist
-  p.min_per_km = (p.sec / 60 / p.m) * 1000
-  p.MM = parseInt(p.min_per_km)
-  p.SS = parseInt((p.min_per_km % 1) * 60)
-  p.result = p.MM + ':' + p.SS
-  return p.result
+  return durationSItoDisplay(dur / dist * 1000)
 }
 
 const displayDuration = (dur) => {
-  // TODO: test this with values greater than 1 hour
+  const p = {}
   const colonCount = dur.match(/:/g).length
   if (colonCount === 1) {
-    return dur
+    p.sec = moment.duration('0:' + dur).asSeconds()
   } else if (colonCount === 2) {
-    const [h, m, s] = dur.split(':')
-    if (h === '0') {
-      return parseInt(m) < 10 ? [m[1], s].join(':') : [m, s].join(':')
+    p.sec = moment.duration(dur).asSeconds()
+  }
+  return durationSItoDisplay(p.sec)
+}
+
+const durationSItoDisplay = (sec) => {
+  const H = new Date(sec * 1000).toISOString().substr(11, 2)
+  const M = new Date(sec * 1000).toISOString().substr(14, 2)
+  const S = new Date(sec * 1000).toISOString().substr(17, 2)
+  if (H === '00') {
+    if (M === '00') {
+      return ['0', S].join(':')
+    } else if (M[0] === '0') {
+      return [M[1], S].join(':')
     } else {
-      return [h, m, s].join(':')
+      return [M, S].join(':')
     }
+  } else if (H[0] === '0') {
+    return [H[1], M, S].join(':')
+  } else {
+    return [H, M, S].join(':')
   }
 }
 
@@ -99,4 +110,6 @@ export {
   displayPace,
   displayPaceFromSI,
   parseDistanceToSI,
+  parseDurationToSI,
+  durationSItoDisplay,
 }
