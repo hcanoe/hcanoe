@@ -94,7 +94,7 @@ const BestSplits = ({ data }) => {
     }
     const data = () => {
       return (
-        <Tbody>
+        <Tbody color='gray.800'>
           {rows.map((row, index) => (
             <Tr key={row.Date + index}>
               <DetailsBody row={row} index={index} />
@@ -110,7 +110,7 @@ const BestSplits = ({ data }) => {
         <FieldBox t="Distance">
           <Box overflowX="auto">
             <Table variant="unstyled" size="sm">
-              <Thead>
+              <Thead color='gray.600'>
                 <Tr>
                   <DetailsHead />
                 </Tr>
