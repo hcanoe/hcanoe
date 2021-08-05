@@ -62,7 +62,7 @@ export default function Page({ log }) {
             HCANOE
           </Text>
           <Box align="center" mt="4em">
-            <Box width="18rem">
+            <Box width="25ch">
               <FormControl>
                 <FormLabel>Graduation Year</FormLabel>
                 <NumberInput

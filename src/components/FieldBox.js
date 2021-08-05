@@ -2,7 +2,7 @@ import { Text, Box, Heading } from '@chakra-ui/react'
 
 const FieldBox = ({ t, children, c = '#fc4c02' }) => {
   return (
-    <Box borderRadius="lg" mt="1.25em" shadow="base" pt="0.6em">
+    <Box borderRadius="lg" shadow="base" pt="0.5em">
       {children}
     </Box>
   )

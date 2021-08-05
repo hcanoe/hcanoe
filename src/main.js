@@ -98,9 +98,11 @@ const getUserTrainingData = (data_all_sheets, name) => {
        * at this point, split_day is an object where each key
        * contains the entire team's data for that day
        */
+      
       user_data_by_day[week] = {}
       for (const day in split_day) {
-        const date = getDate(week, day)
+        const dayOfWeek = split_day[day][1][0]
+        const date = getDate(week, dayOfWeek)
         const day_arr = split_day[day]
         const headers = day_arr.shift()
         const type = headers.shift()
@@ -116,6 +118,7 @@ const getUserTrainingData = (data_all_sheets, name) => {
           user_data_by_day[week][training_id] = zipped
         }
       }
+
       /*
        * at this point, user_data_by_day is an object,
        *  key = start of week in DD/MM/YYYY format
