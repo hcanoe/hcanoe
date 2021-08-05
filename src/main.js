@@ -7,7 +7,12 @@ import {
 } from '@utils/user-meta'
 import { makeEnglish, makeNameCaps } from '@utils/text'
 import { getDate } from '@utils/date'
-import { prettifyDistance, prettifyIntervals, prettifyOnOff } from '@utils/prettify-data'
+import {
+  prettifyDistance,
+  prettifyIntervals,
+  prettifyOnOff,
+  prettifyTimed,
+} from '@utils/prettify-data'
 
 async function getTrainingData(sheets, sheetID, sheetTitle) {
   const range = sheetTitle.concat('!A:Z')
@@ -71,8 +76,6 @@ const getUserTrainingData = (data_all_sheets, name) => {
        * data_week is an array of the week's trainings,
        * with each day separated by a single cell ['>>>']
        */
-      console.log('spreadsheet_id ->', spreadsheet_id)
-      console.log('data_week ->', data_week)
       const split_day = {}
       var arr = []
       data_week.forEach((e, index) => {
@@ -91,7 +94,6 @@ const getUserTrainingData = (data_all_sheets, name) => {
           arr.push(e)
         }
       })
-      console.log('split_day ->', split_day)
       /*
        * at this point, split_day is an object where each key
        * contains the entire team's data for that day
@@ -121,7 +123,6 @@ const getUserTrainingData = (data_all_sheets, name) => {
        */
     }
   }
-  console.log(user_data_by_type)
   return [user_data_by_day, user_data_by_type]
 }
 
@@ -151,17 +152,16 @@ export async function main(query, sheets) {
   const user_metadata = zipTable(metadata_headers, metadata_body)
   const name = user_metadata.Name
 
-  const spreadsheet_ids_by_type = getSpreadsheetsByType(
-    user_metadata,
-    'run'
-  )
+  const spreadsheet_ids_by_type = getSpreadsheetsByType(user_metadata, 'run')
 
   const data_all_sheets = await getAllSheets(sheets, spreadsheet_ids_by_type)
 
   output.log = ['data all sheets', data_all_sheets]
 
-  const [user_data_by_day, user_data_by_type] =
-    getUserTrainingData(data_all_sheets, name)
+  const [user_data_by_day, user_data_by_type] = getUserTrainingData(
+    data_all_sheets,
+    name
+  )
 
   for (const type in user_data_by_type) {
     if (type === 'DISTANCE') {
@@ -170,6 +170,8 @@ export async function main(query, sheets) {
       prettifyIntervals(user_data_by_type[type])
     } else if (type === 'ONOFF') {
       prettifyOnOff(user_data_by_type[type])
+    } else if (type === 'TIMED') {
+      prettifyTimed(user_data_by_type[type])
     }
   }
 
@@ -184,6 +186,7 @@ export async function main(query, sheets) {
   output.distance = user_data_by_type.DISTANCE
   output.intervals = user_data_by_type.INTERVALS
   output.on_off = user_data_by_type.ONOFF
+  output.timed = user_data_by_type.TIMED
 
   return output
 }
