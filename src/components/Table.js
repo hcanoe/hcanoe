@@ -1,6 +1,14 @@
-import { Box, Th, Tbody, Tr, Td, Thead, Table } from '@chakra-ui/react'
+import { Box, Th, Tbody, Tr, Td, Thead, Table, Code } from '@chakra-ui/react'
 import FieldBox from 'components/FieldBox'
 import styles from '@styles/Table.module.css'
+
+const NoData = ({ message = 'no data' }) => {
+  return (
+    <Code bg='gray.50' color="#429E90" display="block" whiteSpace="pre" mt="4" p="4">
+      {message}
+    </Code>
+  )
+}
 
 const DistanceTable = ({ rows }) => {
   const data = () => {
@@ -18,11 +26,7 @@ const DistanceTable = ({ rows }) => {
     )
   }
   if (rows.length === 0) {
-    return (
-      <p>
-        <code>no distance data</code>
-      </p>
-    )
+    return <NoData message="no distance data" />
   } else {
     return (
       <FieldBox t="Distance">
@@ -49,7 +53,9 @@ const IntervalsTable = ({ rows }) => {
     return (
       <Td>
         {row[subtype].map((line, index) => (
-          <p className={styles.subline} key={line + index}>{line}</p>
+          <p className={styles.subline} key={line + index}>
+            {line}
+          </p>
         ))}
       </Td>
     )
@@ -69,11 +75,7 @@ const IntervalsTable = ({ rows }) => {
     )
   }
   if (rows.length === 0) {
-    return (
-      <p>
-        <code>no intervals data</code>
-      </p>
-    )
+    return <NoData message="no intervals data" />
   } else {
     return (
       <FieldBox t="Intervals">
@@ -110,11 +112,7 @@ const OnOffTable = ({ rows }) => {
     )
   }
   if (rows.length === 0) {
-    return (
-      <p>
-        <code>no on-off data</code>
-      </p>
-    )
+    return <NoData message="no on-off data" />
   } else {
     return (
       <FieldBox t="On-Off">
@@ -151,11 +149,7 @@ const TimedTable = ({ rows }) => {
     )
   }
   if (rows.length === 0) {
-    return (
-      <p>
-        <code>no timed data</code>
-      </p>
-    )
+    return <NoData message="no timed data" />
   } else {
     return (
       <FieldBox t="Timed">
