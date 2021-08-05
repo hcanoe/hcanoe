@@ -30,22 +30,26 @@ const SetNu = ({ min, max, step, width, c }) => {
 }
 
 const getResults = (d, set, dist) => {
-  console.log('set:', set, typeof set, 'dist:', dist, typeof dist)
   const result = []
   d.forEach((training) => {
-    var c = 0
-    for (const i in training) {
-      if (i.replace(/[0-9]/g, '') === 'Set') {
-        c += 1
+    if (set === '') {
+      if (training.Programme.length === 1 && training.Set1 === dist) {
+        result.push(training)
+      } else if (dist === 'm') {
+        result.push(training)
       }
-    }
-    if (training.Programme.length === 1) {
-      if ((training.Set1 === dist && (c === set || set === '')) || (dist === 'm' && c === set)) {
+    } else if (dist === 'm') {
+      var c = 0
+      for (const i in training) {
+        if (i.replace(/[0-9]/g, '') === 'Set') {
+          c += 1
+        }
+      }
+      if (c === set) {
         result.push(training)
       }
     }
   })
-  console.log(result)
   return result
 }
 
@@ -67,8 +71,6 @@ const Intervals = ({ rows }) => {
     }
   }
   const handleSearch = () => {
-    console.log(typeof sets)
-    console.log('all data', rows)
     const query = {
       sets: (sets === '') ? '' : parseInt(sets),
       distance: distance + 'm',
