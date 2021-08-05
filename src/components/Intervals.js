@@ -32,20 +32,30 @@ const SetNu = ({ min, max, step, width, c }) => {
 const getResults = (d, set, dist) => {
   const result = []
   d.forEach((training) => {
+    if (training.Programme.length > 1) {
+      return
+    }
+    var c = 0
     if (set === '') {
-      if (training.Programme.length === 1 && training.Set1 === dist) {
+      if (training.Set1 === dist) {
         result.push(training)
       } else if (dist === 'm') {
         result.push(training)
       }
-    } else if (dist === 'm') {
-      var c = 0
+    } else {
       for (const i in training) {
         if (i.replace(/[0-9]/g, '') === 'Set') {
           c += 1
         }
       }
+    }
+    if (dist === 'm') {
       if (c === set) {
+        result.push(training)
+      }
+    } else {
+      console.log('both filled')
+      if (c === set && training.Set1 === dist) {
         result.push(training)
       }
     }
@@ -72,7 +82,7 @@ const Intervals = ({ rows }) => {
   }
   const handleSearch = () => {
     const query = {
-      sets: (sets === '') ? '' : parseInt(sets),
+      sets: sets === '' ? '' : parseInt(sets),
       distance: distance + 'm',
     }
     const result = getResults(rows, query.sets, query.distance)
