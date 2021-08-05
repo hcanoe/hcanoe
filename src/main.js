@@ -48,7 +48,11 @@ async function getMetadata(sheets) {
     spreadsheetId: spreadsheet_ids.meta,
     range: `data!A:F`,
   })
-  return response.data.values
+  if (response) {
+    return response.data.values
+  } else {
+    console.log('no response from google sheets')
+  }
 }
 
 const getUserTrainingData = (data_all_sheets, name) => {
@@ -59,6 +63,7 @@ const getUserTrainingData = (data_all_sheets, name) => {
     ONOFF: [],
     TIMED: [],
   }
+  console.log('reading data from ->', Object.keys(data_all_sheets))
   for (const spreadsheet_id in data_all_sheets) {
     for (const week in data_all_sheets[spreadsheet_id]) {
       const data_week = data_all_sheets[spreadsheet_id][week]
@@ -66,22 +71,29 @@ const getUserTrainingData = (data_all_sheets, name) => {
        * data_week is an array of the week's trainings,
        * with each day separated by a single cell ['>>>']
        */
+      console.log('spreadsheet_id ->', spreadsheet_id)
+      console.log('data_week ->', data_week)
       const split_day = {}
       var arr = []
-      var c = 0
       data_week.forEach((e, index) => {
+        // const training_id = week + day
         if (e[0] === '>>>') {
-          // the delimiter >>>
-          split_day[arr[1][0]] = arr
-          c += 1
+          const day = arr[1][0]
+          const type = arr[0][0]
+          const training_id = day + type
+          split_day[training_id] = arr
           arr = []
         } else if (index == data_week.length - 1) {
           arr.push(e)
-          split_day[arr[1][0]] = arr
+          const day = arr[1][0]
+          const type = arr[0][0]
+          const training_id = day + type
+          split_day[training_id] = arr
         } else {
           arr.push(e)
         }
       })
+      console.log('split_day ->', split_day)
       /*
        * at this point, split_day is an object where each key
        * contains the entire team's data for that day
@@ -100,7 +112,8 @@ const getUserTrainingData = (data_all_sheets, name) => {
           zipped.Date = date
           delete zipped.Name
           user_data_by_type[type].push(zipped)
-          user_data_by_day[week][day] = zipped
+          const training_id = week + day + type
+          user_data_by_day[week][training_id] = zipped
         }
       }
       /*
@@ -110,6 +123,7 @@ const getUserTrainingData = (data_all_sheets, name) => {
        */
     }
   }
+  console.log(user_data_by_type)
   return [user_data_by_day, user_data_by_type]
 }
 
