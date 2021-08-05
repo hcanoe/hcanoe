@@ -2,6 +2,7 @@ import { DistanceTable } from 'components/Table'
 import { useState } from 'react'
 import FieldBox from 'components/FieldBox'
 import moment from 'moment'
+import { BiTrophy } from 'react-icons/bi'
 import {
   displayDistance,
   displayDuration,
@@ -21,6 +22,7 @@ import {
   Switch,
   Flex,
   Spacer,
+  Icon,
 } from '@chakra-ui/react'
 
 const BestSplits = ({ data }) => {
@@ -107,7 +109,7 @@ const BestSplits = ({ data }) => {
       return (
         <FieldBox t="Distance">
           <Box overflowX="auto">
-            <Table variant="simple" size="sm">
+            <Table variant="unstyled" size="sm">
               <Thead>
                 <Tr>
                   <DetailsHead />
@@ -126,10 +128,10 @@ const BestSplits = ({ data }) => {
   }
   return (
     <>
-      <Box px="2px" mt="-5" mb="5">
+      <Box px="2px" mt="-5" mb="8">
         <Flex alignItems="baseline" justifyContent="space-between">
-          <Text mt="1em" color="gray.600" fontSize="xl" fontWeight="600">
-            Best splits
+          <Text whiteSpace='nowrap' mt="1em" color="gray.600" fontSize="xl" fontWeight="600" verticalAlign='bottom'>
+            Best splits <Icon><BiTrophy /></Icon>
           </Text>
           <Flex flexWrap="nowrap">
             <Text color="gray.500" fontWeight="600" fontSize="sm">
