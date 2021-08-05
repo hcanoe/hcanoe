@@ -66,7 +66,7 @@ const getResults = (d, set, dist) => {
 const Intervals = ({ rows }) => {
   const [filteredRows, setFilteredRows] = useState(rows)
   const [sets, setSets] = useState('')
-  const [distance, setDistance] = useState('m')
+  const [distance, setDistance] = useState('')
 
   const onChangeSet = (e) => {
     setSets(e)
