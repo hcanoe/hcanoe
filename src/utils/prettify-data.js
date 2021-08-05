@@ -1,6 +1,7 @@
 import moment from 'moment'
 import {
   parseDistanceToSI,
+  parseDurationToSI,
   displayPaceFromSI,
   displayPace,
   displayDistance,
@@ -13,8 +14,14 @@ import { recentFirst } from '@utils/sort'
  */
 const prettifyDistance = (arr) => {
   arr.forEach((training) => {
+    // Pace
     training.Pace = displayPace(training.Timing, training.Distance)
+    training.si_pace = parseDurationToSI(training.Pace)
+    // Distance
+    training.si_distance = parseDistanceToSI(training.Distance)
     training.Distance = displayDistance(training.Distance, 'km')
+    // Timings
+    training.si_time = parseDurationToSI(training.Timing)
     training.Timing = displayDuration(training.Timing)
     const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
     training.SortDate = process_date
@@ -309,7 +316,8 @@ const getOnOffProgramme = (d) => {
         mem.Off = e.Off
         Programme.push(mem.On + '/' + mem.Off)
       }
-    } else { // in-between
+    } else {
+      // in-between
       if (sameOff()) {
         if (sameOn()) {
           c += 1
