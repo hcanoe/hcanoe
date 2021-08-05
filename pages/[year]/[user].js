@@ -2,7 +2,12 @@ import spreadsheet_ids from '@root/spreadsheets'
 import { google } from 'googleapis'
 import { main } from 'main'
 import { Container, Heading, Text } from '@chakra-ui/react'
-import { DistanceTable, IntervalsTable, OnOffTable } from 'components/Table'
+import {
+  DistanceTable,
+  IntervalsTable,
+  OnOffTable,
+  TimedTable,
+} from 'components/Table'
 
 export async function getServerSideProps({ query }) {
   // necessary google auth code
@@ -26,7 +31,7 @@ export async function getServerSideProps({ query }) {
   }
 }
 
-const Page = ({ display_name, distance, intervals, on_off }) => {
+const Page = ({ display_name, distance, intervals, on_off, timed }) => {
   return (
     <>
       <Container size="md">
@@ -37,6 +42,7 @@ const Page = ({ display_name, distance, intervals, on_off }) => {
         <DistanceTable rows={distance} />
         <IntervalsTable rows={intervals} />
         <OnOffTable rows={on_off} />
+        <TimedTable rows={timed} />
       </Container>
     </>
   )
