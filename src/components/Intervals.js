@@ -56,9 +56,15 @@ const Intervals = ({ rows }) => {
 
   const onChangeSet = (e) => {
     setSets(e)
+    if (e === '' && distance === '') {
+      setFilteredRows(rows)
+    }
   }
   const onChangeDistance = (e) => {
     setDistance(e)
+    if (e === '' && sets === '') {
+      setFilteredRows(rows)
+    }
   }
   const handleSearch = () => {
     console.log(typeof sets)
