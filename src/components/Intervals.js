@@ -116,7 +116,7 @@ const Intervals = ({ rows }) => {
           </Box>
         </Flex>
         <Box>
-          <Button colorScheme="blue" onClick={handleSearch}>
+          <Button colorScheme="teal" onClick={handleSearch}>
             Search
           </Button>
         </Box>
