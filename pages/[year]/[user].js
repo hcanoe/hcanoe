@@ -1,7 +1,17 @@
 import spreadsheet_ids from '@root/spreadsheets'
 import { google } from 'googleapis'
 import { main } from 'main'
-import { Container, Heading, Text, Select } from '@chakra-ui/react'
+import {
+  Container,
+  Heading,
+  Text,
+  Select,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+} from '@chakra-ui/react'
 import {
   DistanceTable,
   IntervalsTable,
@@ -78,16 +88,30 @@ const Page = ({ display_name, distance, intervals, on_off, timed }) => {
         <Text color="gray.500" mb="10">
           {display_name}
         </Text>
-        <Select defaultValue="DISTANCE" onChange={changeType}>
-          <option value="DISTANCE">Distance</option>
-          <option value="INTERVALS">Intervals</option>
-          <option value="ONOFF">On-Off</option>
-          <option value="TIMED">Timed</option>
-        </Select>
-        <DataTable type={type} />
+        <Tabs variant='line' colorScheme='teal' isFitted>
+          <TabList>
+            <Tab>Distance</Tab>
+            <Tab>Intervals</Tab>
+            <Tab>On-Off</Tab>
+            <Tab>Timed</Tab>
+          </TabList>
+
+          <TabPanels>
+            <TabPanel p='0'>
+              <DistanceTable rows={distance} />
+            </TabPanel>
+            <TabPanel p='0'>
+              <IntervalsTable rows={intervals} />
+            </TabPanel>
+            <TabPanel p='0'>
+              <OnOffTable rows={on_off} />
+            </TabPanel>
+            <TabPanel p='0'>
+              <TimedTable rows={timed} />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Container>
     </>
   )
 }
-
-export default Page
