@@ -1,0 +1,7 @@
+@media (max-width: 600px) {
+  .field {
+    width: 100vw;
+    position: relative;
+    left: calc(-50vw + 50%);
+  }
+}
