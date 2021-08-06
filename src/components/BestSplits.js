@@ -25,6 +25,21 @@ import {
   Icon,
 } from '@chakra-ui/react'
 
+const NoData = ({ message = 'no data' }) => {
+  return (
+    <Code
+      bg="gray.50"
+      color="primary"
+      display="block"
+      whiteSpace="pre"
+      mt="4"
+      p="4"
+    >
+      {message}
+    </Code>
+  )
+}
+
 const BestSplits = ({ best }) => {
   const dist = ['1 km', '2.4 km', '5 km', '10 km']
   const dict = {
@@ -35,8 +50,10 @@ const BestSplits = ({ best }) => {
   }
   const _best = []
   best.forEach((t, i) => {
-    const Projected = durationSItoDisplay((t.si_time / t.si_distance) * dict[i])
-    _best.push({...t, Projected})
+    if (t) {
+      const Projected = durationSItoDisplay((t.si_time / t.si_distance) * dict[i])
+      _best.push({...t, Projected})
+    }
   })
 
   const BestTable = ({ rows }) => {
@@ -87,16 +104,16 @@ const BestSplits = ({ best }) => {
       return <NoData message="no distance data" />
     } else {
       return (
-          <Box overflowX="auto">
-            <Table variant="unstyled" size="sm">
-              <Thead color="gray.600">
-                <Tr>
-                  <DetailsHead />
-                </Tr>
-              </Thead>
-              {data()}
-            </Table>
-          </Box>
+        <Box overflowX="auto">
+          <Table variant="unstyled" size="sm">
+            <Thead color="gray.600">
+              <Tr>
+                <DetailsHead />
+              </Tr>
+            </Thead>
+            {data()}
+          </Table>
+        </Box>
       )
     }
   }
@@ -108,11 +125,7 @@ const BestSplits = ({ best }) => {
     <>
       <Box px="2px" mt="-5" mb="12">
         <BestBox>
-          <Flex
-            alignItems="center"
-            justifyContent="space-between"
-            px="16px"
-          >
+          <Flex alignItems="center" justifyContent="space-between" px="16px">
             <Text
               whiteSpace="nowrap"
               color="gray.600"
@@ -125,7 +138,7 @@ const BestSplits = ({ best }) => {
                 <RiVipCrownFill />
               </Icon>
             </Text>
-            <Flex flexWrap="nowrap" alignItems='center'>
+            <Flex flexWrap="nowrap" alignItems="center">
               <Text color="gray.500" fontWeight="600" fontSize="sm">
                 ORIGINAL
               </Text>

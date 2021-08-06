@@ -56,8 +56,8 @@ const prettifyDistance = (arr) => {
   arr.forEach((training) => {
     const this_id = training.si_time + training.si_distance + training.Date
     for (let i = 0; i < 4; i++) {
-      if (this_id === best_pace[i].id) {
-        training.best.push(i)
+      if (best_pace[i] && this_id === best_pace[i].id) {
+        training.best.push(dict[i])
         best[i] = training
       }
     }
