@@ -4,7 +4,7 @@ import styles from '@styles/Table.module.css'
 
 const NoData = ({ message = 'no data' }) => {
   return (
-    <Code bg='gray.50' color="#429E90" display="block" whiteSpace="pre" mt="4" p="4">
+    <Code bg='gray.50' color="primary" display="block" whiteSpace="pre" mt="4" p="4">
       {message}
     </Code>
   )
