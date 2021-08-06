@@ -6,6 +6,7 @@ import {
   displayPace,
   displayDistance,
   displayDuration,
+  durationSItoDisplay,
 } from '@utils/physics'
 import { recentFirst } from '@utils/sort'
 
@@ -13,20 +14,56 @@ import { recentFirst } from '@utils/sort'
  * Prettify Distance
  */
 const prettifyDistance = (arr) => {
+  const best = Array(4)
+  const dict = {
+    0: 1000,
+    1: 2400,
+    2: 5000,
+    3: 10000,
+  }
+  const best_pace = Array(4)
   arr.forEach((training) => {
     // Pace
     training.Pace = displayPace(training.Timing, training.Distance)
-    training.si_pace = parseDurationToSI(training.Pace)
+    const si_pace = parseDurationToSI(training.Pace)
     // Distance
-    training.si_distance = parseDistanceToSI(training.Distance)
+    const si_distance = parseDistanceToSI(training.Distance)
     training.Distance = displayDistance(training.Distance, 'km')
     // Timings
-    training.si_time = parseDurationToSI(training.Timing)
+    const si_time = parseDurationToSI(training.Timing)
     training.Timing = displayDuration(training.Timing)
+    // Check if best
+    for (let i = 0; i < 4; i++) {
+      if (si_distance >= dict[i]) {
+        if (best_pace[i] === undefined) {
+          best_pace[i] = {}
+          best_pace[i].id = si_time + si_distance + training.Date
+          best_pace[i].pace = si_pace
+          training.best = []
+        } else {
+          if (si_pace < best_pace[i].pace) {
+            best_pace[i].id = si_time + si_distance + training.Date
+            best_pace[i].pace = si_pace
+            training.best = []
+          }
+        }
+      }
+    }
+    Object.assign(training, { si_pace, si_distance, si_time })
     const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
     training.SortDate = process_date
   })
+  arr.forEach((training) => {
+    const this_id = training.si_time + training.si_distance + training.Date
+    for (let i = 0; i < 4; i++) {
+      if (this_id === best_pace[i].id) {
+        training.best.push(i)
+        best[i] = training
+      }
+    }
+  })
   arr.sort(recentFirst)
+  return { best, arr }
 }
 
 /*
@@ -92,6 +129,7 @@ const prettifyIntervals = (arr) => {
    *  new expected output:
    *    3 x 800m / 1', 3 x 400m / 30"          2:41, 2:47, 2:39, 1:22, 1:25, 1:21
    */
+  return arr
 }
 
 /*
@@ -386,6 +424,7 @@ const prettifyOnOff = (arr) => {
     training.SortDate = process_date
   })
   arr.sort(recentFirst)
+  return arr
 }
 
 /*
@@ -400,6 +439,7 @@ const prettifyTimed = (arr) => {
     training.SortDate = process_date
   })
   arr.sort(recentFirst)
+  return arr
 }
 
 export { prettifyDistance, prettifyIntervals, prettifyOnOff, prettifyTimed }

@@ -1,6 +1,6 @@
 import { DistanceTable } from 'components/Table'
 import { useState } from 'react'
-import FieldBox from 'components/FieldBox'
+import FieldBox, { BestBox } from 'components/FieldBox'
 import moment from 'moment'
 import { RiVipCrownLine, RiVipCrownFill } from 'react-icons/ri'
 import {
@@ -25,38 +25,18 @@ import {
   Icon,
 } from '@chakra-ui/react'
 
-const BestSplits = ({ data }) => {
+const BestSplits = ({ best }) => {
+  const dist = ['1 km', '2.4 km', '5 km', '10 km']
   const dict = {
     0: 1000,
     1: 2400,
     2: 5000,
     3: 10000,
   }
-  const dist = ['1 km', '2.4 km', '5 km', '10 km']
-  const by_distance = Array(4)
-  data.forEach((t) => {
-    const pace = t.si_pace
-    const dist = t.si_distance
-    const time = t.si_time
-    const p = {}
-    // TODO: make calculations accurate to the second
-    for (let i = 0; i < 4; i++) {
-      if (dist >= dict[i]) {
-        if (by_distance[i] === undefined) {
-          by_distance[i] = {
-            ...t,
-            Projected: durationSItoDisplay(time / dist * dict[i]),
-          }
-        } else {
-          if (pace < by_distance[i].si_pace) {
-            by_distance[i] = {
-              ...t,
-              Projected: durationSItoDisplay(time / dist * dict[i]),
-            }
-          }
-        }
-      }
-    }
+  const _best = []
+  best.forEach((t, i) => {
+    const Projected = durationSItoDisplay((t.si_time / t.si_distance) * dict[i])
+    _best.push({...t, Projected})
   })
 
   const BestTable = ({ rows }) => {
@@ -94,7 +74,7 @@ const BestSplits = ({ data }) => {
     }
     const data = () => {
       return (
-        <Tbody color='gray.800'>
+        <Tbody color="gray.800">
           {rows.map((row, index) => (
             <Tr key={row.Date + index}>
               <DetailsBody row={row} index={index} />
@@ -107,10 +87,9 @@ const BestSplits = ({ data }) => {
       return <NoData message="no distance data" />
     } else {
       return (
-        <FieldBox t="Distance">
           <Box overflowX="auto">
             <Table variant="unstyled" size="sm">
-              <Thead color='gray.600'>
+              <Thead color="gray.600">
                 <Tr>
                   <DetailsHead />
                 </Tr>
@@ -118,7 +97,6 @@ const BestSplits = ({ data }) => {
               {data()}
             </Table>
           </Box>
-        </FieldBox>
       )
     }
   }
@@ -129,24 +107,37 @@ const BestSplits = ({ data }) => {
   return (
     <>
       <Box px="2px" mt="-5" mb="12">
-        <Flex alignItems="baseline" justifyContent="space-between">
-          <Text whiteSpace='nowrap' mt="1em" color="gray.600" fontSize="xl" fontWeight="600" verticalAlign='bottom'>
-            Best splits <Icon color='#fec835'><RiVipCrownFill /></Icon>
-          </Text>
-          <Flex flexWrap="nowrap">
-            <Text color="gray.500" fontWeight="600" fontSize="sm">
-              ORIGINAL
+        <BestBox>
+          <Flex
+            alignItems="center"
+            justifyContent="space-between"
+            px="16px"
+          >
+            <Text
+              whiteSpace="nowrap"
+              color="gray.600"
+              fontSize="xl"
+              fontWeight="600"
+              verticalAlign="center"
+            >
+              Best splits{' '}
+              <Icon color="#fec835">
+                <RiVipCrownFill />
+              </Icon>
             </Text>
-            <Switch
-              onChange={toggleDetails}
-              colorScheme="teal"
-              paddingLeft="1ch"
-            />
+            <Flex flexWrap="nowrap" alignItems='center'>
+              <Text color="gray.500" fontWeight="600" fontSize="sm">
+                ORIGINAL
+              </Text>
+              <Switch
+                onChange={toggleDetails}
+                colorScheme="teal"
+                paddingLeft="1ch"
+              />
+            </Flex>
           </Flex>
-        </Flex>
-        <FieldBox>
-          <BestTable rows={by_distance} />
-        </FieldBox>
+          <BestTable rows={_best} />
+        </BestBox>
       </Box>
     </>
   )

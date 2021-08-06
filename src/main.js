@@ -98,7 +98,7 @@ const getUserTrainingData = (data_all_sheets, name) => {
        * at this point, split_day is an object where each key
        * contains the entire team's data for that day
        */
-      
+
       user_data_by_day[week] = {}
       for (const day in split_day) {
         const dayOfWeek = split_day[day][1][0]
@@ -168,13 +168,15 @@ export async function main(query, sheets) {
 
   for (const type in user_data_by_type) {
     if (type === 'DISTANCE') {
-      prettifyDistance(user_data_by_type[type])
+      const response = prettifyDistance(user_data_by_type[type])
+      output.best = response.best
+      user_data_by_type[type] = response.arr
     } else if (type === 'INTERVALS') {
-      prettifyIntervals(user_data_by_type[type])
+      user_data_by_type[type] = prettifyIntervals(user_data_by_type[type])
     } else if (type === 'ONOFF') {
-      prettifyOnOff(user_data_by_type[type])
+      user_data_by_type[type] = prettifyOnOff(user_data_by_type[type])
     } else if (type === 'TIMED') {
-      prettifyTimed(user_data_by_type[type])
+      user_data_by_type[type] = prettifyTimed(user_data_by_type[type])
     }
   }
 
