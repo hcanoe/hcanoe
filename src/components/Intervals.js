@@ -97,6 +97,7 @@ const Intervals = ({ rows }) => {
         gridGap={3}
         alignItems="flex-end"
         justifyContent="space-between"
+        // bg="green.200"
       >
         <Flex flexDirection="row" flexWrap="wrap">
           <Box paddingRight="2ch">
@@ -114,11 +115,9 @@ const Intervals = ({ rows }) => {
             />
           </Box>
         </Flex>
-        <Box>
-          <Button colorScheme="teal" onClick={handleSearch}>
-            Search
-          </Button>
-        </Box>
+        <Button colorScheme="teal" onClick={handleSearch}>
+          Search
+        </Button>
       </Flex>
       <IntervalsTable rows={filteredRows} />
     </>
