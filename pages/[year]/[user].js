@@ -13,6 +13,7 @@ import {
   Tab,
   TabPanel,
   Center,
+  Divider,
 } from '@chakra-ui/react'
 import {
   DistanceTable,
@@ -23,7 +24,6 @@ import {
 import Intervals from 'components/Intervals'
 import Distance from 'components/Distance'
 import BestSplits from 'components/BestSplits'
-import { useState } from 'react'
 
 export async function getServerSideProps({ query }) {
   // necessary google auth code
@@ -47,11 +47,10 @@ export async function getServerSideProps({ query }) {
   }
 }
 
-const Page = ({ display_name, distance, intervals, on_off, timed }) => {
-  const [type, setType] = useState('DISTANCE')
+const Page = ({ display_name, distance, intervals, on_off, timed, best }) => {
   const Title = () => {
     return (
-      <Text mt="1em" color="#429E90" fontSize="3xl" fontWeight="800">
+      <Text mt="1em" color="primary" fontSize="3xl" fontWeight="800">
         Training Stats
       </Text>
     )
@@ -63,21 +62,21 @@ const Page = ({ display_name, distance, intervals, on_off, timed }) => {
       </Text>
     )
   }
-  const changeType = (e) => {
-    setType(e.target.value)
+  const _Tab = ({ children }) => {
+
   }
   return (
     <>
-      <Container size="md" mb='2'>
+      <Container size="md" mb="2">
         <Title />
         <Name />
-        <BestSplits data={distance} />
-        <Tabs variant="line" colorScheme="teal" isFitted>
+        <BestSplits best={best} />
+        <Tabs variant='enclosed' colorScheme="teal" isFitted>
           <TabList mb="1.6em">
-            <Tab px="0">Distance</Tab>
-            <Tab px="0" px="0">Intervals</Tab>
-            <Tab px="0" px="0">On-Off</Tab>
-            <Tab px="0" px="0">Timed</Tab>
+            <Tab>Distance</Tab>
+            <Tab>Intervals</Tab>
+            <Tab>On-Off</Tab>
+            <Tab>Timed</Tab>
           </TabList>
 
           <TabPanels>
@@ -96,7 +95,7 @@ const Page = ({ display_name, distance, intervals, on_off, timed }) => {
           </TabPanels>
         </Tabs>
       </Container>
-      <Center h='100' color='teal.500'>
+      <Center h="100" color="teal.500">
         <RiQuillPenLine />
       </Center>
     </>

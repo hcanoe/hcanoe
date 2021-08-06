@@ -6,6 +6,32 @@ const Theme = extendTheme({
     heading: 'Inter',
     body: 'Inter',
   },
+  components: {
+    Tabs: {
+      baseStyle: {
+        tab: {
+          color: 'red.500',
+          _selected: {
+            color: 'blue.500'
+          },
+        }
+      },
+      variants: {
+        enclosed: {
+          tab: {
+            color: 'gray.600',
+            _selected : { 
+              color: 'gray.500',
+              fontWeight: '500',
+            }
+          }
+        }
+      }
+    },
+  },
+  colors: {
+    primary: '#429E90',
+  },
 })
 
 export default Theme
