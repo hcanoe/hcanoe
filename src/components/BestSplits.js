@@ -2,7 +2,7 @@ import { DistanceTable } from 'components/Table'
 import { useState } from 'react'
 import FieldBox from 'components/FieldBox'
 import moment from 'moment'
-import { BiTrophy } from 'react-icons/bi'
+import { RiVipCrownLine, RiVipCrownFill } from 'react-icons/ri'
 import {
   displayDistance,
   displayDuration,
@@ -131,7 +131,7 @@ const BestSplits = ({ data }) => {
       <Box px="2px" mt="-5" mb="12">
         <Flex alignItems="baseline" justifyContent="space-between">
           <Text whiteSpace='nowrap' mt="1em" color="gray.600" fontSize="xl" fontWeight="600" verticalAlign='bottom'>
-            Best splits <Icon><BiTrophy /></Icon>
+            Best splits <Icon color='#fec835'><RiVipCrownFill /></Icon>
           </Text>
           <Flex flexWrap="nowrap">
             <Text color="gray.500" fontWeight="600" fontSize="sm">
@@ -152,5 +152,3 @@ const BestSplits = ({ data }) => {
   )
 }
 export default BestSplits
-/*
- */

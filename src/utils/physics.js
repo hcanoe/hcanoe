@@ -42,7 +42,6 @@ const parseDurationToSI = (dur) => {
 }
 
 const displayDistance = (string, unit) => {
-  console.log('displayDistance ->', string)
   const d = parseDistanceToSI(string)
   if (unit === 'km') {
     return (d / 1000).toFixed(2) + ' km'
