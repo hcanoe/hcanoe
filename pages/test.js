@@ -31,7 +31,7 @@ const Page = ({ display_name, timed }) => {
   return (
     <>
       <Container size="md">
-        <Text mt="1em" color="#429E90" fontSize="3xl" fontWeight="800">
+        <Text mt="1em" color="primary" fontSize="3xl" fontWeight="800">
           Training Stats
         </Text>
         <Text color="gray.500">{display_name}</Text>
