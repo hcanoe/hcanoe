@@ -12,21 +12,23 @@ const Theme = extendTheme({
         tab: {
           color: 'red.500',
           _selected: {
-            color: 'blue.500'
+            color: 'blue.500',
           },
-        }
+        },
       },
       variants: {
         enclosed: {
           tab: {
             color: 'gray.600',
-            _selected : { 
+            whiteSpace: 'nowrap',
+            _selected: {
               color: 'primary',
               fontWeight: '600',
-            }
-          }
-        }
-      }
+              whiteSpace: 'nowrap',
+            },
+          },
+        },
+      },
     },
   },
   colors: {
