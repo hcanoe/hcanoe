@@ -19,6 +19,7 @@ const SetNu = ({ min, max, step, width, c }) => {
       min={min}
       max={max}
       step={step}
+      size="sm"
       width={width}
       float="right"
       onChange={c}
@@ -41,11 +42,15 @@ const Search = ({ onChangeSet, onChangeDistance, handleSearch }) => {
     >
       <Flex flexDirection="row" flexWrap="wrap">
         <Box paddingRight="2ch">
-          <Text paddingRight="1ch">Sets</Text>
+          <Text fontSize="sm" paddingRight="1ch">
+            Sets
+          </Text>
           <SetNu min={0} max={20} step={1} width="11ch" c={onChangeSet} />
         </Box>
         <Box>
-          <Text paddingRight="1ch">Distance</Text>
+          <Text fontSize="sm" paddingRight="1ch">
+            Distance
+          </Text>
           <SetNu
             min={0}
             max={2000}
@@ -55,7 +60,7 @@ const Search = ({ onChangeSet, onChangeDistance, handleSearch }) => {
           />
         </Box>
       </Flex>
-      <Button colorScheme="teal" onClick={handleSearch}>
+      <Button size="sm" colorScheme="teal" onClick={handleSearch}>
         Search
       </Button>
     </Flex>
