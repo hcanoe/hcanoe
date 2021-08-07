@@ -34,10 +34,10 @@ const DistanceTable = ({ rows }) => {
           <Table variant="simple" size="sm">
             <Thead>
               <Tr>
-                <Th>Distance</Th>
-                <Th>Timing</Th>
-                <Th>Pace</Th>
-                <Th>Date</Th>
+                <Th>DISTANCE</Th>
+                <Th>TIME</Th>
+                <Th>PACE</Th>
+                <Th>DATE</Th>
               </Tr>
             </Thead>
             {data()}
@@ -83,10 +83,10 @@ const IntervalsTable = ({ rows }) => {
           <Table variant="simple" size="sm">
             <Thead>
               <Tr>
-                <Th>Programme</Th>
-                <Th>Timings</Th>
-                <Th>Pace</Th>
-                <Th>Date</Th>
+                <Th>PROGRAMME</Th>
+                <Th>TIMINGS</Th>
+                <Th>PACE</Th>
+                <Th>DATE</Th>
               </Tr>
             </Thead>
             <Data />
@@ -120,9 +120,9 @@ const OnOffTable = ({ rows }) => {
           <Table variant="simple" size="sm">
             <Thead>
               <Tr>
-                <Th>Programme</Th>
-                <Th>Distance</Th>
-                <Th>Date</Th>
+                <Th>PROGRAMME</Th>
+                <Th>DISTANCE</Th>
+                <Th>DATE</Th>
               </Tr>
             </Thead>
             <Data />
@@ -157,10 +157,10 @@ const TimedTable = ({ rows }) => {
           <Table variant="simple" size="sm">
             <Thead>
               <Tr>
-                <Th>Programme</Th>
-                <Th>Distance</Th>
-                <Th>Pace</Th>
-                <Th>Date</Th>
+                <Th>PROGRAMME</Th>
+                <Th>DISTANCE</Th>
+                <Th>PACE</Th>
+                <Th>DATE</Th>
               </Tr>
             </Thead>
             <Data />
