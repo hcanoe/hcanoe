@@ -28,6 +28,39 @@ const SetNu = ({ min, max, step, width, c }) => {
     </NumberInput>
   )
 }
+const Search = ({ onChangeSet, onChangeDistance, handleSearch }) => {
+  return (
+    <Flex
+      mt="-0.5em"
+      mb="1.6em"
+      flexDirection="row"
+      flexWrap="wrap"
+      gridGap={3}
+      alignItems="flex-end"
+      justifyContent="space-between"
+    >
+      <Flex flexDirection="row" flexWrap="wrap">
+        <Box paddingRight="2ch">
+          <Text paddingRight="1ch">Sets</Text>
+          <SetNu min={0} max={20} step={1} width="11ch" c={onChangeSet} />
+        </Box>
+        <Box>
+          <Text paddingRight="1ch">Distance</Text>
+          <SetNu
+            min={0}
+            max={2000}
+            step={100}
+            width="11ch"
+            c={onChangeDistance}
+          />
+        </Box>
+      </Flex>
+      <Button colorScheme="teal" onClick={handleSearch}>
+        Search
+      </Button>
+    </Flex>
+  )
+}
 
 const getResults = (d, set, dist) => {
   const result = []
@@ -89,36 +122,11 @@ const Intervals = ({ rows }) => {
   }
   return (
     <>
-      <Flex
-        mt="-0.5em"
-        mb="1.6em"
-        flexDirection="row"
-        flexWrap="wrap"
-        gridGap={3}
-        alignItems="flex-end"
-        justifyContent="space-between"
-        // bg="green.200"
-      >
-        <Flex flexDirection="row" flexWrap="wrap">
-          <Box paddingRight="2ch">
-            <Text paddingRight="1ch">Sets</Text>
-            <SetNu min={0} max={20} step={1} width="11ch" c={onChangeSet} />
-          </Box>
-          <Box>
-            <Text paddingRight="1ch">Distance</Text>
-            <SetNu
-              min={0}
-              max={2000}
-              step={100}
-              width="11ch"
-              c={onChangeDistance}
-            />
-          </Box>
-        </Flex>
-        <Button colorScheme="teal" onClick={handleSearch}>
-          Search
-        </Button>
-      </Flex>
+      <Search
+        onChangeDistance={onChangeDistance}
+        onChangeSet={onChangeSet}
+        handleSearch={handleSearch}
+      />
       <IntervalsTable rows={filteredRows} />
     </>
   )
