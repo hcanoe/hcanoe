@@ -21,8 +21,8 @@ const Theme = extendTheme({
           tab: {
             color: 'gray.600',
             _selected : { 
-              color: 'gray.500',
-              fontWeight: '500',
+              color: 'primary',
+              fontWeight: '600',
             }
           }
         }
