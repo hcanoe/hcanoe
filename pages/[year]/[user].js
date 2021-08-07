@@ -62,16 +62,13 @@ const Page = ({ display_name, distance, intervals, on_off, timed, best }) => {
       </Text>
     )
   }
-  const _Tab = ({ children }) => {
-
-  }
   return (
     <>
       <Container size="md" mb="2">
         <Title />
         <Name />
         <BestSplits best={best} />
-        <Tabs variant='enclosed' colorScheme="teal" isFitted>
+        <Tabs variant="enclosed" colorScheme="teal" isFitted>
           <TabList mb="1.6em">
             <Tab>Distance</Tab>
             <Tab>Intervals</Tab>

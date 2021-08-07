@@ -51,8 +51,10 @@ const BestSplits = ({ best }) => {
   const _best = []
   best.forEach((t, i) => {
     if (t) {
-      const Projected = durationSItoDisplay((t.si_time / t.si_distance) * dict[i])
-      _best.push({...t, Projected})
+      const Projected = durationSItoDisplay(
+        (t.si_time / t.si_distance) * dict[i]
+      )
+      _best.push({ ...t, Projected })
     }
   })
 
@@ -61,15 +63,15 @@ const BestSplits = ({ best }) => {
       return show ? (
         <>
           <Th>{'>='}</Th>
-          <Th>Date</Th>
-          <Th>Distance</Th>
-          <Th>Timing</Th>
+          <Th>DATE</Th>
+          <Th>DISTANCE</Th>
+          <Th>TIME</Th>
         </>
       ) : (
         <>
           <Th>{'>='}</Th>
-          <Th>Best Pace</Th>
-          <Th>Projected Time</Th>
+          <Th>PACE</Th>
+          <Th>SPLIT</Th>
         </>
       )
     }
@@ -125,7 +127,12 @@ const BestSplits = ({ best }) => {
     <>
       <Box px="2px" mt="-5" mb="12">
         <BestBox>
-          <Flex alignItems="center" justifyContent="space-between" px="16px">
+          <Flex
+            alignItems="center"
+            justifyContent="space-between"
+            px="16px"
+            mb="4px"
+          >
             <Text
               whiteSpace="nowrap"
               color="gray.600"

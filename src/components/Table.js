@@ -84,7 +84,7 @@ const IntervalsTable = ({ rows }) => {
             <Thead>
               <Tr>
                 <Th>PROGRAMME</Th>
-                <Th>TIMINGS</Th>
+                <Th>TIMES</Th>
                 <Th>PACE</Th>
                 <Th>DATE</Th>
               </Tr>
