@@ -95,22 +95,22 @@ const Page = ({ display_name, distance, intervals, on_off, timed, best }) => {
         </Tabs>
       </Container>
       <Center h="100" color="teal.500">
-        <Flex
-          as="button"
-          h="40px"
-          w="40px"
-          alignItems="center"
-          justifyContent="center"
-          borderRadius="50%"
-          className="noselect"
-          color="teal.350"
-          _hover={{ bg: 'rgba(0, 0, 0, 0.1)' }}
-          _active={{ bg: 'rgba(0, 0, 0, 0.2)' }}
-        >
-          <a href="/">
+        <a href="/">
+          <Flex
+            as="button"
+            h="40px"
+            w="40px"
+            alignItems="center"
+            justifyContent="center"
+            borderRadius="50%"
+            className="noselect"
+            color="teal.350"
+            _hover={{ bg: 'rgba(0, 0, 0, 0.1)' }}
+            _active={{ bg: 'rgba(0, 0, 0, 0.2)' }}
+          >
             <AiOutlineHome size="20" />
-          </a>
-        </Flex>
+          </Flex>
+        </a>
       </Center>
     </>
   )
