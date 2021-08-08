@@ -65,12 +65,9 @@ const zipTable = (keys, data) => {
   return result
 }
 
-const getActiveYears = (userObject) => {
-  const start = userObject.GradYear - 5
-  const years = []
-  for (let i = 0; i < 6; i++) {
-    years.push(start + i)
-  }
+const getActiveYears = (user_metadata) => {
+  const start = user_metadata.GradYear - 5
+  const years = [...Array(6)].map((_, index) => index + 1 + start)
   return years
 }
 
