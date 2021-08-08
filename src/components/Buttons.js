@@ -1,9 +1,9 @@
 import { AiOutlineHome } from 'react-icons/ai'
-import { Flex, Button } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 
 const HomeButton = () => {
   return (
-    <Button variant='ghost'>
+    <Button variant='ghost' onClick={() => window.location = '/'}>
       <AiOutlineHome size="20" />
     </Button>
   )
