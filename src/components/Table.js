@@ -1,4 +1,14 @@
-import { Box, Th, Tbody, Tr, Td, Thead, Table, Code } from '@chakra-ui/react'
+import {
+  Kbd,
+  Box,
+  Th,
+  Tbody,
+  Tr,
+  Td,
+  Thead,
+  Table,
+  Code,
+} from '@chakra-ui/react'
 import FieldBox from 'components/FieldBox'
 import styles from '@styles/Table.module.css'
 import { medalDist } from 'utils/text'
@@ -22,13 +32,24 @@ const DistanceTable = ({ rows }) => {
   // TODO: add crowns next to best split days
   const medal = (best) => {
     if (best && best.length > 0) {
-      return best.map((e, index) => (<span key={index}>hi</span>))
+      return best.map((e, index) => (
+        <Kbd
+          bg="yellow.300"
+          borderColor='orange.300'
+          px='0.5ch'
+          whiteSpace='nowrap'
+          color="gray.700"
+          style={medalStyle}
+          key={index}
+        >
+          {medalDist(e)}
+        </Kbd>
+      ))
     } else return ''
   }
   const medalStyle = {
-    backgroundColor: 'var(--chakra-colors-gray-400)',
-    borderRadius: '5px',
-    fontSize: '10px'
+    fontSize: '10px',
+    marginRight: '0.5ch',
   }
   const data = () => {
     return (
@@ -39,7 +60,7 @@ const DistanceTable = ({ rows }) => {
             <Td>{row.Timing}</Td>
             <Td>
               {row.Pace}
-              <span style={medalStyle}>{medal(row.best)}</span>
+              <div>{medal(row.best)}</div>
             </Td>
             <Td>{row.Date}</Td>
           </Tr>
