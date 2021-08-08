@@ -71,9 +71,9 @@ const getActiveYears = (user_metadata) => {
   return years
 }
 
-const getActiveSpreadsheets = (activeYears) => {
+const getActiveSpreadsheets = (active_years) => {
   const activeSheets = {}
-  activeYears.forEach((y) => {
+  active_years.forEach((y) => {
     if (sheetIDs.hasOwnProperty(y)) {
       activeSheets[y] = sheetIDs[y]
     }
