@@ -1,35 +1,26 @@
-import spreadsheet_ids from '@root/spreadsheets'
 import { google } from 'googleapis'
 import { main } from 'main'
-import { RiHome4Line } from 'react-icons/ri'
 import { AiOutlineHome } from 'react-icons/ai'
 import {
   Container,
-  Heading,
-  Text,
   Flex,
-  Select,
   Tabs,
   TabList,
   TabPanels,
   Tab,
   TabPanel,
   Center,
-  Divider,
 } from '@chakra-ui/react'
 import {
-  DistanceTable,
-  IntervalsTable,
   OnOffTable,
   TimedTable,
 } from 'components/Table'
 import Intervals from 'components/Intervals'
 import Distance from 'components/Distance'
 import BestSplits from 'components/BestSplits'
+import { Title, Name } from 'components/Typography'
 
 export async function getServerSideProps({ query }) {
-  // necessary google auth code
-
   const credentials = {
     client_email: process.env.GOOGLE_CLIENT_EMAIL,
     client_id: process.env.GOOGLE_CLIENT_ID,
@@ -41,34 +32,20 @@ export async function getServerSideProps({ query }) {
     scopes,
   })
   const sheets = google.sheets({ version: 'v4', auth })
-
   const response = await main(query, sheets)
-
   return {
     props: response,
   }
 }
 
 const Page = ({ display_name, distance, intervals, on_off, timed, best }) => {
-  const Title = () => {
-    return (
-      <Text mt="1em" color="primary" fontSize="3xl" fontWeight="800">
-        Training Stats
-      </Text>
-    )
-  }
-  const Name = () => {
-    return (
-      <Text color="gray.500" mb="10">
-        {display_name}
-      </Text>
-    )
-  }
   return (
     <>
       <Container size="md" mb="2">
-        <Title />
-        <Name />
+
+        <Title t="Training Stats"/>
+        <Name n={display_name}/>
+
         <BestSplits best={best} />
         <Tabs variant="enclosed" colorScheme="teal" isFitted>
           <TabList mb="1.6em">
@@ -77,7 +54,6 @@ const Page = ({ display_name, distance, intervals, on_off, timed, best }) => {
             <Tab>On-Off</Tab>
             <Tab>Timed</Tab>
           </TabList>
-
           <TabPanels>
             <TabPanel p="0">
               <Distance rows={distance} />
@@ -93,7 +69,9 @@ const Page = ({ display_name, distance, intervals, on_off, timed, best }) => {
             </TabPanel>
           </TabPanels>
         </Tabs>
+
       </Container>
+
       <Center h="100" color="teal.500">
         <a href="/">
           <Flex
