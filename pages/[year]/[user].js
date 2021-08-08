@@ -1,11 +1,13 @@
 import spreadsheet_ids from '@root/spreadsheets'
 import { google } from 'googleapis'
 import { main } from 'main'
-import { RiQuillPenLine } from 'react-icons/ri'
+import { RiHome4Line } from 'react-icons/ri'
+import { AiOutlineHome } from 'react-icons/ai'
 import {
   Container,
   Heading,
   Text,
+  Flex,
   Select,
   Tabs,
   TabList,
@@ -93,7 +95,22 @@ const Page = ({ display_name, distance, intervals, on_off, timed, best }) => {
         </Tabs>
       </Container>
       <Center h="100" color="teal.500">
-        <RiQuillPenLine />
+        <Flex
+          as="button"
+          h="40px"
+          w="40px"
+          alignItems="center"
+          justifyContent="center"
+          borderRadius="50%"
+          className="noselect"
+          color="teal.350"
+          _hover={{ bg: 'rgba(0, 0, 0, 0.1)' }}
+          _active={{ bg: 'rgba(0, 0, 0, 0.2)' }}
+        >
+          <a href="/">
+            <AiOutlineHome size="20" />
+          </a>
+        </Flex>
       </Center>
     </>
   )
