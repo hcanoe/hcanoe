@@ -1,10 +1,32 @@
 import sheetIDs from '@root/spreadsheets'
 import { makeEnglish, makeNameCaps } from '@utils/text'
+import spreadsheet_ids from '@root/spreadsheets'
+
+export async function getUserMetadata({ sheets, user, year }) {
+  const response = (
+    await sheets.spreadsheets.values.get({
+      spreadsheetId: spreadsheet_ids.meta,
+      range: `data!A:F`,
+    })
+  ).data.values
+  console.log(response)
+  if (response) {
+    const metadata_headers = response.shift()
+    const metadata_body = searchUser(user, year, response)
+    const user_metadata = zipTable(metadata_headers, metadata_body)
+    return user_metadata
+  } else {
+    console.log('no response from google sheets')
+  }
+}
 
 const searchUser = (User, gradYY, tableData) => {
-  const gradYear = "20" + gradYY
+  const gradYear = '20' + gradYY
   const searchRes = tableData.filter((arr) => {
-    if ((arr.includes(User) || arr.includes(makeNameCaps(User))) && arr.includes(gradYear)) {
+    if (
+      (arr.includes(User) || arr.includes(makeNameCaps(User))) &&
+      arr.includes(gradYear)
+    ) {
       return true
     } else {
       return false
@@ -77,9 +99,4 @@ const getSpreadsheetsByType = (user_metadata, type) => {
   return result
 }
 
-export {
-  searchUser,
-  searchUserInDay,
-  getSpreadsheetsByType,
-  zipTable
-}
+export { searchUser, searchUserInDay, getSpreadsheetsByType, zipTable }

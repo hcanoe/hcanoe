@@ -1,5 +1,5 @@
-import spreadsheet_ids from '@root/spreadsheets'
 import {
+  getUserMetadata,
   searchUser,
   searchUserInDay,
   getSpreadsheetsByType,
@@ -46,18 +46,6 @@ async function getAllSheets(sheets, idList) {
   )
 
   return result
-}
-
-async function getMetadata(sheets) {
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: spreadsheet_ids.meta,
-    range: `data!A:F`,
-  })
-  if (response) {
-    return response.data.values
-  } else {
-    console.log('no response from google sheets')
-  }
 }
 
 const getUserTrainingData = (data_all_sheets, name) => {
@@ -134,25 +122,15 @@ export async function main(query, sheets) {
   /*
    * grab year and user from url
    * hcanoe.vercel.app/18/ning-yiran
-   *   {
-   *     year: 18,
-   *     user: ning-yiran
-   *   }
+   *   { year: 18, user: ning-yiran }
    */
   const { year, user } = query
 
   /*
-   * retrieve user's metadata (Name, Graduation Year)
-   *   {
-   *     Name,
-   *     GradYear
-   *   }
+   * retrieve user's metadata from google spreadsheet called meta
+   *   metadata = { Name, GradYear }
    */
-  const metadata = await getMetadata(sheets, spreadsheet_ids.meta, 'data!A:F')
-
-  const metadata_headers = metadata.shift()
-  const metadata_body = searchUser(user, year, metadata)
-  const user_metadata = zipTable(metadata_headers, metadata_body)
+  const user_metadata = await getUserMetadata({sheets, user, year})
   const name = user_metadata.Name
 
   const spreadsheet_ids_by_type = getSpreadsheetsByType(user_metadata, 'run')
