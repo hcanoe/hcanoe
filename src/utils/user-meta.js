@@ -43,9 +43,9 @@ const searchUser = (user, year, data) => {
   }
 }
 
-const searchUserInDay = (User, tableData) => {
-  const search_res = tableData.filter((arr) => {
-    if (arr.includes(User)) {
+const searchUserInDay = (user, data) => {
+  const search_res = data.filter((arr) => {
+    if (arr.includes(user)) {
       return true
     } else {
       return false
