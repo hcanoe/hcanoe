@@ -19,22 +19,21 @@ export async function getUserMetadata({ sheets, user, year }) {
   }
 }
 
-const searchUser = (User, gradYY, tableData) => {
-  const gradYear = '20' + gradYY
-  const searchRes = tableData.filter((arr) => {
+const searchUser = (user, year, data) => {
+  const full_year = '20' + year
+  const search_res = data.filter((arr) => {
     if (
-      (arr.includes(User) || arr.includes(makeNameCaps(User))) &&
-      arr.includes(gradYear)
+      (arr.includes(user) || arr.includes(makeNameCaps(user))) &&
+      arr.includes(full_year)
     ) {
       return true
     } else {
       return false
     }
   })
-  const l = searchRes.length
-  var userData
+  const l = search_res.length
   if (l == 1) {
-    userData = searchRes[0]
+    return search_res[0]
   } else if (l > 1) {
     console.log('more than one user matches search')
     return { error: 'more than one user matches search' }
@@ -42,18 +41,17 @@ const searchUser = (User, gradYY, tableData) => {
     console.log('no user matches search')
     return { error: 'no user matches search' }
   }
-  return userData
 }
 
 const searchUserInDay = (User, tableData) => {
-  const searchRes = tableData.filter((arr) => {
+  const search_res = tableData.filter((arr) => {
     if (arr.includes(User)) {
       return true
     } else {
       return false
     }
   })
-  return searchRes[0]
+  return search_res[0]
 }
 
 const zipTable = (keys, data) => {
@@ -98,4 +96,4 @@ const getSpreadsheetsByType = (user_metadata, type) => {
   return result
 }
 
-export { searchUser, searchUserInDay, getSpreadsheetsByType, zipTable }
+export { searchUserInDay, getSpreadsheetsByType, zipTable }

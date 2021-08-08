@@ -1,6 +1,5 @@
 import {
   getUserMetadata,
-  searchUser,
   searchUserInDay,
   getSpreadsheetsByType,
   zipTable,
