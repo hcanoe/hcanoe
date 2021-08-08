@@ -1,12 +1,8 @@
-import { getDate } from '@utils/date'
-import { allCaps } from '@utils/text'
-import { displayDistance } from '@utils/physics'
+import { medalDist } from 'utils/text'
 
 const Page = () => {
-  const input = 10000
-  console.log(toString(input))
-  console.log(displayDistance('10000', 'km'))
-
+  const n = 10000
+  console.log(medalDist(n))
   return (
     null
   )

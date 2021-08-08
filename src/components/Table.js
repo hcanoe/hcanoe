@@ -1,24 +1,46 @@
 import { Box, Th, Tbody, Tr, Td, Thead, Table, Code } from '@chakra-ui/react'
 import FieldBox from 'components/FieldBox'
 import styles from '@styles/Table.module.css'
+import { medalDist } from 'utils/text'
 
 const NoData = ({ message = 'no data' }) => {
   return (
-    <Code bg='gray.50' color="primary" display="block" whiteSpace="pre" mt="4" p="4">
+    <Code
+      bg="gray.50"
+      color="primary"
+      display="block"
+      whiteSpace="pre"
+      mt="4"
+      p="4"
+    >
       {message}
     </Code>
   )
 }
 
 const DistanceTable = ({ rows }) => {
+  // TODO: add crowns next to best split days
+  const medal = (best) => {
+    if (best && best.length > 0) {
+      return best.map((e, index) => (<span key={index}>hi</span>))
+    } else return ''
+  }
+  const medalStyle = {
+    backgroundColor: 'var(--chakra-colors-gray-400)',
+    borderRadius: '5px',
+    fontSize: '10px'
+  }
   const data = () => {
     return (
       <Tbody>
-        {rows.map((row) => (
-          <Tr key={row.Date}>
+        {rows.map((row, i) => (
+          <Tr key={row.Date + i}>
             <Td>{row.Distance}</Td>
             <Td>{row.Timing}</Td>
-            <Td>{row.Pace}</Td>
+            <Td>
+              {row.Pace}
+              <span style={medalStyle}>{medal(row.best)}</span>
+            </Td>
             <Td>{row.Date}</Td>
           </Tr>
         ))}
@@ -63,8 +85,8 @@ const IntervalsTable = ({ rows }) => {
   const Data = () => {
     return (
       <Tbody>
-        {rows.map((row) => (
-          <Tr key={row.Date}>
+        {rows.map((row, i) => (
+          <Tr key={row.Date + i}>
             <Subline row={row} subtype="Programme" />
             <Subline row={row} subtype="Timings" />
             <Subline row={row} subtype="Paces" />
@@ -101,8 +123,8 @@ const OnOffTable = ({ rows }) => {
   const Data = () => {
     return (
       <Tbody>
-        {rows.map((row) => (
-          <Tr key={row.Date}>
+        {rows.map((row, i) => (
+          <Tr key={row.Date + i}>
             <Td>{row.Programme}</Td>
             <Td>{row.Distance}</Td>
             <Td>{row.Date}</Td>
@@ -137,8 +159,8 @@ const TimedTable = ({ rows }) => {
   const Data = () => {
     return (
       <Tbody>
-        {rows.map((row) => (
-          <Tr key={row.Date}>
+        {rows.map((row, i) => (
+          <Tr key={row.Date + i}>
             <Td>{row.Programme}</Td>
             <Td>{row.Distance}</Td>
             <Td>{row.Pace}</Td>

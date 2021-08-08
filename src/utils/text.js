@@ -24,4 +24,14 @@ const makeNameCaps = (str) => {
   return result
 }
 
-export { makeEnglish, allCaps, makeNameCaps }
+const medalDist = (num) => {
+  const str = (num / 1000).toFixed(1).toString()
+  if (str.slice(-1) === '0') {
+    return str.split('.')[0]
+  } else {
+    return str
+  }
+  return null
+}
+
+export { makeEnglish, allCaps, makeNameCaps, medalDist }
