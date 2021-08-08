@@ -1,6 +1,7 @@
 import sheetIDs from '@root/spreadsheets'
-import { makeEnglish, makeNameCaps } from '@utils/text'
+import { makeNameCaps } from '@utils/text'
 import spreadsheet_ids from '@root/spreadsheets'
+import { metadata } from 'types/types'
 
 export async function getUserMetadata({ sheets, user, year }) {
   const response = (
@@ -19,7 +20,7 @@ export async function getUserMetadata({ sheets, user, year }) {
   }
 }
 
-const searchUser = (user, year, data) => {
+const searchUser = (user: string, year: number, data: Array<Array<string>>) => {
   const full_year = '20' + year
   const search_res = data.filter((arr) => {
     if (
@@ -36,14 +37,12 @@ const searchUser = (user, year, data) => {
     return search_res[0]
   } else if (l > 1) {
     console.log('more than one user matches search')
-    return { error: 'more than one user matches search' }
   } else {
     console.log('no user matches search')
-    return { error: 'no user matches search' }
   }
 }
 
-const searchUserInDay = (user, data) => {
+const searchUserInDay = (user: string, data: Array<string>) => {
   const search_res = data.filter((arr) => {
     if (arr.includes(user)) {
       return true
@@ -54,7 +53,7 @@ const searchUserInDay = (user, data) => {
   return search_res[0]
 }
 
-const zipTable = (keys, data) => {
+const zipTable = (keys: Array<string>, data: Array<string>) => {
   const result = keys.reduce(
     (obj, k, i) => ({
       ...obj,
@@ -65,17 +64,7 @@ const zipTable = (keys, data) => {
   return result
 }
 
-interface metadata {
-  Name: string
-  GradYear: number
-  Gender?: string
-  Craft?: string
-  DisplayName?: string
-  Domain?: string
-}
-
 const getActiveYears = (user_metadata: metadata) => {
-  console.log(user_metadata)
   const start = user_metadata.GradYear - 5
   const years = [...Array(6)].map((_, index) => index + 1 + start)
   return years
@@ -91,7 +80,7 @@ const getActiveSpreadsheets = (active_years: Array<number>) => {
   return activeSheets
 }
 
-const getSpreadsheetsByType = (user_metadata: object, type: string) => {
+const getSpreadsheetsByType = (user_metadata: metadata, type: string) => {
   const activeYears = getActiveYears(user_metadata)
   const activeSheets = getActiveSpreadsheets(activeYears)
   const result = []
