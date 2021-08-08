@@ -1,16 +1,13 @@
 import { google } from 'googleapis'
 import { main } from 'main'
-import { AiOutlineHome } from 'react-icons/ai'
 import {
   Container,
-  Flex,
   Tabs,
   TabList,
   TabPanels,
   Tab,
   TabPanel,
-  Center,
-} from '@chakra-ui/react'
+  Center, } from '@chakra-ui/react'
 import {
   OnOffTable,
   TimedTable,
@@ -19,6 +16,7 @@ import Intervals from 'components/Intervals'
 import Distance from 'components/Distance'
 import BestSplits from 'components/BestSplits'
 import { Title, Name } from 'components/Typography'
+import { HomeButton } from 'components/Buttons'
 
 export async function getServerSideProps({ query }) {
   const credentials = {
@@ -73,22 +71,7 @@ const Page = ({ display_name, distance, intervals, on_off, timed, best }) => {
       </Container>
 
       <Center h="100" color="teal.500">
-        <a href="/">
-          <Flex
-            as="button"
-            h="40px"
-            w="40px"
-            alignItems="center"
-            justifyContent="center"
-            borderRadius="50%"
-            className="noselect"
-            color="teal.350"
-            _hover={{ bg: 'rgba(0, 0, 0, 0.1)' }}
-            _active={{ bg: 'rgba(0, 0, 0, 0.2)' }}
-          >
-            <AiOutlineHome size="20" />
-          </Flex>
-        </a>
+        <HomeButton />
       </Center>
     </>
   )
