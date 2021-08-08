@@ -65,13 +65,23 @@ const zipTable = (keys, data) => {
   return result
 }
 
-const getActiveYears = (user_metadata) => {
+interface metadata {
+  Name: string
+  GradYear: number
+  Gender?: string
+  Craft?: string
+  DisplayName?: string
+  Domain?: string
+}
+
+const getActiveYears = (user_metadata: metadata) => {
+  console.log(user_metadata)
   const start = user_metadata.GradYear - 5
   const years = [...Array(6)].map((_, index) => index + 1 + start)
   return years
 }
 
-const getActiveSpreadsheets = (active_years) => {
+const getActiveSpreadsheets = (active_years: Array<number>) => {
   const activeSheets = {}
   active_years.forEach((y) => {
     if (sheetIDs.hasOwnProperty(y)) {
@@ -81,7 +91,7 @@ const getActiveSpreadsheets = (active_years) => {
   return activeSheets
 }
 
-const getSpreadsheetsByType = (user_metadata, type) => {
+const getSpreadsheetsByType = (user_metadata: object, type: string) => {
   const activeYears = getActiveYears(user_metadata)
   const activeSheets = getActiveSpreadsheets(activeYears)
   const result = []
