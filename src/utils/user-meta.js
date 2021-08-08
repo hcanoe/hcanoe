@@ -9,11 +9,10 @@ export async function getUserMetadata({ sheets, user, year }) {
       range: `data!A:F`,
     })
   ).data.values
-  console.log(response)
   if (response) {
-    const metadata_headers = response.shift()
-    const metadata_body = searchUser(user, year, response)
-    const user_metadata = zipTable(metadata_headers, metadata_body)
+    const headers = response.shift()
+    const body = searchUser(user, year, response)
+    const user_metadata = zipTable(headers, body)
     return user_metadata
   } else {
     console.log('no response from google sheets')

@@ -128,7 +128,6 @@ export async function main(query, sheets) {
 
   /*
    * retrieve user's metadata from google spreadsheet called meta
-   *   metadata = { Name, GradYear }
    */
   const user_metadata = await getUserMetadata({sheets, user, year})
   const name = user_metadata.Name
