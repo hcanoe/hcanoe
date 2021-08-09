@@ -3,7 +3,11 @@ import { makeNameCaps } from '@utils/text'
 import spreadsheet_ids from '@root/spreadsheets'
 import { metadata } from 'types/types'
 
-export async function getUserMetadata({ sheets, user, year }) {
+export async function getUserMetadata(
+  sheets: object,
+  user: string,
+  year: number
+) {
   const response = (
     await sheets.spreadsheets.values.get({
       spreadsheetId: spreadsheet_ids.meta,
