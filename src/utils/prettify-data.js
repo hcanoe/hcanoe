@@ -185,6 +185,7 @@ const secondsToMMSS = (int) => {
   p.MM = parseInt(p.sec / 60)
   p.SS = parseInt(p.sec % 60)
   p.result = p.MM + ':' + p.SS
+  // console.log('input', int, 'output', p.result)
   return p.result
 }
 

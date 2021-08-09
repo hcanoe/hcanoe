@@ -75,9 +75,9 @@ const secondsPerMeterToHHMMSS = (t: number, d: number) => {
 const stringToHHMMSS = (t: string) => {
   const colonCount = t.match(/:/g).length
   if (colonCount === 1) {
-    return moment.duration('0:' + t).asSeconds()
+    return secondsToHHMMSS(moment.duration('0:' + t).asSeconds())
   } else if (colonCount === 2) {
-    return moment.duration(t).asSeconds()
+    return secondsToHHMMSS(moment.duration(t).asSeconds())
   }
 }
 
