@@ -3,7 +3,7 @@ import moment from 'moment'
 /*
  * parses a human readable distance to distance in meters
  * values without units are assumed to be in km
- * values above 99 are assumed to be in m
+ * values above 100 are assumed to be in m
  * (here's to the one crazy guy that makes me come back here to fix this assumption)
  *
  * 8.0km => 8000
@@ -12,41 +12,39 @@ import moment from 'moment'
  * 800   => 800
  *
  */
-const parseDistanceToSI = (string) => {
-  if (string.includes('k')) {
-    const num = parseFloat(string.replace('km', '').replace(/ /g, ''))
+const parseDistanceToSI = (s: string) => {
+  if (s.includes('k')) {
+    const num = parseFloat(s.replace('km', '').replace(/ /g, ''))
     return num * 1000
-  } else if (string.includes('m')) {
-    const num = parseFloat(string.replace('m', '').replace(/ /g, ''))
+  } else if (s.includes('m')) {
+    const num = parseFloat(s.replace('m', '').replace(/ /g, ''))
     return num
   } else {
-    const num = parseFloat(string.replace(/ /g, ''))
+    const num = parseFloat(s.replace(/ /g, ''))
+    // values above 99 are assumed to be in m
     if (num >= 100) {
       return num
     } else {
       return num * 1000
     }
   }
-  return 'distance'
 }
 
-const parseDurationToSI = (dur) => {
-  const p = {}
-  const colonCount = dur.match(/:/g).length
+const parseDurationToSI = (t: string) => {
+  const colonCount = t.match(/:/g).length
   if (colonCount === 1) {
-    p.sec = moment.duration('0:' + dur).asSeconds()
+    return moment.duration('0:' + t).asSeconds()
   } else if (colonCount === 2) {
-    p.sec = moment.duration(dur).asSeconds()
+    return moment.duration(t).asSeconds()
   }
-  return p.sec
 }
 
-const displayDistance = (string, unit) => {
-  const d = parseDistanceToSI(string)
+const displayDistance = (s: string, unit: string) => {
+  const d: number = parseDistanceToSI(s)
   if (unit === 'km') {
     return (d / 1000).toFixed(2) + ' km'
   } else if (unit === 'm') {
-    return d + ' m'
+    return d.toFixed(0) + ' m'
   } else {
     return 'invalid unit'
   }
@@ -58,36 +56,31 @@ const displayDistance = (string, unit) => {
  *  2. distance (using parseDistanceToSI())
  * returns min/km, human readable again
  */
-const displayPace = (dur, dist) => {
-  const p = {}
-  p.sec = parseDurationToSI(dur)
-  p.m = parseDistanceToSI(dist)
-  return displayPaceFromSI(p.sec, p.m)
+const displayPace = (t: string, d: string) => {
+  return displayPaceFromSI(parseDurationToSI(t), parseDistanceToSI(d))
 }
 
 /*
  * takes in all SI units (seconds, meters)
  * returns min/km, human readable again
  */
-const displayPaceFromSI = (dur, dist) => {
-  return durationSItoDisplay(dur / dist * 1000)
+const displayPaceFromSI = (t: number, d: number) => {
+  return durationSItoDisplay((t / d) * 1000)
 }
 
-const displayDuration = (dur) => {
-  const p = {}
-  const colonCount = dur.match(/:/g).length
+const displayDuration = (t: string) => {
+  const colonCount = t.match(/:/g).length
   if (colonCount === 1) {
-    p.sec = moment.duration('0:' + dur).asSeconds()
+    return moment.duration('0:' + t).asSeconds()
   } else if (colonCount === 2) {
-    p.sec = moment.duration(dur).asSeconds()
+    return moment.duration(t).asSeconds()
   }
-  return durationSItoDisplay(p.sec)
 }
 
-const durationSItoDisplay = (sec) => {
-  const H = new Date(sec * 1000).toISOString().substr(11, 2)
-  const M = new Date(sec * 1000).toISOString().substr(14, 2)
-  const S = new Date(sec * 1000).toISOString().substr(17, 2)
+const durationSItoDisplay = (t: number) => {
+  const H = new Date(t * 1000).toISOString().substr(11, 2)
+  const M = new Date(t * 1000).toISOString().substr(14, 2)
+  const S = new Date(t * 1000).toISOString().substr(17, 2)
   if (H === '00') {
     if (M === '00') {
       return ['0', S].join(':')
