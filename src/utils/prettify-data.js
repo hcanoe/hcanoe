@@ -5,7 +5,7 @@ import {
   displayPaceFromSI,
   displayPace,
   displayDistance,
-  displayDuration,
+  stringToHHMMSS,
   secondsToHHMMSS,
 } from '@utils/physics'
 import { recentFirst } from '@utils/sort'
@@ -31,7 +31,7 @@ const prettifyDistance = (arr) => {
     training.Distance = displayDistance(training.Distance, 'km')
     // Timings
     const si_time = parseDurationToSI(training.Timing)
-    training.Timing = displayDuration(training.Timing)
+    training.Timing = stringToHHMMSS(training.Timing)
     // Check if best
     for (let i = 0; i < 4; i++) {
       if (si_distance >= dict[i]) {
@@ -249,7 +249,7 @@ const getIntervalsProgramme = (d) => {
           )
         )
         Programme.push(1 + 'x' + e.Set + '/' + quoteNotation(e.Rest))
-        Timings.push([displayDuration(e.Timing)])
+        Timings.push([stringToHHMMSS(e.Timing)])
         Paces.push(
           displayPaceFromSI(mmssToSeconds(e.Timing), parseDistanceToSI(e.Set))
         )
@@ -434,7 +434,7 @@ const prettifyTimed = (arr) => {
   arr.forEach((training) => {
     training.Pace = displayPace(training.Duration, training.Distance)
     training.Distance = displayDistance(training.Distance, 'km')
-    training.Programme = displayDuration(training.Duration)
+    training.Programme = stringToHHMMSS(training.Duration)
     const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
     training.SortDate = process_date
   })

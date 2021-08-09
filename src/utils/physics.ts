@@ -68,7 +68,7 @@ const displayPaceFromSI = (t: number, d: number) => {
   return secondsToHHMMSS((t / d) * 1000)
 }
 
-const displayDuration = (t: string) => {
+const stringToHHMMSS = (t: string) => {
   const colonCount = t.match(/:/g).length
   if (colonCount === 1) {
     return moment.duration('0:' + t).asSeconds()
@@ -97,7 +97,7 @@ const secondsToHHMMSS = (t: number) => {
 }
 
 export {
-  displayDuration,
+  stringToHHMMSS,
   displayDistance,
   displayPace,
   displayPaceFromSI,
