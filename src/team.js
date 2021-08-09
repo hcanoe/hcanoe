@@ -29,9 +29,9 @@ async function getMetadata(sheets) {
 
 
 export async function team(query, sheets) {
+  // TODO: make a large object containing the whole team's data
   const output = {}
   const metadata = await getMetadata(sheets, spreadsheet_ids.meta, 'data!A:F')
   output.metadata = metadata
-
   return output
 }

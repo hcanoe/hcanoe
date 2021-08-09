@@ -29,7 +29,6 @@ const NoData = ({ message = 'no data' }) => {
 }
 
 const DistanceTable = ({ rows }) => {
-  // TODO: add crowns next to best split days
   const medal = (best) => {
     if (best && best.length > 0) {
       return best.map((e, index) => (
