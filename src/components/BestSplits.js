@@ -6,7 +6,7 @@ import { RiVipCrownLine, RiVipCrownFill } from 'react-icons/ri'
 import {
   displayDistance,
   displayDuration,
-  durationSItoDisplay,
+  secondsToHHMMSS,
 } from '@utils/physics'
 import {
   Box,
@@ -51,7 +51,7 @@ const BestSplits = ({ best }) => {
   const _best = []
   best.forEach((t, i) => {
     if (t) {
-      const Projected = durationSItoDisplay(
+      const Projected = secondsToHHMMSS(
         (t.si_time / t.si_distance) * dict[i]
       )
       _best.push({ ...t, Projected })

@@ -65,7 +65,7 @@ const displayPace = (t: string, d: string) => {
  * returns min/km, human readable again
  */
 const displayPaceFromSI = (t: number, d: number) => {
-  return durationSItoDisplay((t / d) * 1000)
+  return secondsToHHMMSS((t / d) * 1000)
 }
 
 const displayDuration = (t: string) => {
@@ -77,7 +77,7 @@ const displayDuration = (t: string) => {
   }
 }
 
-const durationSItoDisplay = (t: number) => {
+const secondsToHHMMSS = (t: number) => {
   const H = new Date(t * 1000).toISOString().substr(11, 2)
   const M = new Date(t * 1000).toISOString().substr(14, 2)
   const S = new Date(t * 1000).toISOString().substr(17, 2)
@@ -103,5 +103,5 @@ export {
   displayPaceFromSI,
   parseDistanceToSI,
   parseDurationToSI,
-  durationSItoDisplay,
+  secondsToHHMMSS,
 }

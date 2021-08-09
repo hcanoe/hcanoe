@@ -6,7 +6,7 @@ import {
   displayPace,
   displayDistance,
   displayDuration,
-  durationSItoDisplay,
+  secondsToHHMMSS,
 } from '@utils/physics'
 import { recentFirst } from '@utils/sort'
 
