@@ -2,7 +2,7 @@ import moment from 'moment'
 import {
   parseDistanceToSI,
   parseDurationToSI,
-  displayPaceFromSI,
+  secondsPerKmToHHMMSS,
   displayPace,
   displayDistance,
   stringToHHMMSS,
@@ -234,7 +234,7 @@ const getIntervalsProgramme = (d) => {
         Programme.push(c + 'x' + mem.Set + '/' + quoteNotation(mem.Rest))
         Timings.push(mem.Timings.map((x) => secondsToMMSS(x)))
         Paces.push(
-          displayPaceFromSI(
+          secondsPerKmToHHMMSS(
             mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
             parseDistanceToSI(mem.Set) * c // total distance in meters
           )
@@ -243,7 +243,7 @@ const getIntervalsProgramme = (d) => {
         Programme.push(c + 'x' + mem.Set + '/' + quoteNotation(mem.Rest))
         Timings.push(mem.Timings.map((x) => secondsToMMSS(x)))
         Paces.push(
-          displayPaceFromSI(
+          secondsPerKmToHHMMSS(
             mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
             parseDistanceToSI(mem.Set) * c // total distance in meters
           )
@@ -251,7 +251,7 @@ const getIntervalsProgramme = (d) => {
         Programme.push(1 + 'x' + e.Set + '/' + quoteNotation(e.Rest))
         Timings.push([stringToHHMMSS(e.Timing)])
         Paces.push(
-          displayPaceFromSI(mmssToSeconds(e.Timing), parseDistanceToSI(e.Set))
+          secondsPerKmToHHMMSS(mmssToSeconds(e.Timing), parseDistanceToSI(e.Set))
         )
       }
     } else {
@@ -263,7 +263,7 @@ const getIntervalsProgramme = (d) => {
         Programme.push(c + 'x' + mem.Set + '/' + quoteNotation(mem.Rest))
         Timings.push(mem.Timings.map((x) => secondsToMMSS(x)))
         Paces.push(
-          displayPaceFromSI(
+          secondsPerKmToHHMMSS(
             mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
             parseDistanceToSI(mem.Set) * c // total distance in meters
           )

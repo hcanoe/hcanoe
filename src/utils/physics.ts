@@ -57,14 +57,15 @@ const displayDistance = (s: string, unit: string) => {
  * returns min/km, human readable again
  */
 const displayPace = (t: string, d: string) => {
-  return displayPaceFromSI(parseDurationToSI(t), parseDistanceToSI(d))
+  return secondsPerKmToHHMMSS(parseDurationToSI(t), parseDistanceToSI(d))
+  u(parseDurationToSI(t), parseDistanceToSI(d))
 }
 
 /*
  * takes in all SI units (seconds, meters)
  * returns min/km, human readable again
  */
-const displayPaceFromSI = (t: number, d: number) => {
+const secondsPerKmToHHMMSS = (t: number, d: number) => {
   return secondsToHHMMSS((t / d) * 1000)
 }
 
@@ -97,11 +98,11 @@ const secondsToHHMMSS = (t: number) => {
 }
 
 export {
-  stringToHHMMSS,
   displayDistance,
   displayPace,
-  displayPaceFromSI,
+  secondsPerKmToHHMMSS,
   parseDistanceToSI,
   parseDurationToSI,
+  stringToHHMMSS,
   secondsToHHMMSS,
 }
