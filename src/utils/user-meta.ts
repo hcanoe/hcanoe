@@ -3,8 +3,18 @@ import { makeNameCaps } from '@utils/text'
 import spreadsheet_ids from '@root/spreadsheets'
 import { metadata } from 'types/types'
 
+type sheets = {
+  spreadsheets: {
+    values: {
+      get: (request: {
+        spreadsheetId: string
+        range: string
+      }) => Promise<{ data: { values: Array<any> } }>
+    }
+  }
+}
 export async function getUserMetadata(
-  sheets: object,
+  sheets: sheets,
   user: string,
   year: number
 ) {
@@ -68,31 +78,16 @@ const zipTable = (keys: Array<string>, data: Array<string>) => {
   return result
 }
 
-const getActiveYears = (user_metadata: metadata) => {
+const getSpreadsheetsByType = (user_metadata: metadata, type: string) => {
   const start = user_metadata.GradYear - 5
-  const years = [...Array(6)].map((_, index) => index + 1 + start)
-  return years
-}
-
-const getActiveSpreadsheets = (active_years: Array<number>) => {
-  const activeSheets = {}
-  active_years.forEach((y) => {
-    if (sheetIDs.hasOwnProperty(y)) {
-      activeSheets[y] = sheetIDs[y]
+  const active_years = [...Array(6)].map((_, index) => index + 1 + start)
+  const result = []
+  console.log('sheetIDs', sheetIDs)
+  active_years.forEach((year) => {
+    if (sheetIDs.hasOwnProperty(year) && sheetIDs[year].hasOwnProperty(type)) {
+      result.push(sheetIDs[year][type])
     }
   })
-  return activeSheets
-}
-
-const getSpreadsheetsByType = (user_metadata: metadata, type: string) => {
-  const activeYears = getActiveYears(user_metadata)
-  const activeSheets = getActiveSpreadsheets(activeYears)
-  const result = []
-  for (const year in activeSheets) {
-    if (activeSheets[year].hasOwnProperty(type)) {
-      result.push(activeSheets[year][type])
-    }
-  }
   return result
 }
 

@@ -93,12 +93,12 @@ const getUserTrainingData = (data_all_sheets, name) => {
        */
       user_data_by_day[week] = {}
       for (const day in split_day) {
-        const date = getDate(week, day)
         const day_arr = split_day[day]
         const headers = day_arr.shift()
         const type = headers.shift()
         const _body = searchUserInDay(name, day_arr)
         if (_body) {
+          const date = getDate(week, day)
           const body = _body.slice(1)
           const zipped = zipTable(headers, body)
           zipped.Type = type

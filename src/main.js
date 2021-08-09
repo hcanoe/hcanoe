@@ -4,7 +4,7 @@ import {
   getSpreadsheetsByType,
   zipTable,
 } from '@utils/user-meta'
-import { makeEnglish, makeNameCaps } from '@utils/text'
+import { makeEnglish } from '@utils/text'
 import { getDate } from '@utils/date'
 import {
   prettifyDistance,
@@ -131,6 +131,7 @@ export async function main(query, sheets) {
   const user_metadata = await getUserMetadata(sheets, user, year)
   const name = user_metadata.Name
 
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   const spreadsheet_ids_by_type = getSpreadsheetsByType(user_metadata, 'run')
 
   const data_all_sheets = await getAllSheets(sheets, spreadsheet_ids_by_type)
