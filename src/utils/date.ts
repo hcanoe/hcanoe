@@ -11,11 +11,10 @@ const indexDayOfWeek = {
   Sun: 6, sun: 6, Sunday: 6,    sunday: 6,
 }
 
-const getDate = (date, dayOfWeek) => {
+const getDate = (date: string, day_of_week: number) => {
   const process_date = moment(date, "DD/MM/YYYY")
-  process_date.add(indexDayOfWeek[dayOfWeek], 'days')
-  const output = process_date.format('DD/MM/YYYY')
-  return output
+  process_date.add(indexDayOfWeek[day_of_week], 'days')
+  return process_date.format('DD/MM/YYYY')
 }
 
 export { getDate }
