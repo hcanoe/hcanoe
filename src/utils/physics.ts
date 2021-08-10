@@ -83,9 +83,24 @@ const toHHMMSS = (t: string | number) => {
   }
 }
 
+const quoteNotation = (s: string | number) => {
+  const S: number = typeof s === 'number' ? s : toSeconds(s)
+  if (S >= 3600) {
+    return 'time above an hour. not suitable for quote notation'
+  }
+  const MM = S / 60
+  const SS = S % 60
+  if (SS == 0) {
+    return MM + "'"
+  } else {
+    return MM + "'" + SS + '"'
+  }
+}
+
 export {
   displayDistance,
   displayPace,
+  quoteNotation,
   toMeters,
   toSeconds,
   toHHMMSS

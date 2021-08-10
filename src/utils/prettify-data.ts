@@ -4,6 +4,7 @@ import {
   toSeconds,
   displayPace,
   displayDistance,
+  quoteNotation,
   toHHMMSS,
 } from '@utils/physics'
 import { recentFirst } from '@utils/sort'
@@ -88,9 +89,9 @@ type Intervals = Array<{
 }>
 
 type BySets = Array<{
-  Set?: string,
-  Rest?: string,
-  Timing?: string,
+  Set?: string
+  Rest?: string
+  Timing?: string
 }>
 const prettifyIntervals = (arr: Intervals) => {
   const isKeyWord = {
@@ -115,119 +116,17 @@ const prettifyIntervals = (arr: Intervals) => {
     training.SortDate = moment(training.Date, 'DD/MM/YYYY').unix()
   })
   arr.sort(recentFirst)
-  /*
-   * expected input: an object
-   *  - Set1: 800m
-   *  - Set2: 800m
-   *  - Set3: 800m
-   *  - Rest1: 1:00
-   *  - Rest2: 1:00
-   *  - Rest3: 1:00
-   *  - Timing1: 2:41
-   *  - Timing2: 2:47
-   *  - Timing3: 2:39
-   *  - Date: 25/07/2021
-   *
-   *  expected output:
-   *    3 x 800m / 1'      2:41, 2:47, 2:39
-   *
-   * if further sets are added:
-   *  - Set4: 400m
-   *  - Set5: 400m
-   *  - Set6: 400m
-   *  - Rest4: 0:30
-   *  - Rest5: 0:30
-   *  - Rest6: 0:30
-   *  - Timing4: 1:22
-   *  - Timing5: 1:25
-   *  - Timing6: 1:21
-   *
-   *  new expected output:
-   *    3 x 800m / 1', 3 x 400m / 30"          2:41, 2:47, 2:39, 1:22, 1:25, 1:21
-   */
   return arr
 }
 
-/*
- * takes in [H]:MM:SS
- * returns M'/S"
- */
-const quoteNotation = (str) => {
-  const p = {}
-  const colonCount = str.match(/:/g).length
-  if (colonCount === 1) {
-    p.sec = moment.duration('0:' + str).asSeconds()
-  } else if (colonCount === 2) {
-    p.sec = moment.duration(str).asSeconds()
-  }
-  p.MM = parseInt(p.sec / 60)
-  p.SS = parseInt(p.sec % 60)
-  if (p.SS == 0) {
-    p.result = p.MM + "'"
-  } else {
-    p.result = p.MM + "'" + p.SS + '"'
-  }
-  return p.result
-}
-
-const mmssNotation = (str) => {
-  const p = {}
-  const colonCount = str.match(/:/g).length
-  if (colonCount === 1) {
-    p.sec = moment.duration('0:' + str).asSeconds()
-  } else if (colonCount === 2) {
-    p.sec = moment.duration(str).asSeconds()
-  }
-  p.MM = parseInt(p.sec / 60)
-  p.SS = parseInt(p.sec % 60)
-  p.result = p.MM + ':' + p.SS
-  return p.result
-}
-
-const mmssToSeconds = (str) => {
-  const p = {}
-  const colonCount = str.match(/:/g).length
-  if (colonCount === 1) {
-    p.sec = moment.duration('0:' + str).asSeconds()
-  } else if (colonCount === 2) {
-    p.sec = moment.duration(str).asSeconds()
-  }
-  return p.sec
-}
-
-const secondsToMMSS = (int) => {
-  const p = {}
-  p.sec = moment.duration(int, 'seconds').asSeconds()
-  p.MM = parseInt(p.sec / 60)
-  p.SS = parseInt(p.sec % 60)
-  p.result = p.MM + ':' + p.SS
-  // console.log('input', int, 'output', p.result)
-  return p.result
-}
-
 const getIntervalsProgramme = (d: BySets) => {
-  console.log(d)
-  /*
-   * if first, skip
-   * if in between,
-   *    if same distance and time,
-   *        2x800m/1' -> 3x800m/1'
-   *    if different distance and same time,
-   *        2x800m/1' -> 2x800m/1', 1x400m/1'
-   *    if same distance and different time,
-   *        2x800m/1' -> 2x800m/1', 1x800m/2'
-   *    if different distance and different time,
-   *        2x800m/1' -> 2x800m/1', 1x200m/2'
-   * handle last
-   */
-
   const Programme = []
   const Timings = []
   const Paces = []
   var c = 0
   type Mem = {
-    Set?: string,
-    Rest?: string,
+    Set?: string
+    Rest?: string
     Timings?: Array<number>
   }
   var mem: Mem = {}
@@ -244,16 +143,12 @@ const getIntervalsProgramme = (d: BySets) => {
   }
   d.forEach((e, index) => {
     const same = (type: string) => {
-      if (d[index][type] === d[index - 1][type]) {
-        return true
-      }
-      return false
+      return d[index][type] === d[index - 1][type] ? true : false
     }
-
     if (index === 0) {
       // first element
       c += 1
-      mem = {...mem, Set: e.Set, Rest: e.Rest}
+      mem = { ...mem, Set: e.Set, Rest: e.Rest }
       mem.Timings = [toSeconds(e.Timing)]
     } else if (index === d.length - 1) {
       // last element
@@ -265,11 +160,11 @@ const getIntervalsProgramme = (d: BySets) => {
         pushPaces(mem.Timings, mem.Set)
       } else {
         pushProgramme(c, mem.Set, mem.Rest)
-        Timings.push(mem.Timings.map((x) => secondsToMMSS(x)))
+        Timings.push(mem.Timings.map((x) => toHHMMSS(x)))
         pushPaces(mem.Timings, mem.Set)
         Programme.push(1 + 'x' + e.Set + '/' + quoteNotation(e.Rest))
         Timings.push([toHHMMSS(e.Timing)])
-        Paces.push(displayPace(mmssToSeconds(e.Timing), toMeters(e.Set)))
+        Paces.push(displayPace(toSeconds(e.Timing), toMeters(e.Set)))
       }
     } else {
       // in between
@@ -280,7 +175,7 @@ const getIntervalsProgramme = (d: BySets) => {
         pushProgramme(c, mem.Set, mem.Rest)
         Timings.push(mem.Timings.map((x) => toHHMMSS(x)))
         pushPaces(mem.Timings, mem.Set)
-        mem = {...mem, Set: e.Set, Rest: e.Rest}
+        mem = { ...mem, Set: e.Set, Rest: e.Rest }
         mem.Timings = [toSeconds(e.Timing)] // reset Timings in memory
       }
     }
@@ -288,7 +183,7 @@ const getIntervalsProgramme = (d: BySets) => {
   return {
     Programme,
     Timings: Timings.map((x) => x.join(', ')),
-    Paces
+    Paces,
   }
 }
 
