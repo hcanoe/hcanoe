@@ -86,6 +86,12 @@ type Intervals = Array<{
   SortDate?: number
   [propName: string]: any
 }>
+
+type BySets = Array<{
+  Set?: string,
+  Rest?: string,
+  Timing?: string,
+}>
 const prettifyIntervals = (arr: Intervals) => {
   const isKeyWord = {
     Set: 1,
@@ -94,11 +100,6 @@ const prettifyIntervals = (arr: Intervals) => {
   }
   arr.forEach((training) => {
     // training is an object
-    type BySets = Array<{
-      Set?: string,
-      Rest?: string,
-      Distance?: string
-    }>
     const by_sets: BySets = []
     for (const key in training) {
       const type = key.slice(0, -1)
@@ -204,7 +205,8 @@ const secondsToMMSS = (int) => {
   return p.result
 }
 
-const getIntervalsProgramme = (d) => {
+const getIntervalsProgramme = (d: BySets) => {
+  console.log(d)
   /*
    * if first, skip
    * if in between,
@@ -223,13 +225,25 @@ const getIntervalsProgramme = (d) => {
   const Timings = []
   const Paces = []
   var c = 0
-  var mem = {
-    Set: '',
-    Rest: '',
-    Timings: [],
+  type Mem = {
+    Set?: string,
+    Rest?: string,
+    Timings?: Array<number>
+  }
+  var mem: Mem = {}
+  function pushPaces(timings: Array<number>, distance: string) {
+    Paces.push(
+      displayPace(
+        timings.reduce((a, b) => a + b, 0), // total timing in seconds
+        toMeters(distance) * c // total distance in meters
+      )
+    )
+  }
+  function pushProgramme(c: number, distance: string, rest: string) {
+    Programme.push(c + 'x' + distance + '/' + quoteNotation(rest))
   }
   d.forEach((e, index) => {
-    const same = (type) => {
+    const same = (type: string) => {
       if (d[index][type] === d[index - 1][type]) {
         return true
       }
@@ -239,61 +253,43 @@ const getIntervalsProgramme = (d) => {
     if (index === 0) {
       // first element
       c += 1
-      mem.Set = e.Set
-      mem.Rest = e.Rest
-      mem.Timings.push(mmssToSeconds(e.Timing))
+      mem = {...mem, Set: e.Set, Rest: e.Rest}
+      mem.Timings = [toSeconds(e.Timing)]
     } else if (index === d.length - 1) {
       // last element
       if (same('Set') && same('Rest')) {
         c += 1
-        mem.Timings.push(mmssToSeconds(e.Timing))
-        Programme.push(c + 'x' + mem.Set + '/' + quoteNotation(mem.Rest))
-        Timings.push(mem.Timings.map((x) => secondsToMMSS(x)))
-        Paces.push(
-          toHHMMSS(
-            mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
-            toMeters(mem.Set) * c // total distance in meters
-          )
-        )
+        pushProgramme(c, mem.Set, mem.Rest)
+        mem.Timings.push(toSeconds(e.Timing))
+        Timings.push(mem.Timings.map((x) => toHHMMSS(x)))
+        pushPaces(mem.Timings, mem.Set)
       } else {
-        Programme.push(c + 'x' + mem.Set + '/' + quoteNotation(mem.Rest))
+        pushProgramme(c, mem.Set, mem.Rest)
         Timings.push(mem.Timings.map((x) => secondsToMMSS(x)))
-        Paces.push(
-          toHHMMSS(
-            mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
-            toMeters(mem.Set) * c // total distance in meters
-          )
-        )
+        pushPaces(mem.Timings, mem.Set)
         Programme.push(1 + 'x' + e.Set + '/' + quoteNotation(e.Rest))
         Timings.push([toHHMMSS(e.Timing)])
-        Paces.push(toHHMMSS(mmssToSeconds(e.Timing), toMeters(e.Set)))
+        Paces.push(displayPace(mmssToSeconds(e.Timing), toMeters(e.Set)))
       }
     } else {
       // in between
       if (same('Set') && same('Rest')) {
         c += 1
-        mem.Timings.push(mmssToSeconds(e.Timing))
+        mem.Timings.push(toSeconds(e.Timing))
       } else {
-        Programme.push(c + 'x' + mem.Set + '/' + quoteNotation(mem.Rest))
-        Timings.push(mem.Timings.map((x) => secondsToMMSS(x)))
-        Paces.push(
-          toHHMMSS(
-            mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
-            toMeters(mem.Set) * c // total distance in meters
-          )
-        )
-        mem.Set = e.Set
-        mem.Rest = e.Rest
-        mem.Timings = [] // reset Timings in memory
-        mem.Timings.push(mmssToSeconds(e.Timing))
+        pushProgramme(c, mem.Set, mem.Rest)
+        Timings.push(mem.Timings.map((x) => toHHMMSS(x)))
+        pushPaces(mem.Timings, mem.Set)
+        mem = {...mem, Set: e.Set, Rest: e.Rest}
+        mem.Timings = [toSeconds(e.Timing)] // reset Timings in memory
       }
     }
   })
-  const output = {}
-  output.Programme = Programme
-  output.Timings = Timings.map((x) => x.join(', '))
-  output.Paces = Paces
-  return output
+  return {
+    Programme,
+    Timings: Timings.map((x) => x.join(', ')),
+    Paces
+  }
 }
 
 const getOnOffProgramme = (d) => {
