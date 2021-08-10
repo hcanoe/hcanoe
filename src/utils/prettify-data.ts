@@ -25,7 +25,7 @@ type Distance = Array<{
 }>
 
 const prettifyDistance = (arr: Distance) => {
-  const cat = [1000, 2400, 5000, 7000, 10000, 15000, 21000, 42000, 50000]
+  const cat = [1000, 2400, 5000, 7000, 10000, 15000, 21000, 42195, 50000]
   const best_temp = Array(cat.length)
   arr.forEach((training) => {
     // Pace
@@ -44,14 +44,14 @@ const prettifyDistance = (arr: Distance) => {
           training.best = []
           best_temp[i] = {
             id: si_time + si_distance + e,
-            pace: si_pace
+            pace: si_pace,
           }
         } else {
           if (si_pace < best_temp[i].pace) {
             training.best = []
             best_temp[i] = {
               id: si_time + si_distance + e,
-              pace: si_pace
+              pace: si_pace,
             }
           }
         }
@@ -61,30 +61,32 @@ const prettifyDistance = (arr: Distance) => {
     const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
     training.SortDate = process_date
   })
-  console.log('best temp', best_temp)
   const best_data = Array(cat.length)
   arr.forEach((training) => {
     cat.forEach((e, i) => {
-        const this_id = training.si_time + training.si_distance + e
-        if (best_temp[i] && this_id === best_temp[i].id) {
-          training.best.push(cat[i])
-          best_data[i] = training
-        }
+      const this_id = training.si_time + training.si_distance + e
+      if (best_temp[i] && this_id === best_temp[i].id) {
+        training.best.push(cat[i])
+        best_data[i] = training
       }
-    )
+    })
   })
   arr.sort(recentFirst)
-  console.log('===============================================')
-  console.log('processed distance array', arr)
-  console.log('processed best splits array', best_data)
-  console.log('===============================================')
   return { best: best_data, arr, cat }
 }
 
 /*
  * Prettify Intervals
  */
-const prettifyIntervals = (arr) => {
+type Intervals = Array<{
+  Type: string
+  Date: string
+  Programme: Array<string>
+  Paces: Array<string>
+  SortDate?: number
+  [propName: string]: any
+}>
+const prettifyIntervals = (arr: Intervals) => {
   const isKeyWord = {
     Set: 1,
     Rest: 1,
@@ -92,26 +94,24 @@ const prettifyIntervals = (arr) => {
   }
   arr.forEach((training) => {
     // training is an object
-    const n = {}
-    const by_sets = [] // each set being { Set: "", Rest: "", Distance: "" }
+    type BySets = Array<{
+      Set?: string,
+      Rest?: string,
+      Distance?: string
+    }>
+    const by_sets: BySets = []
     for (const key in training) {
-      const subtype = key.slice(0, -1)
-      const order = key.slice(-1) - 1
-
-      if (isKeyWord[subtype]) {
+      const type = key.slice(0, -1)
+      if (isKeyWord[type]) {
+        const order = parseInt(key.slice(-1)) - 1
         if (typeof by_sets[order] === 'undefined') {
           by_sets[order] = {}
         }
-        const target = subtype + 's'
-        by_sets[order][subtype] = training[key]
+        by_sets[order][type] = training[key]
       }
     }
     Object.assign(training, getIntervalsProgramme(by_sets))
-    const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
-    training.SortDate = process_date
-
-    // writes props from n into training
-    // Object.assign(training, n)
+    training.SortDate = moment(training.Date, 'DD/MM/YYYY').unix()
   })
   arr.sort(recentFirst)
   /*

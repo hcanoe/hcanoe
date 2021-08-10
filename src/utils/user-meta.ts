@@ -85,7 +85,6 @@ const getSpreadsheetsByType = (user_metadata: metadata, type: string) => {
   console.log('')
   console.log('== <START> ====================================')
   console.log('sheetIDs', sheetIDs)
-  console.log(active_years)
   active_years.forEach((year) => {
     if (sheetIDs.hasOwnProperty(year) && sheetIDs[year].hasOwnProperty(type)) {
       result.push(sheetIDs[year][type])
