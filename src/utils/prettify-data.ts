@@ -25,7 +25,7 @@ type Distance = Array<{
   SortDate?: number
 }>
 
-const prettifyDistance = (arr: Distance) => {
+function prettifyDistance(arr: Distance) {
   const cat = [1000, 2400, 5000, 7000, 10000, 15000, 21000, 42195, 50000]
   const best_temp = Array(cat.length)
   arr.forEach((training) => {
@@ -93,7 +93,8 @@ type BySets = Array<{
   Rest?: string
   Timing?: string
 }>
-const prettifyIntervals = (arr: Intervals) => {
+
+function prettifyIntervals(arr: Intervals) {
   const isKeyWord = {
     Set: 1,
     Rest: 1,
@@ -119,7 +120,7 @@ const prettifyIntervals = (arr: Intervals) => {
   return arr
 }
 
-const getIntervalsProgramme = (d: BySets) => {
+function getIntervalsProgramme(d: BySets) {
   const Programme = []
   const Timings = []
   const Paces = []
