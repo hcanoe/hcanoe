@@ -2,11 +2,9 @@ import moment from 'moment'
 import {
   toMeters,
   toSeconds,
-  secondsPerMeterToHHMMSS,
   displayPace,
   displayDistance,
-  stringToHHMMSS,
-  secondsToHHMMSS,
+  toHHMMSS,
 } from '@utils/physics'
 import { recentFirst } from '@utils/sort'
 
@@ -31,7 +29,7 @@ const prettifyDistance = (arr) => {
     training.Distance = displayDistance(training.Distance, 'km')
     // Timings
     const si_time = toSeconds(training.Timing)
-    training.Timing = stringToHHMMSS(training.Timing)
+    training.Timing = toHHMMSS(training.Timing)
     // Check if best
     for (let i = 0; i < 4; i++) {
       if (si_distance >= dict[i]) {
@@ -235,7 +233,7 @@ const getIntervalsProgramme = (d) => {
         Programme.push(c + 'x' + mem.Set + '/' + quoteNotation(mem.Rest))
         Timings.push(mem.Timings.map((x) => secondsToMMSS(x)))
         Paces.push(
-          secondsPerMeterToHHMMSS(
+          toHHMMSS(
             mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
             toMeters(mem.Set) * c // total distance in meters
           )
@@ -244,15 +242,15 @@ const getIntervalsProgramme = (d) => {
         Programme.push(c + 'x' + mem.Set + '/' + quoteNotation(mem.Rest))
         Timings.push(mem.Timings.map((x) => secondsToMMSS(x)))
         Paces.push(
-          secondsPerMeterToHHMMSS(
+          toHHMMSS(
             mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
             toMeters(mem.Set) * c // total distance in meters
           )
         )
         Programme.push(1 + 'x' + e.Set + '/' + quoteNotation(e.Rest))
-        Timings.push([stringToHHMMSS(e.Timing)])
+        Timings.push([toHHMMSS(e.Timing)])
         Paces.push(
-          secondsPerMeterToHHMMSS(mmssToSeconds(e.Timing), toMeters(e.Set))
+          toHHMMSS(mmssToSeconds(e.Timing), toMeters(e.Set))
         )
       }
     } else {
@@ -264,7 +262,7 @@ const getIntervalsProgramme = (d) => {
         Programme.push(c + 'x' + mem.Set + '/' + quoteNotation(mem.Rest))
         Timings.push(mem.Timings.map((x) => secondsToMMSS(x)))
         Paces.push(
-          secondsPerMeterToHHMMSS(
+          toHHMMSS(
             mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
             toMeters(mem.Set) * c // total distance in meters
           )
@@ -435,7 +433,7 @@ const prettifyTimed = (arr) => {
   arr.forEach((training) => {
     training.Pace = displayPace(training.Duration, training.Distance)
     training.Distance = displayDistance(training.Distance, 'km')
-    training.Programme = stringToHHMMSS(training.Duration)
+    training.Programme = toHHMMSS(training.Duration)
     const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
     training.SortDate = process_date
   })

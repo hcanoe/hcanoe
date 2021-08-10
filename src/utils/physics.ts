@@ -22,7 +22,7 @@ const toMeters = (s: string) => {
   } else {
     const num = parseFloat(s.replace(/ /g, ''))
     // values above 99 are assumed to be in m
-    return (num >= 100) ? num : num * 1000
+    return num >= 100 ? num : num * 1000
   }
 }
 
@@ -52,39 +52,21 @@ const displayDistance = (s: string | number, unit: string) => {
  *  2. distance (using toMeters())
  * returns min/km, human readable again
  */
-const displayPace = (t: string, d: string) => {
-  return secondsPerMeterToHHMMSS(toSeconds(t), toMeters(d))
-}
-
-/*
- * takes in all SI units (seconds, meters)
- * returns min/km, human readable again
- */
-const secondsPerMeterToHHMMSS = (t: number, d: number) => {
-  return secondsToHHMMSS((t / d) * 1000)
-}
-
-/*
- * takes in a human-readable string
- * returns [HH]:MM:SS
- */
-const stringToHHMMSS = (t: string) => {
-  const colonCount = t.match(/:/g).length
-  if (colonCount === 1) {
-    return secondsToHHMMSS(moment.duration('0:' + t).asSeconds())
-  } else if (colonCount === 2) {
-    return secondsToHHMMSS(moment.duration(t).asSeconds())
-  }
+const displayPace = (t: string | number, d: string | number) => {
+  const T: number = typeof t === 'number' ? t : toSeconds(t)
+  const D: number = typeof d === 'number' ? d : toMeters(d)
+  return toHHMMSS(T / D * 1000)
 }
 
 /*
  * takes in # of seconds
  * returns [HH]:MM:SS
  */
-const secondsToHHMMSS = (t: number) => {
-  const H = new Date(t * 1000).toISOString().substr(11, 2)
-  const M = new Date(t * 1000).toISOString().substr(14, 2)
-  const S = new Date(t * 1000).toISOString().substr(17, 2)
+const toHHMMSS = (t: string | number) => {
+  const T: number = typeof t === 'number' ? t : toSeconds(t)
+  const H = new Date(T * 1000).toISOString().substr(11, 2)
+  const M = new Date(T * 1000).toISOString().substr(14, 2)
+  const S = new Date(T * 1000).toISOString().substr(17, 2)
   if (H === '00') {
     if (M === '00') {
       return ['0', S].join(':')
@@ -103,9 +85,7 @@ const secondsToHHMMSS = (t: number) => {
 export {
   displayDistance,
   displayPace,
-  secondsPerMeterToHHMMSS,
   toMeters,
   toSeconds,
-  stringToHHMMSS,
-  secondsToHHMMSS,
+  toHHMMSS
 }

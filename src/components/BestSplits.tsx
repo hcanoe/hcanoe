@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { BestBox } from 'components/FieldBox'
 import { RiVipCrownFill } from 'react-icons/ri'
-import { secondsToHHMMSS } from '@utils/physics'
+import { toHHMMSS } from '@utils/physics'
 import {
   Box,
   Th,
@@ -50,7 +50,7 @@ const BestSplits = ({ best }: Best) => {
   const _best = []
   best.forEach((t, i: number) => {
     if (t) {
-      const Projected = secondsToHHMMSS((t.si_time / t.si_distance) * dict[i])
+      const Projected = toHHMMSS((t.si_time / t.si_distance) * dict[i])
       _best.push({ ...t, Projected })
     }
   })
