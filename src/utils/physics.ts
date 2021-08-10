@@ -12,7 +12,8 @@ import moment from 'moment'
  * 800   => 800
  *
  */
-const parseDistanceToSI = (s: string) => {
+// parseDistanceToSI -> toMeters
+const toMeters = (s: string) => {
   if (s.includes('k')) {
     const num = parseFloat(s.replace('km', '').replace(/ /g, ''))
     return num * 1000
@@ -30,6 +31,7 @@ const parseDistanceToSI = (s: string) => {
   }
 }
 
+// parseDurationToSI -> toSeconds
 const parseDurationToSI = (t: string) => {
   const colonCount = t.match(/:/g).length
   if (colonCount === 1) {
@@ -39,8 +41,8 @@ const parseDurationToSI = (t: string) => {
   }
 }
 
-const displayDistance = (s: string, unit: string) => {
-  const d: number = parseDistanceToSI(s)
+const displayDistance = (s: string | number, unit: string) => {
+  const d: number = typeof s === 'number' ? s : toMeters(s)
   if (unit === 'km') {
     return (d / 1000).toFixed(2) + ' km'
   } else if (unit === 'm') {
@@ -53,11 +55,11 @@ const displayDistance = (s: string, unit: string) => {
 /*
  * takes in
  *  1. human readable timing ([H]:MM:SS) and
- *  2. distance (using parseDistanceToSI())
+ *  2. distance (using toMeters())
  * returns min/km, human readable again
  */
 const displayPace = (t: string, d: string) => {
-  return secondsPerMeterToHHMMSS(parseDurationToSI(t), parseDistanceToSI(d))
+  return secondsPerMeterToHHMMSS(parseDurationToSI(t), toMeters(d))
 }
 
 /*
@@ -108,7 +110,7 @@ export {
   displayDistance,
   displayPace,
   secondsPerMeterToHHMMSS,
-  parseDistanceToSI,
+  toMeters,
   parseDurationToSI,
   stringToHHMMSS,
   secondsToHHMMSS,

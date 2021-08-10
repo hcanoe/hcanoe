@@ -1,6 +1,6 @@
 import moment from 'moment'
 import {
-  parseDistanceToSI,
+  toMeters,
   parseDurationToSI,
   secondsPerMeterToHHMMSS,
   displayPace,
@@ -27,7 +27,7 @@ const prettifyDistance = (arr) => {
     training.Pace = displayPace(training.Timing, training.Distance)
     const si_pace = parseDurationToSI(training.Pace)
     // Distance
-    const si_distance = parseDistanceToSI(training.Distance)
+    const si_distance = toMeters(training.Distance)
     training.Distance = displayDistance(training.Distance, 'km')
     // Timings
     const si_time = parseDurationToSI(training.Timing)
@@ -237,7 +237,7 @@ const getIntervalsProgramme = (d) => {
         Paces.push(
           secondsPerMeterToHHMMSS(
             mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
-            parseDistanceToSI(mem.Set) * c // total distance in meters
+            toMeters(mem.Set) * c // total distance in meters
           )
         )
       } else {
@@ -246,13 +246,13 @@ const getIntervalsProgramme = (d) => {
         Paces.push(
           secondsPerMeterToHHMMSS(
             mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
-            parseDistanceToSI(mem.Set) * c // total distance in meters
+            toMeters(mem.Set) * c // total distance in meters
           )
         )
         Programme.push(1 + 'x' + e.Set + '/' + quoteNotation(e.Rest))
         Timings.push([stringToHHMMSS(e.Timing)])
         Paces.push(
-          secondsPerMeterToHHMMSS(mmssToSeconds(e.Timing), parseDistanceToSI(e.Set))
+          secondsPerMeterToHHMMSS(mmssToSeconds(e.Timing), toMeters(e.Set))
         )
       }
     } else {
@@ -266,7 +266,7 @@ const getIntervalsProgramme = (d) => {
         Paces.push(
           secondsPerMeterToHHMMSS(
             mem.Timings.reduce((a, b) => a + b, 0), // total timing in seconds
-            parseDistanceToSI(mem.Set) * c // total distance in meters
+            toMeters(mem.Set) * c // total distance in meters
           )
         )
         mem.Set = e.Set
