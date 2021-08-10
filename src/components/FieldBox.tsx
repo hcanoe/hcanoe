@@ -1,7 +1,13 @@
-import { Text, Box, Heading } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import styles from 'styles/FieldBox.module.css'
 
-const FieldBox = ({ t, children, c = '#fc4c02' }) => {
+type FieldBox = {
+  children: object,
+  t?: string,
+  c?: string
+}
+
+const FieldBox = ({ children }: FieldBox) => {
   return (
     <Box
       borderRadius="lg"
@@ -14,7 +20,7 @@ const FieldBox = ({ t, children, c = '#fc4c02' }) => {
   )
 }
 
-const BestBox = ({ t, children, c = '#fc4c02' }) => {
+const BestBox = ({ children }: FieldBox) => {
   return (
     <Box
       borderRadius="lg"
