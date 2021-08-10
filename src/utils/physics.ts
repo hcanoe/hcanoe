@@ -12,7 +12,6 @@ import moment from 'moment'
  * 800   => 800
  *
  */
-// parseDistanceToSI -> toMeters
 const toMeters = (s: string) => {
   if (s.includes('k')) {
     const num = parseFloat(s.replace('km', '').replace(/ /g, ''))
@@ -23,15 +22,10 @@ const toMeters = (s: string) => {
   } else {
     const num = parseFloat(s.replace(/ /g, ''))
     // values above 99 are assumed to be in m
-    if (num >= 100) {
-      return num
-    } else {
-      return num * 1000
-    }
+    return (num >= 100) ? num : num * 1000
   }
 }
 
-// parseDurationToSI -> toSeconds
 const toSeconds = (t: string) => {
   const colonCount = t.match(/:/g).length
   if (colonCount === 1) {
