@@ -48,7 +48,6 @@ const BestSplits = ({ best }: Best) => {
     3: 10000,
   }
   const _best = []
-  console.log(best)
   best.forEach((t, i: number) => {
     if (t) {
       const Projected = secondsToHHMMSS((t.si_time / t.si_distance) * dict[i])

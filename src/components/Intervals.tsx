@@ -66,12 +66,7 @@ const Search = ({ onChangeSet, onChangeDistance, handleSearch }) => {
 
 type data = Array<{
   Programme: string,
-  Set1?: string,
-  Set2?: string,
-  Set3?: string,
-  Set4?: string,
-  Set5?: string,
-  Set6?: string,
+  [propName: string]: string
 }>
 
 const getResults = (d: data, set: number | string, dist: string) => {
