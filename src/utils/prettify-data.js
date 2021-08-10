@@ -1,7 +1,7 @@
 import moment from 'moment'
 import {
   toMeters,
-  parseDurationToSI,
+  toSeconds,
   secondsPerMeterToHHMMSS,
   displayPace,
   displayDistance,
@@ -25,12 +25,12 @@ const prettifyDistance = (arr) => {
   arr.forEach((training) => {
     // Pace
     training.Pace = displayPace(training.Timing, training.Distance)
-    const si_pace = parseDurationToSI(training.Pace)
+    const si_pace = toSeconds(training.Pace)
     // Distance
     const si_distance = toMeters(training.Distance)
     training.Distance = displayDistance(training.Distance, 'km')
     // Timings
-    const si_time = parseDurationToSI(training.Timing)
+    const si_time = toSeconds(training.Timing)
     training.Timing = stringToHHMMSS(training.Timing)
     // Check if best
     for (let i = 0; i < 4; i++) {

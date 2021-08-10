@@ -32,7 +32,7 @@ const toMeters = (s: string) => {
 }
 
 // parseDurationToSI -> toSeconds
-const parseDurationToSI = (t: string) => {
+const toSeconds = (t: string) => {
   const colonCount = t.match(/:/g).length
   if (colonCount === 1) {
     return moment.duration('0:' + t).asSeconds()
@@ -59,7 +59,7 @@ const displayDistance = (s: string | number, unit: string) => {
  * returns min/km, human readable again
  */
 const displayPace = (t: string, d: string) => {
-  return secondsPerMeterToHHMMSS(parseDurationToSI(t), toMeters(d))
+  return secondsPerMeterToHHMMSS(toSeconds(t), toMeters(d))
 }
 
 /*
@@ -111,7 +111,7 @@ export {
   displayPace,
   secondsPerMeterToHHMMSS,
   toMeters,
-  parseDurationToSI,
+  toSeconds,
   stringToHHMMSS,
   secondsToHHMMSS,
 }
