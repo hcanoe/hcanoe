@@ -35,10 +35,12 @@ const toSeconds = (t: string) => {
   }
 }
 
-const displayDistance = (s: string | number, unit: string) => {
+const displayDistance = (s: string | number, unit: string, p?: number) => {
+  const P = typeof p === 'undefined' ? 2 : p
+  console.log('displayDistance', s, p)
   const d: number = typeof s === 'number' ? s : toMeters(s)
   if (unit === 'km') {
-    return (d / 1000).toFixed(2) + ' km'
+    return (d / 1000).toFixed(P) + ' km'
   } else if (unit === 'm') {
     return d.toFixed(0) + ' m'
   } else {
@@ -63,6 +65,7 @@ const displayPace = (t: string | number, d: string | number) => {
  * returns [HH]:MM:SS
  */
 const toHHMMSS = (t: string | number) => {
+  console.log('toHHMMSS', t)
   const T: number = typeof t === 'number' ? t : toSeconds(t)
   const H = new Date(T * 1000).toISOString().substr(11, 2)
   const M = new Date(T * 1000).toISOString().substr(14, 2)

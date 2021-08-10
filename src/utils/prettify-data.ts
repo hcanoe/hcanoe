@@ -11,15 +11,22 @@ import { recentFirst } from '@utils/sort'
 /*
  * Prettify Distance
  */
-const prettifyDistance = (arr) => {
-  const best = Array(4)
-  const dict = {
-    0: 1000,
-    1: 2400,
-    2: 5000,
-    3: 10000,
-  }
-  const best_pace = Array(4)
+type Distance = Array<{
+  Distance: string
+  Timing: string
+  Type: string
+  Date: string
+  Pace?: string
+  best?: Array<number>
+  si_distance?: number
+  si_time?: number
+  si_pace?: number
+  SortDate?: number
+}>
+
+const prettifyDistance = (arr: Distance) => {
+  const cat = [1000, 2400, 5000, 7000, 10000, 15000, 21000, 42000, 50000]
+  const best_temp = Array(cat.length)
   arr.forEach((training) => {
     // Pace
     training.Pace = displayPace(training.Timing, training.Distance)
@@ -31,37 +38,47 @@ const prettifyDistance = (arr) => {
     const si_time = toSeconds(training.Timing)
     training.Timing = toHHMMSS(training.Timing)
     // Check if best
-    for (let i = 0; i < 4; i++) {
-      if (si_distance >= dict[i]) {
-        if (best_pace[i] === undefined) {
-          best_pace[i] = {}
-          best_pace[i].id = si_time + si_distance + training.Date
-          best_pace[i].pace = si_pace
+    cat.forEach((e, i) => {
+      if (si_distance >= cat[i]) {
+        if (best_temp[i] === undefined) {
           training.best = []
+          best_temp[i] = {
+            id: si_time + si_distance + e,
+            pace: si_pace
+          }
         } else {
-          if (si_pace < best_pace[i].pace) {
-            best_pace[i].id = si_time + si_distance + training.Date
-            best_pace[i].pace = si_pace
+          if (si_pace < best_temp[i].pace) {
             training.best = []
+            best_temp[i] = {
+              id: si_time + si_distance + e,
+              pace: si_pace
+            }
           }
         }
       }
-    }
+    })
     Object.assign(training, { si_pace, si_distance, si_time })
     const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
     training.SortDate = process_date
   })
+  console.log('best temp', best_temp)
+  const best_data = Array(cat.length)
   arr.forEach((training) => {
-    const this_id = training.si_time + training.si_distance + training.Date
-    for (let i = 0; i < 4; i++) {
-      if (best_pace[i] && this_id === best_pace[i].id) {
-        training.best.push(dict[i])
-        best[i] = training
+    cat.forEach((e, i) => {
+        const this_id = training.si_time + training.si_distance + e
+        if (best_temp[i] && this_id === best_temp[i].id) {
+          training.best.push(cat[i])
+          best_data[i] = training
+        }
       }
-    }
+    )
   })
   arr.sort(recentFirst)
-  return { best, arr }
+  console.log('===============================================')
+  console.log('processed distance array', arr)
+  console.log('processed best splits array', best_data)
+  console.log('===============================================')
+  return { best: best_data, arr, cat }
 }
 
 /*
@@ -249,9 +266,7 @@ const getIntervalsProgramme = (d) => {
         )
         Programme.push(1 + 'x' + e.Set + '/' + quoteNotation(e.Rest))
         Timings.push([toHHMMSS(e.Timing)])
-        Paces.push(
-          toHHMMSS(mmssToSeconds(e.Timing), toMeters(e.Set))
-        )
+        Paces.push(toHHMMSS(mmssToSeconds(e.Timing), toMeters(e.Set)))
       }
     } else {
       // in between

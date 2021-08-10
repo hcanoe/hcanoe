@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { BestBox } from 'components/FieldBox'
 import { RiVipCrownFill } from 'react-icons/ri'
-import { toHHMMSS } from '@utils/physics'
+import { displayDistance, toHHMMSS } from '@utils/physics'
 import {
   Box,
   Th,
@@ -37,20 +37,20 @@ type Best = {
     si_distance: number
     si_time: number
   }>
+  cat: Array<number>
 }
 
-const BestSplits = ({ best }: Best) => {
-  const dist = ['1 km', '2.4 km', '5 km', '10 km']
-  const dict = {
-    0: 1000,
-    1: 2400,
-    2: 5000,
-    3: 10000,
+const BestSplits = ({ best, cat }: Best) => {
+  const mapDist = (e: number) => {
+    const s = (e / 1000).toString()
+    const dp = s.includes('.') ? s.split('.')[1].replace(/0/g, '').length : 0
+    return displayDistance(e, 'km', dp)
   }
+  const dist = cat.map((e) => mapDist(e))
   const _best = []
   best.forEach((t, i: number) => {
     if (t) {
-      const Projected = toHHMMSS((t.si_time / t.si_distance) * dict[i])
+      const Projected = toHHMMSS((t.si_time / t.si_distance) * cat[i])
       _best.push({ ...t, Projected })
     }
   })

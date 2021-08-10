@@ -148,6 +148,7 @@ export async function main(query, sheets) {
       const response = prettifyDistance(user_data_by_type[type])
       output.best = response.best
       user_data_by_type[type] = response.arr
+      output.cat = response.cat
     } else if (type === 'INTERVALS') {
       user_data_by_type[type] = prettifyIntervals(user_data_by_type[type])
     } else if (type === 'ONOFF') {

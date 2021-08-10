@@ -36,7 +36,7 @@ export async function getServerSideProps({ query }) {
   }
 }
 
-const Page = ({ display_name, distance, intervals, on_off, timed, best }) => {
+const Page = ({ display_name, distance, intervals, on_off, timed, best, cat }) => {
   return (
     <>
       <Container size="md" mb="2">
@@ -44,7 +44,7 @@ const Page = ({ display_name, distance, intervals, on_off, timed, best }) => {
         <Title t="Training Stats"/>
         <Name n={display_name}/>
 
-        <BestSplits best={best} />
+        <BestSplits best={best} cat={cat}/>
         <Tabs variant="enclosed" colorScheme="teal" isFitted>
           <TabList mb="1.6em">
             <Tab>Distance</Tab>
