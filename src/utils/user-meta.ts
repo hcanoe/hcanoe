@@ -80,9 +80,12 @@ const zipTable = (keys: Array<string>, data: Array<string>) => {
 
 const getSpreadsheetsByType = (user_metadata: metadata, type: string) => {
   const start = user_metadata.GradYear - 5
-  const active_years = [...Array(6)].map((_, index) => index + 1 + start)
+  const active_years = [...Array(6)].map((_, index) => index + start)
   const result = []
+  console.log('')
+  console.log('== <START> ====================================')
   console.log('sheetIDs', sheetIDs)
+  console.log(active_years)
   active_years.forEach((year) => {
     if (sheetIDs.hasOwnProperty(year) && sheetIDs[year].hasOwnProperty(type)) {
       result.push(sheetIDs[year][type])
