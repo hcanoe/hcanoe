@@ -1,13 +1,7 @@
-import { DistanceTable } from 'components/Table'
 import { useState } from 'react'
-import FieldBox, { BestBox } from 'components/FieldBox'
-import moment from 'moment'
-import { RiVipCrownLine, RiVipCrownFill } from 'react-icons/ri'
-import {
-  displayDistance,
-  displayDuration,
-  secondsToHHMMSS,
-} from '@utils/physics'
+import { BestBox } from 'components/FieldBox'
+import { RiVipCrownFill } from 'react-icons/ri'
+import { secondsToHHMMSS } from '@utils/physics'
 import {
   Box,
   Th,
@@ -18,10 +12,8 @@ import {
   Table,
   Code,
   Text,
-  Button,
   Switch,
   Flex,
-  Spacer,
   Icon,
 } from '@chakra-ui/react'
 
@@ -40,7 +32,14 @@ const NoData = ({ message = 'no data' }) => {
   )
 }
 
-const BestSplits = ({ best }) => {
+type Best = {
+  best: Array<{
+    si_distance: number
+    si_time: number
+  }>
+}
+
+const BestSplits = ({ best }: Best) => {
   const dist = ['1 km', '2.4 km', '5 km', '10 km']
   const dict = {
     0: 1000,
@@ -49,11 +48,10 @@ const BestSplits = ({ best }) => {
     3: 10000,
   }
   const _best = []
-  best.forEach((t, i) => {
+  console.log(best)
+  best.forEach((t, i: number) => {
     if (t) {
-      const Projected = secondsToHHMMSS(
-        (t.si_time / t.si_distance) * dict[i]
-      )
+      const Projected = secondsToHHMMSS((t.si_time / t.si_distance) * dict[i])
       _best.push({ ...t, Projected })
     }
   })
@@ -92,9 +90,12 @@ const BestSplits = ({ best }) => {
       )
     }
     const data = () => {
+      type Row = {
+        Date: string
+      }
       return (
         <Tbody color="gray.800">
-          {rows.map((row, index) => (
+          {rows.map((row: Row, index: number) => (
             <Tr key={row.Date + index}>
               <DetailsBody row={row} index={index} />
             </Tr>
