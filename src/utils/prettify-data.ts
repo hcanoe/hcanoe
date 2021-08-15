@@ -295,7 +295,7 @@ const getOnOffProgramme = (d) => {
       }
     }
   })
-  const output = {}
+  const output: any = {}
   output.Programme = Programme.join(', ')
   return output
 }
@@ -313,8 +313,8 @@ const prettifyOnOff = (arr) => {
     const n = {}
     const by_sets = [] // each set being { On: "", Off: "" }
     for (const key in training) {
-      const subtype = key.slice(0, -1) // string minus last char
-      const order = key.slice(-1) - 1 // last char
+      const subtype: any = key.slice(0, -1) // string minus last char
+      const order: any = parseInt(key.slice(-1)) - 1 // last char
 
       if (isKeyWord[subtype]) {
         if (typeof by_sets[order] === 'undefined') {
