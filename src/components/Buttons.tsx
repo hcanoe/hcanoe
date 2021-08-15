@@ -3,7 +3,7 @@ import { Button } from '@chakra-ui/react'
 
 const HomeButton = () => {
   return (
-    <Button variant='ghost' onClick={() => window.location = '/'}>
+    <Button variant='ghost' onClick={}>
       <AiOutlineHome size="20" />
     </Button>
   )
