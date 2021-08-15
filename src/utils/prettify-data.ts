@@ -26,7 +26,7 @@ type Distance = Array<{
 }>
 
 function prettifyDistance(arr: Distance) {
-  const cat = [1000, 2400, 5000, 7000, 10000, 15000, 21000, 42195, 50000]
+  const cat = [1000, 2400, 4000, 5000, 7000, 10000, 15000, 21000, 42195, 50000]
   const best_temp = Array(cat.length)
   arr.forEach((training) => {
     // Pace
