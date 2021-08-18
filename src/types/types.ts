@@ -26,8 +26,8 @@ export interface query {
 }
 
 export interface user_metadata {
-  Name: string,
-  GradYear: number,
+  Name?: string,
+  GradYear?: number,
   Craft?: string,
   Gender?: string,
   Domain?: string,

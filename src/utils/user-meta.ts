@@ -1,7 +1,7 @@
 import sheetIDs from '@root/spreadsheets'
 import { makeNameCaps } from '@utils/text'
 import spreadsheet_ids from '@root/spreadsheets'
-import { metadata, sheets } from 'types/types'
+import { metadata, sheets, user_metadata } from 'types/types'
 
 export async function getUserMetadata(
   sheets: sheets,
@@ -17,7 +17,7 @@ export async function getUserMetadata(
   if (response) {
     const headers = response.shift()
     const body = searchUser(user, year, response)
-    const user_metadata = zipTable(headers, body)
+    const user_metadata: user_metadata = zipTable(headers, body)
     return user_metadata
   } else {
     console.log('no response from google sheets')
