@@ -1,18 +1,8 @@
 import sheetIDs from '@root/spreadsheets'
 import { makeNameCaps } from '@utils/text'
 import spreadsheet_ids from '@root/spreadsheets'
-import { metadata } from 'types/types'
+import { metadata, sheets, user_metadata } from 'types/types'
 
-type sheets = {
-  spreadsheets: {
-    values: {
-      get: (request: {
-        spreadsheetId: string
-        range: string
-      }) => Promise<{ data: { values: Array<any> } }>
-    }
-  }
-}
 export async function getUserMetadata(
   sheets: sheets,
   user: string,
@@ -27,7 +17,8 @@ export async function getUserMetadata(
   if (response) {
     const headers = response.shift()
     const body = searchUser(user, year, response)
-    const user_metadata = zipTable(headers, body)
+    const user_metadata: user_metadata = zipTable(headers, body)
+    console.log('getUserMetadata', user_metadata)
     return user_metadata
   } else {
     console.log('no response from google sheets')
@@ -56,7 +47,7 @@ const searchUser = (user: string, year: number, data: Array<Array<string>>) => {
   }
 }
 
-const searchUserInDay = (user: string, data: Array<string>) => {
+const searchUserInDay = (user: string, data: Array<Array<string>>) => {
   const search_res = data.filter((arr) => {
     if (arr.includes(user)) {
       return true
