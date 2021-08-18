@@ -1,9 +1,9 @@
-import sheetIDs from '@root/spreadsheets'
-import { makeNameCaps } from '@utils/text'
+import { makeNameCaps } from 'utils/text'
 import spreadsheet_ids from '@root/spreadsheets'
+import { zipTable } from 'utils/core'
 import { sheets, user_metadata } from 'types/types'
 
-export async function getUserMetadata(
+async function getUserMetadata(
   sheets: sheets,
   user: string,
   year: number
@@ -57,30 +57,4 @@ const searchUserInDay = (user: string, data: Array<Array<string>>) => {
   return search_res[0]
 }
 
-const zipTable = (keys: Array<string>, data: Array<string>) => {
-  const result = keys.reduce(
-    (obj, k, i) => ({
-      ...obj,
-      [k]: data[i],
-    }),
-    {}
-  )
-  return result
-}
-
-const getSpreadsheetsByType = (user_metadata: user_metadata, type: string) => {
-  const start = user_metadata.GradYear - 5
-  const active_years = [...Array(6)].map((_, index) => index + start)
-  const result = []
-  console.log('')
-  console.log('== <START> ====================================')
-  console.log('sheetIDs', sheetIDs)
-  active_years.forEach((year) => {
-    if (sheetIDs.hasOwnProperty(year) && sheetIDs[year].hasOwnProperty(type)) {
-      result.push(sheetIDs[year][type])
-    }
-  })
-  return result
-}
-
-export { searchUserInDay, getSpreadsheetsByType, zipTable }
+export { getUserMetadata, searchUserInDay }
