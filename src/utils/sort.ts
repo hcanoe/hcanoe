@@ -1,4 +1,4 @@
-const recentFirst = (a, b, par) => {
+const recentFirst = (a: any, b: any) => {
   if (a.SortDate > b.SortDate) {
     return -1
   }
