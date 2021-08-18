@@ -319,9 +319,11 @@ const prettifyOnOff = (arr) => {
  */
 const prettifyTimed = (arr) => {
   arr.forEach((training) => {
-    training.Pace = displayPace(training.Duration, training.Distance)
+    const duration =
+      training.Duration === undefined ? training.Timing : training.Duration
+    training.Pace = displayPace(duration, training.Distance)
     training.Distance = displayDistance(training.Distance, 'km')
-    training.Programme = toHHMMSS(training.Duration)
+    training.Programme = toHHMMSS(duration)
     const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
     training.SortDate = process_date
   })
