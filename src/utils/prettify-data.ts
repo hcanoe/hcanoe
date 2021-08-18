@@ -8,22 +8,11 @@ import {
   toHHMMSS,
 } from '@utils/physics'
 import { recentFirst } from '@utils/sort'
+import { Distance, Intervals } from 'types/types'
 
 /*
  * Prettify Distance
  */
-type Distance = Array<{
-  Distance: string
-  Timing: string
-  Type: string
-  Date: string
-  Pace?: string
-  best?: Array<number>
-  si_distance?: number
-  si_time?: number
-  si_pace?: number
-  SortDate?: number
-}>
 
 function prettifyDistance(arr: Distance) {
   const cat = [1000, 2400, 4000, 5000, 7000, 10000, 15000, 21000, 42195, 50000]
@@ -79,14 +68,6 @@ function prettifyDistance(arr: Distance) {
 /*
  * Prettify Intervals
  */
-type Intervals = Array<{
-  Type: string
-  Date: string
-  Programme: Array<string>
-  Paces: Array<string>
-  SortDate?: number
-  [propName: string]: any
-}>
 
 type BySets = Array<{
   Set?: string
