@@ -1,7 +1,7 @@
 import sheetIDs from '@root/spreadsheets'
 import { makeNameCaps } from '@utils/text'
 import spreadsheet_ids from '@root/spreadsheets'
-import { metadata, sheets, user_metadata } from 'types/types'
+import { sheets, user_metadata } from 'types/types'
 
 export async function getUserMetadata(
   sheets: sheets,
@@ -68,7 +68,7 @@ const zipTable = (keys: Array<string>, data: Array<string>) => {
   return result
 }
 
-const getSpreadsheetsByType = (user_metadata: metadata, type: string) => {
+const getSpreadsheetsByType = (user_metadata: user_metadata, type: string) => {
   const start = user_metadata.GradYear - 5
   const active_years = [...Array(6)].map((_, index) => index + start)
   const result = []
