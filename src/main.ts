@@ -14,7 +14,11 @@ import {
 } from '@utils/prettify-data'
 import { sheets, query, user_metadata, user_data_by_type } from 'types/types'
 
-async function getTrainingData(sheets: sheets, sheetID: string, sheetTitle: string) {
+async function getTrainingData(
+  sheets: sheets,
+  sheetID: string,
+  sheetTitle: string
+) {
   const range = sheetTitle.concat('!A:Z')
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: sheetID,
@@ -96,8 +100,8 @@ const getUserTrainingData = (data_all_sheets: any, name: string) => {
         if (_body) {
           const body = _body.slice(1)
           interface zipped {
-            Type?: string,
-            Date?: string,
+            Type?: string
+            Date?: string
             Name?: string
           }
           const zipped: zipped = zipTable(headers, body)
