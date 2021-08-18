@@ -1,4 +1,4 @@
-import { makeNameCaps } from 'utils/text'
+import { upperCase } from 'utils/text'
 import spreadsheet_ids from '@root/spreadsheets'
 import { zipTable } from 'utils/core'
 import { sheets, user_metadata } from 'types/types'
@@ -25,10 +25,10 @@ async function getUserMetadata(
 }
 
 const searchUser = (user: string, year: number, data: Array<Array<string>>) => {
-  const full_year = '20' + year
+  const full_year = ('20' + year).toString()
   const search_res = data.filter((arr) => {
     if (
-      (arr.includes(user) || arr.includes(makeNameCaps(user))) &&
+      (arr.includes(user) || arr.includes(upperCase(user))) &&
       arr.includes(full_year)
     ) {
       return true

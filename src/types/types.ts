@@ -27,8 +27,30 @@ export interface user_metadata {
 }
 
 export interface user_data_by_type {
-  DISTANCE: any,
-  INTERVALS: any,
-  ONOFF: any,
-  TIMED: any,
+  DISTANCE: Distance,
+  INTERVALS: Intervals,
+  ONOFF: Array<string>,
+  TIMED: Array<string>,
 }
+
+export type Distance = Array<{
+  Distance: string
+  Timing: string
+  Type: string
+  Date: string
+  Pace?: string
+  best?: Array<number>
+  si_distance?: number
+  si_time?: number
+  si_pace?: number
+  SortDate?: number
+}>
+
+export type Intervals = Array<{
+  Type: string
+  Date: string
+  Programme: Array<string>
+  Paces: Array<string>
+  SortDate?: number
+  [propName: string]: any
+}>

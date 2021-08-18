@@ -2,7 +2,7 @@
  * takes in "ning-yiran"
  * returns "Ning Yiran"
  */
-const makeEnglish = (str: string) => {
+const niceCase = (str: string) => {
   const parts = str.replace(/ /g, '-').toLowerCase().split('-')
   const res = parts
     .map(
@@ -14,12 +14,7 @@ const makeEnglish = (str: string) => {
   return res
 }
 
-const allCaps = (str: string) => {
-  const result = str.replace(/-/g, ' ').toUpperCase()
-  return result
-}
-
-const makeNameCaps = (str: string) => {
+const upperCase = (str: string) => {
   const result = str.replace(/-/g, ' ').toUpperCase()
   return result
 }
@@ -31,7 +26,6 @@ const medalDist = (num: number) => {
   } else {
     return str
   }
-  return null
 }
 
-export { makeEnglish, allCaps, makeNameCaps, medalDist }
+export { niceCase, upperCase, medalDist }
