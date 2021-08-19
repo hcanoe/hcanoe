@@ -193,9 +193,6 @@ const getOnOffProgramme = (d: OnOffBySets) => {
     const sameOff = () => {
       return d[index].Off === d[index - 1].Off ? true : false
     }
-    const dashEmpty = () => {
-      return mem.Dash.length === 0 ? true : false
-    }
     const pushSet = () => {
       if (c === 1) {
         Programme.push(mem.On + '/' + mem.Off)
