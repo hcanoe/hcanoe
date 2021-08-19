@@ -1,10 +1,7 @@
 import { niceCase } from 'utils/text'
-import { getUserMetadata } from 'utils/user-meta'
+import { getMetadata } from 'utils/user-meta'
 import { sheets, query } from 'types/types'
-import {
-  getDataByType,
-  getUserTrainingData,
-} from 'utils/get-data'
+import { getDataByType, getUserTrainingData } from 'utils/get-data'
 import {
   prettifyDistance,
   prettifyIntervals,
@@ -15,9 +12,11 @@ import {
 export async function main(query: query, sheets: sheets) {
   const output: any = {}
   const { year, user } = query
-  const meta = await getUserMetadata(sheets, user, year)
+  const response_meta = await getMetadata(sheets, user, year)
+  const meta = response_meta.user_meta
+  const spreadsheet_ids = response_meta.spreadsheet_ids
 
-  const data_run = await getDataByType(sheets, meta, 'run')
+  const data_run = await getDataByType(sheets, spreadsheet_ids, meta, 'Run')
   output.log = ['data all sheets', data_run]
 
   const response = getUserTrainingData(data_run, meta.Name)
@@ -25,7 +24,7 @@ export async function main(query: query, sheets: sheets) {
   const by_type = response.by_type
 
   for (const type in by_type) {
-    switch(type) {
+    switch (type) {
       case 'DISTANCE':
         const response = prettifyDistance(by_type[type])
         by_type[type] = response.arr

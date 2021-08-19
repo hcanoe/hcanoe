@@ -4,7 +4,11 @@ export interface sheets {
       get: (request: {
         spreadsheetId: string
         range: string
-      }) => Promise<{ data: { values: Array<any> } }>
+      }) => Promise<{ data: { values: Array<any> } }>,
+      batchGet: (request: {
+        spreadsheetId: string
+        ranges: Array<string>
+      }) => Promise<{ data: { valueRanges: Array<any> } }>,
     },
     get: (request: {
       spreadsheetId: string
@@ -54,3 +58,12 @@ export type Intervals = Array<{
   SortDate?: number
   [propName: string]: any
 }>
+
+export type SpreadsheetIds = Array<{
+  Year: string
+  Run?: string
+  Strength?: string
+  Paddling?: string
+}>
+
+export type TrainingType = 'Run' | 'Strength' | 'Paddling'

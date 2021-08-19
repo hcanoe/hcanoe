@@ -1,24 +1,29 @@
 import { upperCase } from 'utils/text'
-import spreadsheet_ids from '@root/spreadsheets'
-import { zipTable } from 'utils/core'
+import { zipTable, toObject } from 'utils/core'
 import { sheets, user_metadata } from 'types/types'
 
-async function getUserMetadata(
+async function getMetadata(
   sheets: sheets,
   user: string,
   year: number
 ) {
+  const meta_id = "17edrD9OALK56qoQoP_4DDwQdfpNBhH5P8NOyS0sKm2c"
   const response = (
-    await sheets.spreadsheets.values.get({
-      spreadsheetId: spreadsheet_ids.meta,
-      range: `data!A:F`,
+    await sheets.spreadsheets.values.batchGet({
+      spreadsheetId: meta_id,
+      ranges: [ 'data!A:F', 'IDs!A:D' ],
     })
-  ).data.values
+  ).data.valueRanges
   if (response) {
-    const headers = response.shift()
-    const body = searchUser(user, year, response)
-    const user_metadata: user_metadata = zipTable(headers, body)
-    return user_metadata
+    const meta = response[0].values
+    const spreadsheet_ids = toObject(response[1].values)
+
+    const headers = meta.shift()
+    const body = searchUser(user, year, meta)
+    const user_meta: user_metadata = zipTable(headers, body)
+    console.log('user_meta: ', user_meta)
+    console.log('spreadsheet_ids: ', spreadsheet_ids)
+    return { user_meta, spreadsheet_ids }
   } else {
     console.log('no response from google sheets')
   }
@@ -57,4 +62,4 @@ const searchUserInDay = (user: string, data: Array<Array<string>>) => {
   return search_res[0]
 }
 
-export { getUserMetadata, searchUserInDay }
+export { getMetadata, searchUserInDay }
