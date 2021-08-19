@@ -1,5 +1,6 @@
 import {
   Kbd,
+  Text,
   Box,
   Th,
   Tbody,
@@ -12,6 +13,7 @@ import {
 import FieldBox from 'components/FieldBox'
 import styles from '@styles/Table.module.css'
 import { medalDist } from 'utils/text'
+import { BsChevronUp, BsChevronDown } from 'react-icons/bs'
 
 const NoData = ({ message = 'no data' }) => {
   return (
@@ -28,34 +30,52 @@ const NoData = ({ message = 'no data' }) => {
   )
 }
 
-const DistanceTable = ({ rows }) => {
-  const medal = (best: Array<number>) => {
-    if (best && best.length > 0) {
-      return best.map((e, index) => (
-        <Kbd
-          bg="yellow.300"
-          borderColor='orange.300'
-          px='0.5ch'
-          whiteSpace='nowrap'
-          color="gray.700"
-          style={medalStyle}
-          key={index}
-        >
-          {medalDist(e)}
-        </Kbd>
-      ))
-    } else return ''
-  }
-  const medalStyle = {
-    fontSize: '10px',
-    marginRight: '0.5ch',
-  }
+const medal = (best: Array<number>) => {
+  if (best && best.length > 0) {
+    return best.map((e, index) => (
+      <Kbd
+        bg="yellow.300"
+        borderColor="orange.300"
+        px="0.5ch"
+        whiteSpace="nowrap"
+        color="gray.700"
+        style={medalStyle}
+        key={index}
+      >
+        {medalDist(e)}
+      </Kbd>
+    ))
+  } else return ''
+}
+
+const medalStyle = {
+  fontSize: '10px',
+  marginRight: '0.5ch',
+}
+
+const arrow = (dir: boolean, active: boolean) => {
+  return active ? dir ? <BsChevronUp /> : <BsChevronDown /> : null
+}
+const Sorter = ({ onClick, children, arrow, type }) => {
+  console.log(children)
+  console.log(type)
+  return (
+    <Th onClick={onClick} cursor="pointer">
+      <Box display="flex" flexDirection="row">
+        <Text paddingRight="0.7ch">{children}</Text>
+        <Text>{arrow(type.asc, type.active)}</Text>
+      </Box>
+    </Th>
+  )
+}
+
+const DistanceTable = ({ rows, sortDate, sortPace, date, pace }) => {
   const data = () => {
     type Row = {
-      Date: string,
-      Distance: string,
-      Pace: string,
-      best: Array<number>,
+      Date: string
+      Distance: string
+      Pace: string
+      best: Array<number>
       Timing: string
     }
     return (
@@ -77,6 +97,7 @@ const DistanceTable = ({ rows }) => {
   if (rows.length === 0) {
     return <NoData message="no distance data" />
   } else {
+    console.log(pace)
     return (
       <FieldBox t="Distance">
         <Box overflowX="auto">
@@ -85,8 +106,12 @@ const DistanceTable = ({ rows }) => {
               <Tr>
                 <Th>DISTANCE</Th>
                 <Th>TIME</Th>
-                <Th>PACE</Th>
-                <Th>DATE</Th>
+                <Sorter onClick={sortPace} arrow={arrow} type={pace}>
+                  PACE
+                </Sorter>
+                <Sorter onClick={sortDate} arrow={arrow} type={date}>
+                  DATE
+                </Sorter>
               </Tr>
             </Thead>
             {data()}
@@ -111,10 +136,10 @@ const IntervalsTable = ({ rows }) => {
   }
   const Data = () => {
     type Row = {
-      Date: string,
-      Distance: string,
-      Pace: string,
-      best: Array<number>,
+      Date: string
+      Distance: string
+      Pace: string
+      best: Array<number>
       Timing: string
     }
     return (
@@ -156,8 +181,8 @@ const IntervalsTable = ({ rows }) => {
 const OnOffTable = ({ rows }) => {
   const Data = () => {
     type Row = {
-      Date: string,
-      Distance: string,
+      Date: string
+      Distance: string
       Programme: string
     }
     return (
@@ -197,10 +222,10 @@ const OnOffTable = ({ rows }) => {
 const TimedTable = ({ rows }) => {
   const Data = () => {
     type Row = {
-      Date: string,
-      Distance: string,
-      Programme: string,
-      Pace: string,
+      Date: string
+      Distance: string
+      Programme: string
+      Pace: string
     }
     return (
       <Tbody>
