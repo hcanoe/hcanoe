@@ -61,7 +61,8 @@ function prettifyDistance(arr: Distance) {
       }
     })
   })
-  arr.sort(recentFirst)
+  // arr.sort(recentFirst)
+  console.log(arr)
   return { best: best_data, arr, cat }
 }
 
@@ -282,7 +283,7 @@ const getOnOffProgramme = (d: OnOffBySets) => {
 }
 
 /*
- * Prettify Distance
+ * Prettify OnOff
  */
 const prettifyOnOff = (arr: OnOff) => {
   const isKeyWord = {
