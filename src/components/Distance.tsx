@@ -1,6 +1,5 @@
 import { DistanceTable } from 'components/Table'
 import { useState } from 'react'
-import { Button } from '@chakra-ui/react'
 import { by_date, by_pace } from 'utils/sort'
 
 const Distance = ({ rows }) => {
@@ -30,7 +29,6 @@ const Distance = ({ rows }) => {
   }
   return (
     <>
-      <Button onClick={sortDate}>hello</Button>
       <DistanceTable rows={filteredRows} sortDate={sortDate} sortPace={sortPace} date={date} pace={pace}/>
     </>
   )
