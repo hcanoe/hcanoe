@@ -1,6 +1,6 @@
 import { upperCase } from 'utils/text'
 import { zipTable, toObject } from 'utils/core'
-import { user_metadata } from 'types/types'
+import { user_meta } from 'types/types'
 import { sheets_v4 } from 'googleapis'
 
 async function getMetadata(
@@ -21,7 +21,7 @@ async function getMetadata(
 
     const headers = meta_all.shift()
     const body = searchUser(user, year, meta_all)
-    const meta: user_metadata = zipTable(headers, body)
+    const meta: user_meta = zipTable(headers, body)
     return { meta, spreadsheet_ids }
   } else {
     console.log('no response from google sheets')
