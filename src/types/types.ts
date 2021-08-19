@@ -15,8 +15,8 @@ export interface user_meta {
 export interface user_data_by_type {
   DISTANCE: Distance,
   INTERVALS: Intervals,
-  ONOFF: Array<string>,
-  TIMED: Array<string>,
+  ONOFF: OnOff,
+  TIMED: Timed,
 }
 
 export type Distance = Array<{
@@ -46,8 +46,8 @@ export type OnOff = Array<{
   Type: string
   Date: string
   Distance: string
-  Programme: string
-  SortDate: number
+  Programme?: string
+  SortDate?: number
   [propName: string]: any
 }>
 

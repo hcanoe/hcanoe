@@ -33,6 +33,7 @@ export async function main(query: query, sheets: sheets_v4.Sheets) {
         by_type[type] = prettifyIntervals(by_type[type])
         break
       case 'ONOFF':
+        console.log(by_type[type], typeof by_type[type])
         by_type[type] = prettifyOnOff(by_type[type])
         break
       case 'TIMED':
