@@ -41,13 +41,11 @@ export async function main(query: query, sheets: sheets_v4.Sheets) {
     }
   }
 
-  Object.assign(output, {
+  return {...output,
     display_name: meta.DisplayName || niceCase(meta.Name),
     distance: by_type.DISTANCE,
     intervals: by_type.INTERVALS,
     on_off: by_type.ONOFF,
     timed: by_type.TIMED,
-  })
-
-  return output
+  }
 }

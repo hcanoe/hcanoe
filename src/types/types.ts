@@ -20,24 +20,45 @@ export interface user_data_by_type {
 }
 
 export type Distance = Array<{
+  Type: string
   Distance: string
   Timing: string
-  Type: string
   Date: string
-  Pace?: string
-  best?: Array<number>
-  si_distance?: number
-  si_time?: number
-  si_pace?: number
-  SortDate?: number
+  Pace: string
+  best: Array<number>
+  si_distance: number
+  si_time: number
+  si_pace: number
+  SortDate: number
 }>
 
 export type Intervals = Array<{
   Type: string
   Date: string
   Programme: Array<string>
+  Timings: Array<string>
   Paces: Array<string>
-  SortDate?: number
+  SortDate: number
+  [propName: string]: any
+}>
+
+export type OnOff = Array<{
+  Type: string
+  Date: string
+  Distance: string
+  Programme: string
+  SortDate: number
+  [propName: string]: any
+}>
+
+export type Timed = Array<{
+  Type: string
+  Date: string
+  Distance: string
+  Pace: string
+  Duration: string
+  Programme: string
+  SortDate: number
   [propName: string]: any
 }>
 
