@@ -57,8 +57,6 @@ const arrow = (dir: boolean, active: boolean) => {
   return active ? dir ? <BsChevronUp /> : <BsChevronDown /> : null
 }
 const Sorter = ({ onClick, children, arrow, type }) => {
-  console.log(children)
-  console.log(type)
   return (
     <Th onClick={onClick} cursor="pointer">
       <Box display="flex" flexDirection="row">
@@ -97,7 +95,6 @@ const DistanceTable = ({ rows, sortDate, sortPace, date, pace }) => {
   if (rows.length === 0) {
     return <NoData message="no distance data" />
   } else {
-    console.log(pace)
     return (
       <FieldBox t="Distance">
         <Box overflowX="auto">

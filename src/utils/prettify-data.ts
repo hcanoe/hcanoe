@@ -62,7 +62,6 @@ function prettifyDistance(arr: Distance) {
     })
   })
   // arr.sort(recentFirst)
-  console.log(arr)
   return { best: best_data, arr, cat }
 }
 
