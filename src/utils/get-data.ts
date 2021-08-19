@@ -1,8 +1,13 @@
 import { searchUserInDay } from 'utils/user-meta'
 import { zipTable } from 'utils/core'
 import { getDate } from 'utils/date'
-import sheetIDs from '@root/spreadsheets'
-import { sheets, user_metadata, user_data_by_type } from 'types/types'
+import {
+  sheets,
+  user_metadata,
+  user_data_by_type,
+  SpreadsheetIds,
+  TrainingType
+} from 'types/types'
 
 async function getTrainingData(
   sheets: sheets,
@@ -17,16 +22,20 @@ async function getTrainingData(
   return response
 }
 
-const getSpreadsheetsByType = (user_metadata: user_metadata, type: string) => {
+const getSpreadsheetsByType = (
+  spreadsheet_ids: SpreadsheetIds,
+  user_metadata: user_metadata,
+  type: TrainingType
+) => {
   const start = user_metadata.GradYear - 5
   const active_years = [...Array(6)].map((_, index) => index + start)
   const result = []
   console.log('')
   console.log('== <START> ====================================')
-  console.log('sheetIDs', sheetIDs)
-  active_years.forEach((year) => {
-    if (sheetIDs.hasOwnProperty(year) && sheetIDs[year].hasOwnProperty(type)) {
-      result.push(sheetIDs[year][type])
+  console.log(active_years)
+  spreadsheet_ids.forEach((e, index) => {
+    if (active_years.includes(parseInt(e.Year))) {
+      result.push(spreadsheet_ids[index][type] || null)
     }
   })
   return result
@@ -34,10 +43,11 @@ const getSpreadsheetsByType = (user_metadata: user_metadata, type: string) => {
 
 async function getDataByType(
   sheets: sheets,
+  spreadsheet_ids: SpreadsheetIds,
   meta: user_metadata,
-  type: string
+  type: TrainingType
 ) {
-  const idList = getSpreadsheetsByType(meta, type)
+  const idList = getSpreadsheetsByType(spreadsheet_ids, meta, type)
   const result = {}
   await Promise.all(
     idList.map(async (id) => {
