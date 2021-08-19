@@ -8,7 +8,7 @@ import {
   toHHMMSS,
 } from '@utils/physics'
 import { recentFirst } from '@utils/sort'
-import { Distance, Intervals } from 'types/types'
+import { Distance, Intervals, OnOff, Timed } from 'types/types'
 
 /*
  * Prettify Distance
@@ -69,12 +69,11 @@ function prettifyDistance(arr: Distance) {
  * Prettify Intervals
  */
 
-type BySets = Array<{
+type IntervalsBySets = Array<{
   Set?: string
   Rest?: string
   Timing?: string
 }>
-
 function prettifyIntervals(arr: Intervals) {
   const isKeyWord = {
     Set: 1,
@@ -83,7 +82,7 @@ function prettifyIntervals(arr: Intervals) {
   }
   arr.forEach((training) => {
     // training is an object
-    const by_sets: BySets = []
+    const by_sets: IntervalsBySets = []
     for (const key in training) {
       const type = key.slice(0, -1)
       if (isKeyWord[type]) {
@@ -101,7 +100,7 @@ function prettifyIntervals(arr: Intervals) {
   return arr
 }
 
-function getIntervalsProgramme(d: BySets) {
+function getIntervalsProgramme(d: IntervalsBySets) {
   const Programme = []
   const Timings = []
   const Paces = []
@@ -169,7 +168,11 @@ function getIntervalsProgramme(d: BySets) {
   }
 }
 
-const getOnOffProgramme = (d) => {
+type OnOffBySets = Array<{
+  On?: string
+  Off?: string
+}>
+const getOnOffProgramme = (d: OnOffBySets) => {
   const Programme = []
   var c = 0
   var mem = {
@@ -284,14 +287,13 @@ const getOnOffProgramme = (d) => {
 /*
  * Prettify Distance
  */
-const prettifyOnOff = (arr) => {
+const prettifyOnOff = (arr: OnOff) => {
   const isKeyWord = {
     On: 1,
     Off: 1,
   }
   arr.forEach((training) => {
     // training is an object
-    const n = {}
     const by_sets = [] // each set being { On: "", Off: "" }
     for (const key in training) {
       const subtype: any = key.slice(0, -1) // string minus last char
@@ -301,7 +303,6 @@ const prettifyOnOff = (arr) => {
         if (typeof by_sets[order] === 'undefined') {
           by_sets[order] = {}
         }
-        const target = subtype + 's'
         by_sets[order][subtype] = training[key]
       }
     }
@@ -317,13 +318,13 @@ const prettifyOnOff = (arr) => {
 /*
  * Prettify Timed
  */
-const prettifyTimed = (arr) => {
+const prettifyTimed = (arr: Timed) => {
   arr.forEach((training) => {
-    const duration =
+    training.Duration =
       training.Duration === undefined ? training.Timing : training.Duration
-    training.Pace = displayPace(duration, training.Distance)
+    training.Pace = displayPace(training.Duration, training.Distance)
     training.Distance = displayDistance(training.Distance, 'km')
-    training.Programme = toHHMMSS(duration)
+    training.Programme = toHHMMSS(training.Duration)
     const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
     training.SortDate = process_date
   })
