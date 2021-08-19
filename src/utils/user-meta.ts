@@ -1,9 +1,10 @@
 import { upperCase } from 'utils/text'
 import { zipTable, toObject } from 'utils/core'
-import { sheets, user_metadata } from 'types/types'
+import { user_metadata } from 'types/types'
+import { sheets_v4 } from 'googleapis'
 
 async function getMetadata(
-  sheets: sheets,
+  sheets: sheets_v4.Sheets,
   user: string,
   year: number
 ) {
@@ -15,15 +16,13 @@ async function getMetadata(
     })
   ).data.valueRanges
   if (response) {
-    const meta = response[0].values
+    const meta_all = response[0].values
     const spreadsheet_ids = toObject(response[1].values)
 
-    const headers = meta.shift()
-    const body = searchUser(user, year, meta)
-    const user_meta: user_metadata = zipTable(headers, body)
-    console.log('user_meta: ', user_meta)
-    console.log('spreadsheet_ids: ', spreadsheet_ids)
-    return { user_meta, spreadsheet_ids }
+    const headers = meta_all.shift()
+    const body = searchUser(user, year, meta_all)
+    const meta: user_metadata = zipTable(headers, body)
+    return { meta, spreadsheet_ids }
   } else {
     console.log('no response from google sheets')
   }

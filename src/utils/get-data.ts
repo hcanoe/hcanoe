@@ -1,8 +1,8 @@
 import { searchUserInDay } from 'utils/user-meta'
 import { zipTable } from 'utils/core'
 import { getDate } from 'utils/date'
+import { sheets_v4 } from 'googleapis'
 import {
-  sheets,
   user_metadata,
   user_data_by_type,
   SpreadsheetIds,
@@ -10,7 +10,7 @@ import {
 } from 'types/types'
 
 async function getTrainingData(
-  sheets: sheets,
+  sheets: sheets_v4.Sheets,
   sheetID: string,
   sheetTitle: string
 ) {
@@ -42,7 +42,7 @@ const getSpreadsheetsByType = (
 }
 
 async function getDataByType(
-  sheets: sheets,
+  sheets: sheets_v4.Sheets,
   spreadsheet_ids: SpreadsheetIds,
   meta: user_metadata,
   type: TrainingType

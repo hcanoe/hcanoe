@@ -12,17 +12,15 @@ import {
   Center,
   Text,
   Input,
-  Link,
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import styles from 'styles/Homepage.module.css'
-import Router from 'next/router'
 
 const dashify = (str) => {
   return str.replace(/ /g, '-').toLowerCase()
 }
 
-export default function Page({ log }) {
+export default function Page() {
   const [year, setYear] = useState('')
   const [url_year, setUrl_year] = useState('18')
   const [name, setName] = useState('nguyen vu khang')
@@ -36,11 +34,6 @@ export default function Page({ log }) {
   }
   const handleChangeName = (e) => {
     setName(e.target.value)
-  }
-  const user_url = {
-    fontSize: '1.1em',
-    fontFamily: 'monospace',
-    marginTop: '100px',
   }
   const goToUrl = (e) => {
     if (e.key == 'Enter') {
