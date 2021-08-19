@@ -1,27 +1,9 @@
-export interface sheets {
-  spreadsheets: {
-    values: {
-      get: (request: {
-        spreadsheetId: string
-        range: string
-      }) => Promise<{ data: { values: Array<any> } }>,
-      batchGet: (request: {
-        spreadsheetId: string
-        ranges: Array<string>
-      }) => Promise<{ data: { valueRanges: Array<any> } }>,
-    },
-    get: (request: {
-      spreadsheetId: string
-    }) => Promise<{ data: { sheets: Array<any> } }>
-  }
-}
-
 export interface query {
   year: number,
   user: string,
 }
 
-export interface user_metadata {
+export interface user_meta {
   Name?: string,
   GradYear?: number,
   Craft?: string,

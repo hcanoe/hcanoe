@@ -3,7 +3,7 @@ import { zipTable } from 'utils/core'
 import { getDate } from 'utils/date'
 import { sheets_v4 } from 'googleapis'
 import {
-  user_metadata,
+  user_meta,
   user_data_by_type,
   SpreadsheetIds,
   TrainingType
@@ -24,10 +24,10 @@ async function getTrainingData(
 
 const getSpreadsheetsByType = (
   spreadsheet_ids: SpreadsheetIds,
-  user_metadata: user_metadata,
+  user_meta: user_meta,
   type: TrainingType
 ) => {
-  const start = user_metadata.GradYear - 5
+  const start = user_meta.GradYear - 5
   const active_years = [...Array(6)].map((_, index) => index + start)
   const result = []
   console.log('')
@@ -44,7 +44,7 @@ const getSpreadsheetsByType = (
 async function getDataByType(
   sheets: sheets_v4.Sheets,
   spreadsheet_ids: SpreadsheetIds,
-  meta: user_metadata,
+  meta: user_meta,
   type: TrainingType
 ) {
   const idList = getSpreadsheetsByType(spreadsheet_ids, meta, type)
