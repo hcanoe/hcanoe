@@ -3,10 +3,8 @@ import { zipTable, toObject } from 'utils/core'
 import { user_meta } from 'types/types'
 import { sheets_v4 } from 'googleapis'
 
-async function getMetadata(
+async function getBase(
   sheets: sheets_v4.Sheets,
-  user: string,
-  year: number
 ) {
   const meta_id = "17edrD9OALK56qoQoP_4DDwQdfpNBhH5P8NOyS0sKm2c"
   const response = (
@@ -15,6 +13,15 @@ async function getMetadata(
       ranges: [ 'data!A:F', 'IDs!A:D' ],
     })
   ).data.valueRanges
+  return response
+}
+
+async function getMetadata(
+  sheets: sheets_v4.Sheets,
+  user: string,
+  year: number
+) {
+  const response = await getBase(sheets)
   if (response) {
     const meta_all = response[0].values
     const spreadsheet_ids = toObject(response[1].values)
@@ -61,4 +68,4 @@ const searchUserInDay = (user: string, data: Array<Array<string>>) => {
   return search_res[0]
 }
 
-export { getMetadata, searchUserInDay }
+export { getBase, getMetadata, searchUserInDay }
