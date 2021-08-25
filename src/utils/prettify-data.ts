@@ -10,65 +10,62 @@ import {
 import { recentFirst } from '@utils/sort'
 import { Distance, Intervals, OnOff, Timed } from 'types/types'
 
-/*
- * Prettify Distance
- */
-
+/* Prettify Distance */
 function prettifyDistance(arr: Distance) {
   const cat = [1000, 2400, 4000, 5000, 7000, 10000, 15000, 21000, 42195, 50000]
-  const best_temp = Array(cat.length)
+  const bestTemp = Array(cat.length)
+  /* arr is an array with each element representing one training session */
   arr.forEach((training) => {
-    // Pace
+    /* Pace */
     training.Pace = displayPace(training.Timing, training.Distance)
-    const si_pace = toSeconds(training.Pace)
-    // Distance
-    const si_distance = toMeters(training.Distance)
+    const siPace = toSeconds(training.Pace)
+
+    /* Distance */
+    const siDistance = toMeters(training.Distance)
     training.Distance = displayDistance(training.Distance, 'km')
-    // Timings
-    const si_time = toSeconds(training.Timing)
+
+    /* Timings */
+    const siTime = toSeconds(training.Timing)
     training.Timing = toHHMMSS(training.Timing)
-    // Check if best
+
+    /* Check if best
+     * and write id and pace into bestTemp
+     */
     cat.forEach((e, i) => {
-      if (si_distance >= cat[i]) {
-        if (best_temp[i] === undefined) {
-          training.best = []
-          best_temp[i] = {
-            id: si_time + si_distance + e,
-            pace: si_pace,
-          }
-        } else {
-          if (si_pace < best_temp[i].pace) {
-            training.best = []
-            best_temp[i] = {
-              id: si_time + si_distance + e,
-              pace: si_pace,
-            }
-          }
+      if (
+        siDistance >= cat[i] &&
+        (bestTemp[i] === undefined || siPace < bestTemp[i].pace)
+      ) {
+        training.best = []
+        bestTemp[i] = {
+          id: siTime + siDistance + e,
+          pace: siPace,
         }
       }
     })
-    Object.assign(training, { si_pace, si_distance, si_time })
-    const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
-    training.SortDate = process_date
+    Object.assign(training, { siPace, siDistance, siTime })
+    training.SortDate = moment(training.Date, 'DD/MM/YYYY').unix()
   })
-  const best_data = Array(cat.length)
+  /* bestTemp is now an array of objects containing the ids of the best runs and
+   * their corresponding paces
+   */
+  const bestData = Array(cat.length)
   arr.forEach((training) => {
+    /* tag each training with which distance it has best pace for
+     * write that entire training into bestData, with the key being the distance
+     */
     cat.forEach((e, i) => {
-      const this_id = training.si_time + training.si_distance + e
-      if (best_temp[i] && this_id === best_temp[i].id) {
+      const id = training.siTime + training.siDistance + e
+      if (bestTemp[i] && id === bestTemp[i].id) {
         training.best.push(cat[i])
-        best_data[i] = training
+        bestData[i] = training
       }
     })
   })
-  // arr.sort(recentFirst)
-  return { best: best_data, arr, cat }
+  return { best: bestData, arr, cat }
 }
 
-/*
- * Prettify Intervals
- */
-
+/* Prettify Intervals */
 type IntervalsBySets = Array<{
   Set?: string
   Rest?: string
@@ -82,18 +79,18 @@ function prettifyIntervals(arr: Intervals) {
   }
   arr.forEach((training) => {
     // training is an object
-    const by_sets: IntervalsBySets = []
+    const bySets: IntervalsBySets = []
     for (const key in training) {
       const type = key.slice(0, -1)
       if (isKeyWord[type]) {
         const order = parseInt(key.slice(-1)) - 1
-        if (typeof by_sets[order] === 'undefined') {
-          by_sets[order] = {}
+        if (typeof bySets[order] === 'undefined') {
+          bySets[order] = {}
         }
-        by_sets[order][type] = training[key]
+        bySets[order][type] = training[key]
       }
     }
-    Object.assign(training, getIntervalsProgramme(by_sets))
+    Object.assign(training, getIntervalsProgramme(bySets))
     training.SortDate = moment(training.Date, 'DD/MM/YYYY').unix()
   })
   arr.sort(recentFirst)
@@ -264,8 +261,8 @@ const getOnOffProgramme = (d: OnOffBySets) => {
       } else if (!sameOff()) {
         if (mem.Train) {
           // push dash train to Programme
-          const temp_train = mem.Dash.join('-')
-          Programme.push(temp_train + '/' + mem.Off)
+          const tempTrain = mem.Dash.join('-')
+          Programme.push(tempTrain + '/' + mem.Off)
         } else {
           pushSet()
         }
@@ -281,9 +278,7 @@ const getOnOffProgramme = (d: OnOffBySets) => {
   return output
 }
 
-/*
- * Prettify OnOff
- */
+/* Prettify OnOff */
 const prettifyOnOff = (arr: OnOff) => {
   const isKeyWord = {
     On: 1,
@@ -291,30 +286,28 @@ const prettifyOnOff = (arr: OnOff) => {
   }
   arr.forEach((training) => {
     // training is an object
-    const by_sets = [] // each set being { On: "", Off: "" }
+    const bySets = [] // each set being { On: "", Off: "" }
     for (const key in training) {
       const subtype: any = key.slice(0, -1) // string minus last char
       const order: any = parseInt(key.slice(-1)) - 1 // last char
 
       if (isKeyWord[subtype]) {
-        if (typeof by_sets[order] === 'undefined') {
-          by_sets[order] = {}
+        if (typeof bySets[order] === 'undefined') {
+          bySets[order] = {}
         }
-        by_sets[order][subtype] = training[key]
+        bySets[order][subtype] = training[key]
       }
     }
-    Object.assign(training, getOnOffProgramme(by_sets))
+    Object.assign(training, getOnOffProgramme(bySets))
     training.Distance = displayDistance(training.Distance, 'km')
-    const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
-    training.SortDate = process_date
+    const processDate = moment(training.Date, 'DD/MM/YYYY').unix()
+    training.SortDate = processDate
   })
   arr.sort(recentFirst)
   return arr
 }
 
-/*
- * Prettify Timed
- */
+/* Prettify Timed */
 const prettifyTimed = (arr: Timed) => {
   arr.forEach((training) => {
     training.Duration =
@@ -322,8 +315,8 @@ const prettifyTimed = (arr: Timed) => {
     training.Pace = displayPace(training.Duration, training.Distance)
     training.Distance = displayDistance(training.Distance, 'km')
     training.Programme = toHHMMSS(training.Duration)
-    const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
-    training.SortDate = process_date
+    const processDate = moment(training.Date, 'DD/MM/YYYY').unix()
+    training.SortDate = processDate
   })
   arr.sort(recentFirst)
   return arr

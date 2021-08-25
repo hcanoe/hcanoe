@@ -10,7 +10,16 @@ named
 # physics.ts
 named
 commented
+
+>>>>>>>>>>>>>>>>
 # prettify-data.ts
+named
+commented
+* prettifyDistance
+- prettifyIntervals
+- prettifyOnOff
+- prettifyTimed
+
 # sort.ts
 # text.ts
 # user-meta.ts

@@ -26,9 +26,9 @@ export type Distance = Array<{
   Date: string
   Pace: string
   best: Array<number>
-  si_distance: number
-  si_time: number
-  si_pace: number
+  siDistance: number
+  siTime: number
+  siPace: number
   SortDate: number
 }>
 

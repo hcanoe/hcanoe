@@ -34,8 +34,8 @@ const NoData = ({ message = 'no data' }) => {
 
 type Best = {
   best: Array<{
-    si_distance: number
-    si_time: number
+    siDistance: number
+    siTime: number
   }>
   cat: Array<number>
 }
@@ -50,7 +50,7 @@ const BestSplits = ({ best, cat }: Best) => {
   const _best = []
   best.forEach((t, i: number) => {
     if (t) {
-      const Projected = toHHMMSS((t.si_time / t.si_distance) * cat[i])
+      const Projected = toHHMMSS((t.siTime / t.siDistance) * cat[i])
       _best.push({ ...t, Projected })
     }
   })
