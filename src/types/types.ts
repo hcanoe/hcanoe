@@ -13,10 +13,10 @@ export interface user_meta {
 }
 
 export interface user_data_by_type {
-  DISTANCE: Distance,
-  INTERVALS: Intervals,
-  ONOFF: OnOff,
-  TIMED: Timed,
+  DISTANCE?: Distance,
+  INTERVALS?: Intervals,
+  ONOFF?: OnOff,
+  TIMED?: Timed,
 }
 
 export type Distance = Array<{

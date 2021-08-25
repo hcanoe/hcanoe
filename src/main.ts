@@ -1,6 +1,6 @@
 import { niceCase } from 'utils/text'
 import { getMetadata } from 'utils/user-meta'
-import { query } from 'types/types'
+import { query, user_data_by_type } from 'types/types'
 import { data } from 'utils/get-data'
 import { sheets_v4 } from 'googleapis'
 import {
@@ -19,7 +19,7 @@ export async function main(query: query, sheets: sheets_v4.Sheets) {
   const data_run = await data.byType(sheets, spreadsheetIds, gradYear, 'Run')
 
   // const user_data_by_day = response.by_day
-  const by_type = data.filterUser(data_run, meta.Name)
+  const by_type: user_data_by_type = data.filterUser(data_run, meta.Name)
 
   for (const type in by_type) {
     switch (type) {
