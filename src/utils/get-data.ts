@@ -139,13 +139,10 @@ export namespace data {
         arr.length > 1 && splitDay.push(eachDay(week, arr))
         arr = []
       } else {
-        if (e.includes(name)) {
-          arr.push(e)
-          index == weekData.length - 1 && splitDay.push(eachDay(week, arr))
-        } else if (runTypes.includes(e[0])) {
-          // header row
+        if (e.includes(name) || runTypes.includes(e[0])) {
           arr.push(e)
         }
+        index == weekData.length - 1 && splitDay.push(eachDay(week, arr))
       }
     })
     // key = day of week,
