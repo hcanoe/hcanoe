@@ -21,10 +21,12 @@ export namespace data {
   ) {
     const _columns = columns || 'A:Z'
     const range = [sheetTitle, '!', _columns].join('')
-    const response = (await sheets.spreadsheets.values.get({
-      spreadsheetId,
-      range,
-    })).data.values
+    const response = (
+      await sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range,
+      })
+    ).data.values
     return response
   }
 
@@ -56,30 +58,49 @@ export namespace data {
     return idList
   }
 
+  /*
+   * returns an object of objects of array of strings
+   * containing the entire team's data
+   * in years which the user is active
+   * in the specific type that is queried
+   *
+   * data = {
+   *   <spreadsheet id>: {
+   *     <start of week>: [ team's data for the week ],
+   *     ...
+   *   },
+   *   ...
+   * }
+   */
   export async function byType(
     sheets: sheets_v4.Sheets,
     spreadsheetIds: SpreadsheetIds,
     gradYear: number,
     type: TrainingType
   ) {
-    const result = {}
+    const data = {}
     const l = idList(spreadsheetIds, gradYear, type)
     await Promise.all(
       l.map(async (id) => {
-        result[id] = {}
-        const response = await sheets.spreadsheets.get({
-          spreadsheetId: id,
-        })
-        const sheetData = response.data.sheets
+        data[id] = {}
+
+        /* returns an array of strings, containing all sheet titles within that
+         * spreadsheet
+         *
+         * note that these titles represent the date of the start of each
+         * training week (all Mondays)
+         */
+        const sheetTitles = ( await sheets.spreadsheets.get({ spreadsheetId: id
+        })).data.sheets.map((sheet) => sheet.properties.title)
+
         await Promise.all(
-          sheetData.map(async (eachSheetData) => {
-            const title = eachSheetData.properties.title
-            result[id][title] = await trainingData(sheets, id, title)
+          sheetTitles.map(async (title) => {
+            data[id][title] = await trainingData(sheets, id, title)
           })
         )
       })
     )
-    return result
+    return data
   }
 
   export const getUserTrainingData = (data: any, name: string) => {
