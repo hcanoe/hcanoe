@@ -72,43 +72,56 @@ type IntervalsBySets = Array<{
   Timing?: string
 }>
 function prettifyIntervals(arr: Intervals) {
-  const isKeyWord = {
+  const isKeyword = {
     Set: 1,
     Rest: 1,
     Timing: 1,
   }
+  /* arr is an array with each element representing one training session */
   arr.forEach((training) => {
-    // training is an object
-    const bySets: IntervalsBySets = []
+    const sets: IntervalsBySets = []
     for (const key in training) {
-      const type = key.slice(0, -1)
-      if (isKeyWord[type]) {
+      /* Some headers are expected to have numbers, denoting
+       * the set's order
+       */
+      const heading = key.replace(/[0-9]/g, '')
+      if (isKeyword[heading]) {
         const order = parseInt(key.slice(-1)) - 1
-        if (typeof bySets[order] === 'undefined') {
-          bySets[order] = {}
-        }
-        bySets[order][type] = training[key]
+        sets[order] === undefined && (sets[order] = {})
+        sets[order][heading] = training[key]
       }
     }
-    Object.assign(training, getIntervalsProgramme(bySets))
+    /* sets is now an array of objects,
+     * each object containing the Set (Distance), Rest, and Timing values for
+     * that set
+     */
+    Object.assign(training, intervalsProgramme(sets))
     training.SortDate = moment(training.Date, 'DD/MM/YYYY').unix()
   })
   arr.sort(recentFirst)
   return arr
 }
 
-function getIntervalsProgramme(d: IntervalsBySets) {
+/*
+ * Reads an array of objects, each object representing one interval set
+ *
+ * returns three arrays of strings: Programme, Timings, Paces.
+ * The length of these arrays will be the same.
+ * The strings within these arrays have been formatted for reading.
+ * intented to merge into an interval training as props
+ */
+function intervalsProgramme(d: IntervalsBySets) {
   const Programme = []
   const Timings = []
   const Paces = []
   var c = 0
   type Mem = {
-    Set?: string
-    Rest?: string
-    Timings?: Array<number>
+    Set?: string // previous set's distance
+    Rest?: string // previous set's rest time
+    Timings?: Array<number> // previous sets' timings
   }
   var mem: Mem = {}
-  function pushPaces(timings: Array<number>, distance: string) {
+  function toPaces(timings: Array<number>, distance: string) {
     Paces.push(
       displayPace(
         timings.reduce((a, b) => a + b, 0), // total timing in seconds
@@ -116,11 +129,11 @@ function getIntervalsProgramme(d: IntervalsBySets) {
       )
     )
   }
-  function pushProgramme(c: number, distance: string, rest: string) {
+  function toProgramme(c: number, distance: string, rest: string) {
     Programme.push(c + 'x' + distance + '/' + quoteNotation(rest))
   }
   d.forEach((e, index) => {
-    const same = (type: string) => {
+    function same(type: string) {
       return d[index][type] === d[index - 1][type] ? true : false
     }
     if (index === 0) {
@@ -132,27 +145,27 @@ function getIntervalsProgramme(d: IntervalsBySets) {
       // last element
       if (same('Set') && same('Rest')) {
         c += 1
-        pushProgramme(c, mem.Set, mem.Rest)
+        toProgramme(c, mem.Set, mem.Rest)
         mem.Timings.push(toSeconds(e.Timing))
         Timings.push(mem.Timings.map((x) => toHHMMSS(x)))
-        pushPaces(mem.Timings, mem.Set)
+        toPaces(mem.Timings, mem.Set)
       } else {
-        pushProgramme(c, mem.Set, mem.Rest)
+        toProgramme(c, mem.Set, mem.Rest)
         Timings.push(mem.Timings.map((x) => toHHMMSS(x)))
-        pushPaces(mem.Timings, mem.Set)
+        toPaces(mem.Timings, mem.Set)
         Programme.push(1 + 'x' + e.Set + '/' + quoteNotation(e.Rest))
         Timings.push([toHHMMSS(e.Timing)])
         Paces.push(displayPace(toSeconds(e.Timing), toMeters(e.Set)))
       }
     } else {
-      // in between
+      // neither first nor last element
       if (same('Set') && same('Rest')) {
         c += 1
         mem.Timings.push(toSeconds(e.Timing))
       } else {
-        pushProgramme(c, mem.Set, mem.Rest)
+        toProgramme(c, mem.Set, mem.Rest)
         Timings.push(mem.Timings.map((x) => toHHMMSS(x)))
-        pushPaces(mem.Timings, mem.Set)
+        toPaces(mem.Timings, mem.Set)
         mem = { ...mem, Set: e.Set, Rest: e.Rest }
         mem.Timings = [toSeconds(e.Timing)] // reset Timings in memory
       }
