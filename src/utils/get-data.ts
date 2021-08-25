@@ -11,12 +11,12 @@ import {
 
 async function getTrainingData(
   sheets: sheets_v4.Sheets,
-  sheetID: string,
-  sheetTitle: string
+  sheet_id: string,
+  sheet_title: string
 ) {
-  const range = sheetTitle.concat('!A:Z')
+  const range = sheet_title.concat('!A:Z')
   const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: sheetID,
+    spreadsheetId: sheet_id,
     range,
   })
   return response
