@@ -18,9 +18,8 @@ export async function main(query: query, sheets: sheets_v4.Sheets) {
 
   const data_run = await data.byType(sheets, spreadsheetIds, gradYear, 'Run')
 
-  const response = data.getUserTrainingData(data_run, meta.Name)
   // const user_data_by_day = response.by_day
-  const by_type = response.by_type
+  const by_type = data.filterUser(data_run, meta.Name)
 
   for (const type in by_type) {
     switch (type) {

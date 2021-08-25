@@ -17,7 +17,7 @@ const indexDayOfWeek = {
  *  returns the overall date in `DD/MM/YYYY` format, dropping leading zeros
  *
  */
-const getDate = (date: string, day_of_week: number) => {
+const getDate = (date: string, day_of_week: string) => {
   const process_date = moment(date, "DD/MM/YYYY")
   process_date.add(indexDayOfWeek[day_of_week], 'days')
   return process_date.format('DD/MM/YYYY')

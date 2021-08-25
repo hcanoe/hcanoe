@@ -1,13 +1,9 @@
-import { searchUserInDay } from 'utils/user-meta'
 import { zipTable } from 'utils/core'
 import { getDate } from 'utils/date'
 import { sheets_v4 } from 'googleapis'
-import {
-  user_meta,
-  user_data_by_type,
-  SpreadsheetIds,
-  TrainingType,
-} from 'types/types'
+import { SpreadsheetIds, TrainingType } from 'types/types'
+
+const runTypes = ['DISTANCE', 'INTERVALS', 'ONOFF', 'TIMED']
 
 export namespace data {
   /* reads one sheet and returns an excel array
@@ -90,8 +86,9 @@ export namespace data {
          * note that these titles represent the date of the start of each
          * training week (all Mondays)
          */
-        const sheetTitles = ( await sheets.spreadsheets.get({ spreadsheetId: id
-        })).data.sheets.map((sheet) => sheet.properties.title)
+        const sheetTitles = (
+          await sheets.spreadsheets.get({ spreadsheetId: id })
+        ).data.sheets.map((sheet) => sheet.properties.title)
 
         await Promise.all(
           sheetTitles.map(async (title) => {
@@ -103,66 +100,66 @@ export namespace data {
     return data
   }
 
-  export const getUserTrainingData = (data: any, name: string) => {
-    const by_type: user_data_by_type = {
-      DISTANCE: [],
-      INTERVALS: [],
-      ONOFF: [],
-      TIMED: [],
-    }
+  /* takes in the output of byType
+   * returns an object containing only selected user's data,
+   * sorted into Distance, Intervals, OnOff, and Timed categories
+   */
+  export const filterUser = (data: any, name: string) => {
+    /* initialize a template object based on `runTypes` */
+    const userData = runTypes.reduce(function(userData, type) {
+      userData[type] = []
+      return userData
+    }, {})
+
     console.log('reading data from ->', Object.keys(data))
+
     for (const id in data) {
       for (const week in data[id]) {
-        const data_week: Array<string> = data[id][week]
-
-        // data_week is an array of the week's trainings,
-        // with each day separated by a single cell ['>>>']
-
-        const split_day = getSplitDay(data_week)
-        for (const day in split_day) {
-          const trg = eachDay(name, day, week, split_day)
-          trg && by_type[trg.Type].push(trg)
-        }
+        /* weekData is an array of the week's trainings, 
+         * with each day separated by a single cell ['>>>']
+         */
+        const weekData: Array<string> = data[id][week]
+        splitDay(weekData, week, name).forEach((e) => {
+          userData[e.Type].push(e)
+        })
       }
     }
-    return { by_type }
+    return userData
   }
 
-  function eachDay(name: string, day: string, week: string, split_day: any) {
-    const dayOfWeek = split_day[day][1][0]
-    const date = getDate(week, dayOfWeek)
-    const day_arr = split_day[day]
-    const headers = day_arr.shift()
-    const type = headers.shift()
-    const _body = searchUserInDay(name, day_arr)
-    if (_body) {
-      const body = _body.slice(1)
-      const zipped: any = zipTable(headers, body)
-      Object.assign(zipped, {
-        Type: type,
-        Date: date,
-      })
-      delete zipped.Name
-      return zipped
-    }
-  }
-
-  function getSplitDay(data_week: Array<string>) {
-    const split_day = {}
+  /* returns an array of objects,
+   * containing training data specific to the user in a week
+   */
+  function splitDay(data_week: Array<string>, week: string, name: string) {
+    const splitDay = []
     var arr = []
     data_week.forEach((e, index) => {
-      // const training_id = week + day
       if (e[0] === '>>>') {
         // arr[1][0] is the day of week
-        split_day[arr[1][0] + index] = arr
+        arr.length > 1 && splitDay.push(eachDay(week, arr))
         arr = []
       } else {
-        arr.push(e)
-        index == data_week.length - 1 && (split_day[arr[1][0] + index] = arr)
+        if (e.includes(name)) {
+          arr.push(e)
+          index == data_week.length - 1 && splitDay.push(eachDay(week, arr))
+        } else if (runTypes.includes(e[0])) {
+          // header row
+          arr.push(e)
+        }
       }
     })
     // key = day of week,
-    // value = team's data for that day
-    return split_day
+    // value = user's data for that day
+    return splitDay
+  }
+
+  function eachDay(week: string, arr: Array<Array<string>>) {
+    const type = arr[0].shift()
+    const day = arr[1].shift()
+    const zipped: any = zipTable(arr[0], arr[1])
+    zipped.Type = type
+    zipped.Date = getDate(week, day)
+    delete zipped.Name
+    return zipped
   }
 }
