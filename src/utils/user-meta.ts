@@ -24,12 +24,12 @@ async function getMetadata(
   const response = await getBase(sheets)
   if (response) {
     const meta_all = response[0].values
-    const spreadsheet_ids = toObject(response[1].values)
+    const spreadsheetIds = toObject(response[1].values)
 
     const headers = meta_all.shift()
     const body = searchUser(user, year, meta_all)
     const meta: user_meta = zipTable(headers, body)
-    return { meta, spreadsheet_ids }
+    return { meta, spreadsheetIds }
   } else {
     console.log('no response from google sheets')
   }

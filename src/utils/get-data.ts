@@ -28,35 +28,44 @@ export namespace data {
     return response
   }
 
-  const getSpreadsheetsByType = (
-    spreadsheet_ids: SpreadsheetIds,
-    user_meta: user_meta,
+  /* takes in metadata and training type,
+   *
+   * returns an array of strings,
+   * listing the spreadsheet ids to read from
+   */
+  const idList = (
+    spreadsheetIds: SpreadsheetIds,
+    gradYear: number,
     type: TrainingType
   ) => {
-    const start = user_meta.GradYear - 5
-    const active_years = [...Array(6)].map((_, index) => index + start)
-    const result = []
+    const start = gradYear - 5
+
+    // an array of 6 numbers: years in which the paddler is active
+    const activeYears = [...Array(6)].map((_, index) => index + start)
+
     console.log('')
     console.log('== <START> ====================================')
-    console.log(active_years)
-    spreadsheet_ids.forEach((e, index) => {
-      if (active_years.includes(parseInt(e.Year))) {
-        result.push(spreadsheet_ids[index][type] || null)
+    console.log('active in', activeYears)
+
+    const idList = []
+    spreadsheetIds.forEach((e, index) => {
+      if (activeYears.includes(parseInt(e.Year))) {
+        idList.push(spreadsheetIds[index][type] || null)
       }
     })
-    return result
+    return idList
   }
 
-  export async function getDataByType(
+  export async function byType(
     sheets: sheets_v4.Sheets,
-    spreadsheet_ids: SpreadsheetIds,
-    meta: user_meta,
+    spreadsheetIds: SpreadsheetIds,
+    gradYear: number,
     type: TrainingType
   ) {
-    const idList = getSpreadsheetsByType(spreadsheet_ids, meta, type)
     const result = {}
+    const l = idList(spreadsheetIds, gradYear, type)
     await Promise.all(
-      idList.map(async (id) => {
+      l.map(async (id) => {
         result[id] = {}
         const response = await sheets.spreadsheets.get({
           spreadsheetId: id,

@@ -5,7 +5,7 @@ export interface query {
 
 export interface user_meta {
   Name?: string,
-  GradYear?: number,
+  GradYear?: string,
   Craft?: string,
   Gender?: string,
   Domain?: string,
