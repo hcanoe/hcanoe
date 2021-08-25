@@ -1,7 +1,7 @@
 import { niceCase } from 'utils/text'
 import { getMetadata } from 'utils/user-meta'
 import { query } from 'types/types'
-import { getDataByType, getUserTrainingData } from 'utils/get-data'
+import { data } from 'utils/get-data'
 import { sheets_v4 } from 'googleapis'
 import {
   prettifyDistance,
@@ -15,9 +15,9 @@ export async function main(query: query, sheets: sheets_v4.Sheets) {
   const { year, user } = query
   const { meta, spreadsheet_ids } = await getMetadata(sheets, user, year)
 
-  const data_run = await getDataByType(sheets, spreadsheet_ids, meta, 'Run')
+  const data_run = await data.getDataByType(sheets, spreadsheet_ids, meta, 'Run')
 
-  const response = getUserTrainingData(data_run, meta.Name)
+  const response = data.getUserTrainingData(data_run, meta.Name)
   // const user_data_by_day = response.by_day
   const by_type = response.by_type
 
