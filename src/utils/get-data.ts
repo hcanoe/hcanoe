@@ -130,10 +130,10 @@ export namespace data {
   /* returns an array of objects,
    * containing training data specific to the user in a week
    */
-  function splitDay(data_week: Array<string>, week: string, name: string) {
+  function splitDay(weekData: Array<string>, week: string, name: string) {
     const splitDay = []
     var arr = []
-    data_week.forEach((e, index) => {
+    weekData.forEach((e, index) => {
       if (e[0] === '>>>') {
         // arr[1][0] is the day of week
         arr.length > 1 && splitDay.push(eachDay(week, arr))
@@ -141,7 +141,7 @@ export namespace data {
       } else {
         if (e.includes(name)) {
           arr.push(e)
-          index == data_week.length - 1 && splitDay.push(eachDay(week, arr))
+          index == weekData.length - 1 && splitDay.push(eachDay(week, arr))
         } else if (runTypes.includes(e[0])) {
           // header row
           arr.push(e)
