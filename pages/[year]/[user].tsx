@@ -17,6 +17,14 @@ import { Title, Name } from 'components/Typography'
 import { HomeButton } from 'components/Buttons'
 
 /* getServerSideProps is a special function of nextjs.
+ *
+ * 1.
+ * it takes in a special object `context`
+ * within `context` it has a key called `query` (used below), whose props come
+ * from the url.
+ * More info @ https://nextjs.org/docs/routing/dynamic-routes
+ *
+ * 2.
  * returns a single object `props`,
  * whose contents can then be read by any other function in the page.
  */
