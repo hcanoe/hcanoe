@@ -50,8 +50,8 @@ const BestSplits = ({ best, cat }: Best) => {
   const _best = []
   best.forEach((t, i: number) => {
     if (t) {
-      const Projected = toHHMMSS((t.siTime / t.siDistance) * cat[i])
-      _best.push({ ...t, Projected })
+      const projected = toHHMMSS((t.siTime / t.siDistance) * cat[i])
+      _best.push({ ...t, projected })
     }
   })
 
@@ -76,26 +76,26 @@ const BestSplits = ({ best, cat }: Best) => {
       return show ? (
         <>
           <Td whiteSpace="nowrap">{dist[index]}</Td>
-          <Td>{row.Date}</Td>
-          <Td>{row.Distance}</Td>
-          <Td>{row.Timing}</Td>
+          <Td>{row.date}</Td>
+          <Td>{row.distance}</Td>
+          <Td>{row.timing}</Td>
         </>
       ) : (
         <>
           <Td whiteSpace="nowrap">{dist[index]}</Td>
-          <Td>{row.Pace}</Td>
-          <Td>{row.Projected}</Td>
+          <Td>{row.pace}</Td>
+          <Td>{row.projected}</Td>
         </>
       )
     }
     const data = () => {
       type Row = {
-        Date: string
+        date: string
       }
       return (
         <Tbody color="gray.800">
           {rows.map((row: Row, index: number) => (
-            <Tr key={row.Date + index}>
+            <Tr key={row.date + index}>
               <DetailsBody row={row} index={index} />
             </Tr>
           ))}

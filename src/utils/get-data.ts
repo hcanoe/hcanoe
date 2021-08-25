@@ -120,7 +120,7 @@ export namespace data {
          */
         const weekData: Array<string> = data[id][week]
         splitDay(weekData, week, name).forEach((e) => {
-          userData[e.Type].push(e)
+          userData[e.type].push(e)
         })
       }
     }
@@ -154,9 +154,9 @@ export namespace data {
     const type = arr[0].shift()
     const day = arr[1].shift()
     const zipped: any = zipTable(arr[0].map((e) => e.toLowerCase()), arr[1])
-    zipped.Type = type
-    zipped.Date = getDate(week, day)
-    delete zipped.Name
+    zipped.type = type
+    zipped.date = getDate(week, day)
+    delete zipped.name
     return zipped
   }
 }
