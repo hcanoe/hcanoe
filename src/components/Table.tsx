@@ -70,23 +70,23 @@ const Sorter = ({ onClick, children, arrow, type }) => {
 const DistanceTable = ({ rows, sortDate, sortPace, date, pace }) => {
   const data = () => {
     type Row = {
-      Date: string
-      Distance: string
-      Pace: string
+      date: string
+      distance: string
+      pace: string
       best: Array<number>
-      Timing: string
+      timing: string
     }
     return (
       <Tbody>
         {rows.map((row: Row, i: number) => (
-          <Tr key={row.Date + i}>
-            <Td>{row.Distance}</Td>
-            <Td>{row.Timing}</Td>
+          <Tr key={row.date + i}>
+            <Td>{row.distance}</Td>
+            <Td>{row.timing}</Td>
             <Td>
-              {row.Pace}
+              {row.pace}
               <div>{medal(row.best)}</div>
             </Td>
-            <Td>{row.Date}</Td>
+            <Td>{row.date}</Td>
           </Tr>
         ))}
       </Tbody>
@@ -133,20 +133,20 @@ const IntervalsTable = ({ rows }) => {
   }
   const Data = () => {
     type Row = {
-      Date: string
-      Distance: string
-      Pace: string
+      date: string
+      distance: string
+      pace: string
       best: Array<number>
-      Timing: string
+      timing: string
     }
     return (
       <Tbody>
         {rows.map((row: Row, i: number) => (
-          <Tr key={row.Date + i}>
-            <Subline row={row} subtype="Programme" />
-            <Subline row={row} subtype="Timings" />
-            <Subline row={row} subtype="Paces" />
-            <Td>{row.Date}</Td>
+          <Tr key={row.date + i}>
+            <Subline row={row} subtype="programme" />
+            <Subline row={row} subtype="timings" />
+            <Subline row={row} subtype="paces" />
+            <Td>{row.date}</Td>
           </Tr>
         ))}
       </Tbody>
@@ -178,17 +178,17 @@ const IntervalsTable = ({ rows }) => {
 const OnOffTable = ({ rows }) => {
   const Data = () => {
     type Row = {
-      Date: string
-      Distance: string
-      Programme: string
+      date: string
+      distance: string
+      programme: string
     }
     return (
       <Tbody>
         {rows.map((row: Row, i: number) => (
-          <Tr key={row.Date + i}>
-            <Td>{row.Programme}</Td>
-            <Td>{row.Distance}</Td>
-            <Td>{row.Date}</Td>
+          <Tr key={row.date + i}>
+            <Td>{row.programme}</Td>
+            <Td>{row.distance}</Td>
+            <Td>{row.date}</Td>
           </Tr>
         ))}
       </Tbody>
@@ -219,19 +219,19 @@ const OnOffTable = ({ rows }) => {
 const TimedTable = ({ rows }) => {
   const Data = () => {
     type Row = {
-      Date: string
-      Distance: string
-      Programme: string
-      Pace: string
+      date: string
+      distance: string
+      programme: string
+      pace: string
     }
     return (
       <Tbody>
         {rows.map((row: Row, i: number) => (
-          <Tr key={row.Date + i}>
-            <Td>{row.Programme}</Td>
-            <Td>{row.Distance}</Td>
-            <Td>{row.Pace}</Td>
-            <Td>{row.Date}</Td>
+          <Tr key={row.date + i}>
+            <Td>{row.programme}</Td>
+            <Td>{row.distance}</Td>
+            <Td>{row.pace}</Td>
+            <Td>{row.date}</Td>
           </Tr>
         ))}
       </Tbody>

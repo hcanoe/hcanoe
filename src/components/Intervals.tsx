@@ -65,7 +65,7 @@ const Search = ({ onChangeSet, onChangeDistance, handleSearch }) => {
 }
 
 type data = Array<{
-  Programme: string,
+  programme: string,
   [propName: string]: string
 }>
 
@@ -84,7 +84,7 @@ const getResults = (d: data, set: number | string, dist: string) => {
       }
     } else {
       for (const i in training) {
-        if (i.replace(/[0-9]/g, '') === 'Set') {
+        if (i.replace(/[0-9]/g, '') === 'set') {
           c += 1
         }
       }

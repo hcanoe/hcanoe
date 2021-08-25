@@ -156,7 +156,7 @@ export namespace data {
   function eachDay(week: string, arr: Array<Array<string>>) {
     const type = arr[0].shift()
     const day = arr[1].shift()
-    const zipped: any = zipTable(arr[0], arr[1])
+    const zipped: any = zipTable(arr[0].map((e) => e.toLowerCase()), arr[1])
     zipped.Type = type
     zipped.Date = getDate(week, day)
     delete zipped.Name
