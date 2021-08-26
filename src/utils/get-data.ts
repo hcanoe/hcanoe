@@ -13,10 +13,10 @@ export namespace data {
     sheets: sheets_v4.Sheets,
     spreadsheetId: string,
     sheetTitle: string,
-    columns?: string
+    columns = ''
   ) {
-    const _columns = columns || 'A:Z'
-    const range = [sheetTitle, '!', _columns].join('')
+    const _columns = columns.length > 0 ? '!' + columns : ''
+    const range = [sheetTitle, _columns].join('')
     const response = (
       await sheets.spreadsheets.values.get({
         spreadsheetId,
@@ -106,7 +106,7 @@ export namespace data {
    */
   export const filterUser = (data: any, name: string) => {
     /* initialize a template object based on `runTypes` */
-    const userData = runTypes.reduce(function(userData, type) {
+    const userData = runTypes.reduce(function (userData, type) {
       userData[type] = []
       return userData
     }, {})
@@ -115,7 +115,7 @@ export namespace data {
 
     for (const id in data) {
       for (const week in data[id]) {
-        /* weekData is an array of the week's trainings, 
+        /* weekData is an array of the week's trainings,
          * with each day separated by a single cell ['>>>']
          */
         const weekData: Array<string> = data[id][week]
@@ -142,7 +142,9 @@ export namespace data {
         if (e.includes(name) || runTypes.includes(e[0])) {
           arr.push(e)
         }
-        index == weekData.length - 1 && splitDay.push(eachDay(week, arr))
+        index == weekData.length - 1 &&
+          arr.length > 1 &&
+          splitDay.push(eachDay(week, arr))
       }
     })
     // key = day of week,
@@ -153,7 +155,10 @@ export namespace data {
   function eachDay(week: string, arr: Array<Array<string>>) {
     const type = arr[0].shift()
     const day = arr[1].shift()
-    const zipped: any = zipTable(arr[0].map((e) => e.toLowerCase()), arr[1])
+    const zipped: any = zipTable(
+      arr[0].map((e) => e.toLowerCase()),
+      arr[1]
+    )
     zipped.type = type
     zipped.date = getDate(week, day)
     delete zipped.name

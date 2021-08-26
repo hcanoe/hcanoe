@@ -12,7 +12,7 @@ async function base(sheets: sheets_v4.Sheets) {
   const response = (
     await sheets.spreadsheets.values.batchGet({
       spreadsheetId: metaId,
-      ranges: ['data!A:F', 'IDs!A:D'],
+      ranges: ['data', 'IDs'],
     })
   ).data.valueRanges
   return response
