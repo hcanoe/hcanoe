@@ -19,6 +19,7 @@
     "paths": {
       "@root/*": ["../*"],
       "@styles/*": ["styles/*"],
+      "@components/*": ["components/*"],
       "@utils/*": ["utils/*"]
     }
   }

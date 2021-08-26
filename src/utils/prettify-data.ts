@@ -7,7 +7,7 @@ import {
   quoteNotation,
   toHHMMSS,
 } from '@utils/physics'
-import { recentFirst } from '@utils/sort'
+import { sorter } from '@utils/sorter'
 import { Distance, Intervals, OnOff, Timed } from 'types/types'
 
 namespace sets {
@@ -291,7 +291,7 @@ function prettifyIntervals(arr: Intervals) {
     Object.assign(training, programme.intervals(sets))
     training.sortDate = moment(training.Date, 'DD/MM/YYYY').unix()
   })
-  arr.sort(recentFirst)
+  arr.sort(sorter.date)
   return arr
 }
 
@@ -322,7 +322,7 @@ const prettifyOnOff = (arr: OnOff) => {
     training.distance = displayDistance(training.distance, 'km')
     training.sortDate = moment(training.date, 'DD/MM/YYYY').unix()
   })
-  arr.sort(recentFirst)
+  arr.sort(sorter.date)
   return arr
 }
 
@@ -335,7 +335,7 @@ const prettifyTimed = (arr: Timed) => {
     training.programme = toHHMMSS(training.duration)
     training.sortDate = moment(training.date, 'DD/MM/YYYY').unix()
   })
-  arr.sort(recentFirst)
+  arr.sort(sorter.date)
   return arr
 }
 

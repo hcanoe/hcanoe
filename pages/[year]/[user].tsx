@@ -9,12 +9,12 @@ import {
   TabPanel,
   Center,
 } from '@chakra-ui/react'
-import { OnOffTable, TimedTable } from 'components/Table'
-import Intervals from 'components/Intervals'
-import Distance from 'components/Distance'
-import BestSplits from 'components/BestSplits'
-import { Title, Name } from 'components/Typography'
-import { HomeButton } from 'components/Buttons'
+import { OnOffTable, TimedTable } from '@components/Table'
+import Intervals from '@components/Intervals'
+import Distance from '@components/Distance'
+import BestSplits from '@components/BestSplits'
+import { Title, Name } from '@components/Typography'
+import { HomeButton } from '@components/Buttons'
 
 /* getServerSideProps is a special function of nextjs.
  *

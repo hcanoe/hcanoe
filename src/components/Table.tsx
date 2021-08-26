@@ -10,7 +10,7 @@ import {
   Table,
   Code,
 } from '@chakra-ui/react'
-import FieldBox from 'components/FieldBox'
+import FieldBox from '@components/FieldBox'
 import styles from '@styles/Table.module.css'
 import { medalDist } from 'utils/text'
 import { BsChevronUp, BsChevronDown } from 'react-icons/bs'
