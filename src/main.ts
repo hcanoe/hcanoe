@@ -1,5 +1,5 @@
 import { text } from 'utils/text'
-import { getMetadata } from 'utils/user-meta'
+import { userMeta } from 'utils/user-meta'
 import { query, user_data_by_type } from 'types/types'
 import { data } from 'utils/get-data'
 import { sheets_v4 } from 'googleapis'
@@ -13,7 +13,7 @@ import {
 export async function main(query: query, sheets: sheets_v4.Sheets) {
   const output: any = {}
   const { year, user } = query
-  const { meta, spreadsheetIds } = await getMetadata(sheets, user, year)
+  const { meta, spreadsheetIds } = await userMeta.data(sheets, user, year)
   const gradYear = parseInt(meta.GradYear)
 
   const data_run = await data.byType(sheets, spreadsheetIds, gradYear, 'Run')

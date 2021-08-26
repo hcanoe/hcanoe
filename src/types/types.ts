@@ -3,7 +3,7 @@ export interface query {
   user: string,
 }
 
-export interface user_meta {
+export interface UserMeta {
   Name?: string,
   GradYear?: string,
   Craft?: string,
