@@ -26,6 +26,9 @@ const toMeters = (s: string) => {
   }
 }
 
+/* takes in a string with format `HH:MM:SS`
+ * returns a number in seconds
+ */
 const toSeconds = (t: string) => {
   const colonCount = t.match(/:/g).length
   if (colonCount === 1) {
@@ -35,8 +38,12 @@ const toSeconds = (t: string) => {
   }
 }
 
-const displayDistance = (s: string | number, unit: string, p?: number) => {
-  const P = typeof p === 'undefined' ? 2 : p
+/* takes in a generic distance value
+ * returns a nicely formatted string in the specificed units and precision
+ * (precision is optional)
+ */
+const displayDistance = (s: string | number, unit: string, precision?: number) => {
+  const P = typeof precision === 'undefined' ? 2 : precision
   const d: number = typeof s === 'number' ? s : toMeters(s)
   if (unit === 'km') {
     return (d / 1000).toFixed(P) + ' km'
@@ -83,6 +90,10 @@ const toHHMMSS = (t: string | number) => {
   }
 }
 
+/*
+ * converts seconds to a familiar quote notation used by coaches
+ * 7min 32 seconds -> 7'32"
+ */
 const quoteNotation = (s: string | number) => {
   const S: number = typeof s === 'number' ? s : toSeconds(s)
   if (S >= 3600) {

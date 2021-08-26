@@ -91,7 +91,6 @@ export default function Page() {
             bgClip="text"
             fontSize="lg"
             fontWeight="500"
-            align="center"
           >
               <a
               href={url_year + '/' + dashify(name)}

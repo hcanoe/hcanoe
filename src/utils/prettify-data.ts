@@ -7,325 +7,335 @@ import {
   quoteNotation,
   toHHMMSS,
 } from '@utils/physics'
-import { recentFirst } from '@utils/sort'
+import { sorter } from '@utils/sorter'
 import { Distance, Intervals, OnOff, Timed } from 'types/types'
 
-/*
- * Prettify Distance
- */
+namespace sets {
+  export type Intervals = Array<{
+    set?: string
+    rest?: string
+    timing?: string
+  }>
+  export type OnOff = Array<{
+    off?: string
+    on?: string
+  }>
+}
 
-function prettifyDistance(arr: Distance) {
-  const cat = [1000, 2400, 4000, 5000, 7000, 10000, 15000, 21000, 42195, 50000]
-  const best_temp = Array(cat.length)
-  arr.forEach((training) => {
-    // Pace
-    training.Pace = displayPace(training.Timing, training.Distance)
-    const si_pace = toSeconds(training.Pace)
-    // Distance
-    const si_distance = toMeters(training.Distance)
-    training.Distance = displayDistance(training.Distance, 'km')
-    // Timings
-    const si_time = toSeconds(training.Timing)
-    training.Timing = toHHMMSS(training.Timing)
-    // Check if best
-    cat.forEach((e, i) => {
-      if (si_distance >= cat[i]) {
-        if (best_temp[i] === undefined) {
-          training.best = []
-          best_temp[i] = {
-            id: si_time + si_distance + e,
-            pace: si_pace,
-          }
+namespace programme {
+  /*
+   * Reads an array of objects, each object representing one interval set
+   *
+   * returns three arrays of strings: Programme, Timings, Paces.
+   * The length of these arrays will be the same.
+   * The strings within these arrays have been formatted for reading.
+   * intented to merge into an interval training as props
+   */
+  export function intervals(d: sets.Intervals) {
+    const programme = []
+    const timings = []
+    const paces = []
+    var c = 0
+    type Mem = {
+      set?: string // previous set's distance
+      rest?: string // previous set's rest time
+      timings?: Array<number> // previous sets' timings
+    }
+    var mem: Mem = {}
+    function toPaces(timings: Array<number>, distance: string) {
+      paces.push(
+        displayPace(
+          timings.reduce((a, b) => a + b, 0), // total timing in seconds
+          toMeters(distance) * c // total distance in meters
+        )
+      )
+    }
+    function toProgramme(c: number, distance: string, rest: string) {
+      programme.push(c + 'x' + distance + '/' + quoteNotation(rest))
+    }
+    d.forEach((e, index) => {
+      function same(type: string) {
+        return d[index][type] === d[index - 1][type] ? true : false
+      }
+      if (index === 0) {
+        // first element
+        c += 1
+        mem = { ...mem, set: e.set, rest: e.rest }
+        mem.timings = [toSeconds(e.timing)]
+      } else if (index === d.length - 1) {
+        // last element
+        if (same('set') && same('rest')) {
+          c += 1
+          toProgramme(c, mem.set, mem.rest)
+          mem.timings.push(toSeconds(e.timing))
+          timings.push(mem.timings.map((x) => toHHMMSS(x)))
+          toPaces(mem.timings, mem.set)
         } else {
-          if (si_pace < best_temp[i].pace) {
-            training.best = []
-            best_temp[i] = {
-              id: si_time + si_distance + e,
-              pace: si_pace,
+          toProgramme(c, mem.set, mem.rest)
+          timings.push(mem.timings.map((x) => toHHMMSS(x)))
+          toPaces(mem.timings, mem.set)
+          programme.push(1 + 'x' + e.set + '/' + quoteNotation(e.rest))
+          timings.push([toHHMMSS(e.timing)])
+          paces.push(displayPace(toSeconds(e.timing), toMeters(e.set)))
+        }
+      } else {
+        // neither first nor last element
+        if (same('set') && same('rest')) {
+          c += 1
+          mem.timings.push(toSeconds(e.timing))
+        } else {
+          toProgramme(c, mem.set, mem.rest)
+          timings.push(mem.timings.map((x) => toHHMMSS(x)))
+          toPaces(mem.timings, mem.set)
+          mem = { ...mem, set: e.set, rest: e.rest }
+          mem.timings = [toSeconds(e.timing)] // reset Timings in memory
+        }
+      }
+    })
+    return {
+      programme,
+      timings: timings.map((x) => x.join(', ')),
+      paces,
+    }
+  }
+  export function onOff(d: sets.OnOff) {
+    const programme = []
+    var c = 0
+    var mem = {
+      on: '',
+      off: '',
+      dash: [],
+      streak: false,
+    }
+    d.forEach((e, index) => {
+      e.on = quoteNotation(e.on)
+      e.off = quoteNotation(e.off)
+      /*
+       * e contains an object with on and off props
+       */
+      const sameOn = () => {
+        return d[index].on === d[index - 1].on ? true : false
+      }
+      const sameOff = () => {
+        return d[index].off === d[index - 1].off ? true : false
+      }
+      const pushSet = () => {
+        if (c === 1) {
+          programme.push(mem.on + '/' + mem.off)
+        } else {
+          programme.push(c + 'x' + mem.on + '/' + mem.off)
+        }
+      }
+      /*
+       * expected output:
+       *   7x7'/1'
+       *   3x7'/1', 3x3'/1'
+       *   7'-6'-5'-4'-3'-2'-1'/1'
+       */
+      if (index === 0) {
+        mem.off = e.off
+        mem.on = e.on
+        c += 1
+      } else if (index === d.length - 1) {
+        // last element
+        if (sameOff()) {
+          if (sameOn()) {
+            c += 1
+            programme.push(c + 'x' + mem.on + '/' + mem.off)
+          } else if (!sameOn()) {
+            if (mem.streak) {
+              // dash train has started
+              mem.dash.push(e.on)
+              programme.push(mem.dash.join('-') + '/' + mem.off)
+            } else if (c == 1) {
+              // no dash train yet (same off, diff on)
+              mem.dash = [mem.on, e.on]
+              programme.push(mem.dash.join('-') + '/' + mem.off)
+            } else {
+              pushSet()
+              programme.push(e.on + '/' + e.off)
             }
           }
+        } else if (!sameOff()) {
+          if (mem.streak) {
+            // push dash train to programme
+            programme.push(mem.dash.join('-') + '/' + mem.off)
+          } else {
+            pushSet()
+          }
+          mem.on = e.on
+          mem.off = e.off
+          programme.push(mem.on + '/' + mem.off)
+        }
+      } else {
+        // in-between
+        if (sameOff()) {
+          if (sameOn()) {
+            c += 1
+          } else if (!sameOn()) {
+            if (mem.streak) {
+              // dash train has started
+              mem.dash.push(e.on)
+            } else if (c == 1) {
+              // no dash train yet (same off, diff on)
+              // and set count is 1
+              mem.dash = [mem.on, e.on]
+              mem.streak = true
+            } else {
+              pushSet()
+              mem.on = e.on
+              c = 1
+            }
+          }
+        } else if (!sameOff()) {
+          if (mem.streak) {
+            // push dash train to programme
+            const tempStreak = mem.dash.join('-')
+            programme.push(tempStreak + '/' + mem.off)
+          } else {
+            pushSet()
+          }
+          mem.on = e.on
+          mem.off = e.off
+          mem.streak = false
+          mem.dash = []
         }
       }
     })
-    Object.assign(training, { si_pace, si_distance, si_time })
-    const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
-    training.SortDate = process_date
-  })
-  const best_data = Array(cat.length)
+    const output: any = {}
+    output.programme = programme.join(', ')
+    return output
+  }
+}
+
+/* Prettify Distance */
+function prettifyDistance(arr: Distance) {
+  const cat = [1000, 2400, 4000, 5000, 7000, 10000, 15000, 21000, 42195, 50000]
+  const bestTemp = Array(cat.length)
+  /* arr is an array with each element representing one training session */
   arr.forEach((training) => {
+    /* Pace */
+    training.pace = displayPace(training.timing, training.distance)
+    const siPace = toSeconds(training.pace)
+
+    /* Distance */
+    const siDistance = toMeters(training.distance)
+    training.distance = displayDistance(training.distance, 'km')
+
+    /* Timings */
+    const siTime = toSeconds(training.timing)
+    training.timing = toHHMMSS(training.timing)
+
+    /* Check if best
+     * and write id and pace into bestTemp
+     */
     cat.forEach((e, i) => {
-      const this_id = training.si_time + training.si_distance + e
-      if (best_temp[i] && this_id === best_temp[i].id) {
+      if (
+        siDistance >= cat[i] &&
+        (bestTemp[i] === undefined || siPace < bestTemp[i].pace)
+      ) {
+        training.best = []
+        bestTemp[i] = {
+          id: siTime + siDistance + e,
+          pace: siPace,
+        }
+      }
+    })
+    Object.assign(training, { siPace, siDistance, siTime })
+    training.sortDate = moment(training.date, 'DD/MM/YYYY').unix()
+  })
+  /* bestTemp is now an array of objects containing the ids of the best runs and
+   * their corresponding paces
+   */
+  const bestData = Array(cat.length)
+  arr.forEach((training) => {
+    /* tag each training with which distance it has best pace for
+     * write that entire training into bestData, with the key being the distance
+     */
+    cat.forEach((e, i) => {
+      const id = training.siTime + training.siDistance + e
+      if (bestTemp[i] && id === bestTemp[i].id) {
         training.best.push(cat[i])
-        best_data[i] = training
+        bestData[i] = training
       }
     })
   })
-  // arr.sort(recentFirst)
-  return { best: best_data, arr, cat }
+  return { best: bestData, arr, cat }
 }
 
-/*
- * Prettify Intervals
- */
-
-type IntervalsBySets = Array<{
-  Set?: string
-  Rest?: string
-  Timing?: string
-}>
+/* Prettify Intervals */
 function prettifyIntervals(arr: Intervals) {
-  const isKeyWord = {
-    Set: 1,
-    Rest: 1,
-    Timing: 1,
+  const isKeyword = {
+    set: 1,
+    rest: 1,
+    timing: 1,
   }
+  /* arr is an array with each element representing one training session */
   arr.forEach((training) => {
-    // training is an object
-    const by_sets: IntervalsBySets = []
+    const sets: sets.Intervals = []
     for (const key in training) {
-      const type = key.slice(0, -1)
-      if (isKeyWord[type]) {
-        const order = parseInt(key.slice(-1)) - 1
-        if (typeof by_sets[order] === 'undefined') {
-          by_sets[order] = {}
-        }
-        by_sets[order][type] = training[key]
+      /* Some headers are expected to have numbers, denoting
+       * the set's order
+       */
+      const heading = key.replace(/[0-9]/g, '').toLowerCase()
+      if (isKeyword[heading]) {
+        const order = parseInt(key.replace(/\D/g, '')) - 1
+        sets[order] === undefined && (sets[order] = {})
+        sets[order][heading] = training[key]
       }
     }
-    Object.assign(training, getIntervalsProgramme(by_sets))
-    training.SortDate = moment(training.Date, 'DD/MM/YYYY').unix()
+    /* sets is now an array of objects,
+     * each object containing the set (distance), rest, and timing values for
+     * that set
+     */
+    Object.assign(training, programme.intervals(sets))
+    training.sortDate = moment(training.Date, 'DD/MM/YYYY').unix()
   })
-  arr.sort(recentFirst)
+  arr.sort(sorter.date)
   return arr
 }
 
-function getIntervalsProgramme(d: IntervalsBySets) {
-  const Programme = []
-  const Timings = []
-  const Paces = []
-  var c = 0
-  type Mem = {
-    Set?: string
-    Rest?: string
-    Timings?: Array<number>
-  }
-  var mem: Mem = {}
-  function pushPaces(timings: Array<number>, distance: string) {
-    Paces.push(
-      displayPace(
-        timings.reduce((a, b) => a + b, 0), // total timing in seconds
-        toMeters(distance) * c // total distance in meters
-      )
-    )
-  }
-  function pushProgramme(c: number, distance: string, rest: string) {
-    Programme.push(c + 'x' + distance + '/' + quoteNotation(rest))
-  }
-  d.forEach((e, index) => {
-    const same = (type: string) => {
-      return d[index][type] === d[index - 1][type] ? true : false
-    }
-    if (index === 0) {
-      // first element
-      c += 1
-      mem = { ...mem, Set: e.Set, Rest: e.Rest }
-      mem.Timings = [toSeconds(e.Timing)]
-    } else if (index === d.length - 1) {
-      // last element
-      if (same('Set') && same('Rest')) {
-        c += 1
-        pushProgramme(c, mem.Set, mem.Rest)
-        mem.Timings.push(toSeconds(e.Timing))
-        Timings.push(mem.Timings.map((x) => toHHMMSS(x)))
-        pushPaces(mem.Timings, mem.Set)
-      } else {
-        pushProgramme(c, mem.Set, mem.Rest)
-        Timings.push(mem.Timings.map((x) => toHHMMSS(x)))
-        pushPaces(mem.Timings, mem.Set)
-        Programme.push(1 + 'x' + e.Set + '/' + quoteNotation(e.Rest))
-        Timings.push([toHHMMSS(e.Timing)])
-        Paces.push(displayPace(toSeconds(e.Timing), toMeters(e.Set)))
-      }
-    } else {
-      // in between
-      if (same('Set') && same('Rest')) {
-        c += 1
-        mem.Timings.push(toSeconds(e.Timing))
-      } else {
-        pushProgramme(c, mem.Set, mem.Rest)
-        Timings.push(mem.Timings.map((x) => toHHMMSS(x)))
-        pushPaces(mem.Timings, mem.Set)
-        mem = { ...mem, Set: e.Set, Rest: e.Rest }
-        mem.Timings = [toSeconds(e.Timing)] // reset Timings in memory
-      }
-    }
-  })
-  return {
-    Programme,
-    Timings: Timings.map((x) => x.join(', ')),
-    Paces,
-  }
-}
-
-type OnOffBySets = Array<{
-  On?: string
-  Off?: string
-}>
-const getOnOffProgramme = (d: OnOffBySets) => {
-  const Programme = []
-  var c = 0
-  var mem = {
-    On: '',
-    Off: '',
-    Dash: [],
-    Train: false,
-  }
-  d.forEach((e, index) => {
-    e.On = quoteNotation(e.On)
-    e.Off = quoteNotation(e.Off)
-    /*
-     * e contains an object with On and Off props
-     */
-    const sameOn = () => {
-      return d[index].On === d[index - 1].On ? true : false
-    }
-    const sameOff = () => {
-      return d[index].Off === d[index - 1].Off ? true : false
-    }
-    const pushSet = () => {
-      if (c === 1) {
-        Programme.push(mem.On + '/' + mem.Off)
-      } else {
-        Programme.push(c + 'x' + mem.On + '/' + mem.Off)
-      }
-    }
-    /*
-     * expected output:
-     *   7x7'/1'
-     *   3x7'/1', 3x3'/1'
-     *   7'-6'-5'-4'-3'-2'-1'/1'
-     */
-    if (index === 0) {
-      mem.Off = e.Off
-      mem.On = e.On
-      c += 1
-    } else if (index === d.length - 1) {
-      // last element
-      if (sameOff()) {
-        if (sameOn()) {
-          c += 1
-          Programme.push(c + 'x' + mem.On + '/' + mem.Off)
-        } else if (!sameOn()) {
-          if (mem.Train) {
-            // dash train has started
-            mem.Dash.push(e.On)
-            Programme.push(mem.Dash.join('-') + '/' + mem.Off)
-          } else if (c == 1) {
-            // no dash train yet (same off, diff on)
-            mem.Dash = [mem.On, e.On]
-            Programme.push(mem.Dash.join('-') + '/' + mem.Off)
-          } else {
-            pushSet()
-            Programme.push(e.On + '/' + e.Off)
-          }
-        }
-      } else if (!sameOff()) {
-        if (mem.Train) {
-          // push dash train to Programme
-          Programme.push(mem.Dash.join('-') + '/' + mem.Off)
-        } else {
-          pushSet()
-        }
-        mem.On = e.On
-        mem.Off = e.Off
-        Programme.push(mem.On + '/' + mem.Off)
-      }
-    } else {
-      // in-between
-      if (sameOff()) {
-        if (sameOn()) {
-          c += 1
-        } else if (!sameOn()) {
-          if (mem.Train) {
-            // dash train has started
-            mem.Dash.push(e.On)
-          } else if (c == 1) {
-            // no dash train yet (same off, diff on)
-            // and set count is 1
-            mem.Dash = [mem.On, e.On]
-            mem.Train = true
-          } else {
-            pushSet()
-            mem.On = e.On
-            c = 1
-          }
-        }
-      } else if (!sameOff()) {
-        if (mem.Train) {
-          // push dash train to Programme
-          const temp_train = mem.Dash.join('-')
-          Programme.push(temp_train + '/' + mem.Off)
-        } else {
-          pushSet()
-        }
-        mem.On = e.On
-        mem.Off = e.Off
-        mem.Train = false
-        mem.Dash = []
-      }
-    }
-  })
-  const output: any = {}
-  output.Programme = Programme.join(', ')
-  return output
-}
-
-/*
- * Prettify OnOff
- */
+/* Prettify OnOff */
 const prettifyOnOff = (arr: OnOff) => {
-  const isKeyWord = {
-    On: 1,
-    Off: 1,
+  const isKeyword = {
+    on: 1,
+    off: 1,
   }
   arr.forEach((training) => {
     // training is an object
-    const by_sets = [] // each set being { On: "", Off: "" }
+    const sets: sets.OnOff = [] // each set being { on: "", off: "" }
     for (const key in training) {
-      const subtype: any = key.slice(0, -1) // string minus last char
-      const order: any = parseInt(key.slice(-1)) - 1 // last char
-
-      if (isKeyWord[subtype]) {
-        if (typeof by_sets[order] === 'undefined') {
-          by_sets[order] = {}
-        }
-        by_sets[order][subtype] = training[key]
+      /* Some headers are expected to have numbers, denoting
+       * the set's order
+       */
+      const heading = key.replace(/[0-9]/g, '').toLowerCase()
+      if (isKeyword[heading]) {
+        const order = parseInt(key.replace(/\D/g, '')) - 1
+        sets[order] === undefined && (sets[order] = {})
+        sets[order][heading] = training[key]
       }
     }
-    Object.assign(training, getOnOffProgramme(by_sets))
-    training.Distance = displayDistance(training.Distance, 'km')
-    const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
-    training.SortDate = process_date
+    /* sets is now an array of objects,
+     * each object containing the on and off values for each set
+     */
+    Object.assign(training, programme.onOff(sets))
+    training.distance = displayDistance(training.distance, 'km')
+    training.sortDate = moment(training.date, 'DD/MM/YYYY').unix()
   })
-  arr.sort(recentFirst)
+  arr.sort(sorter.date)
   return arr
 }
 
-/*
- * Prettify Timed
- */
+/* Prettify Timed */
 const prettifyTimed = (arr: Timed) => {
   arr.forEach((training) => {
-    training.Duration =
-      training.Duration === undefined ? training.Timing : training.Duration
-    training.Pace = displayPace(training.Duration, training.Distance)
-    training.Distance = displayDistance(training.Distance, 'km')
-    training.Programme = toHHMMSS(training.Duration)
-    const process_date = moment(training.Date, 'DD/MM/YYYY').unix()
-    training.SortDate = process_date
+    training.duration = training.duration || training.timing
+    training.pace = displayPace(training.duration, training.distance)
+    training.distance = displayDistance(training.distance, 'km')
+    training.programme = toHHMMSS(training.duration)
+    training.sortDate = moment(training.date, 'DD/MM/YYYY').unix()
   })
-  arr.sort(recentFirst)
+  arr.sort(sorter.date)
   return arr
 }
 

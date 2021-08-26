@@ -3,9 +3,9 @@ export interface query {
   user: string,
 }
 
-export interface user_meta {
+export interface UserMeta {
   Name?: string,
-  GradYear?: number,
+  GradYear?: string,
   Craft?: string,
   Gender?: string,
   Domain?: string,
@@ -13,52 +13,52 @@ export interface user_meta {
 }
 
 export interface user_data_by_type {
-  DISTANCE: Distance,
-  INTERVALS: Intervals,
-  ONOFF: OnOff,
-  TIMED: Timed,
+  DISTANCE?: Distance,
+  INTERVALS?: Intervals,
+  ONOFF?: OnOff,
+  TIMED?: Timed,
 }
 
 export type Distance = Array<{
-  Type: string
-  Distance: string
-  Timing: string
-  Date: string
-  Pace: string
+  type: string
+  distance: string
+  timing: string
+  date: string
+  pace: string
   best: Array<number>
-  si_distance: number
-  si_time: number
-  si_pace: number
-  SortDate: number
+  siDistance: number
+  siTime: number
+  siPace: number
+  sortDate: number
 }>
 
 export type Intervals = Array<{
-  Type: string
-  Date: string
-  Programme: Array<string>
-  Timings: Array<string>
-  Paces: Array<string>
-  SortDate: number
+  type: string
+  date: string
+  programme: Array<string>
+  timings: Array<string>
+  paces: Array<string>
+  sortDate: number
   [propName: string]: any
 }>
 
 export type OnOff = Array<{
-  Type: string
-  Date: string
-  Distance: string
-  Programme?: string
-  SortDate?: number
+  type: string
+  date: string
+  distance: string
+  programme?: string
+  sortDate?: number
   [propName: string]: any
 }>
 
 export type Timed = Array<{
-  Type: string
-  Date: string
-  Distance: string
-  Pace: string
-  Duration: string
-  Programme: string
-  SortDate: number
+  type: string
+  date: string
+  distance: string
+  pace: string
+  duration: string
+  programme: string
+  sortDate: number
   [propName: string]: any
 }>
 

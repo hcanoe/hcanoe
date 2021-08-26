@@ -1,135 +1,162 @@
-import { searchUserInDay } from 'utils/user-meta'
 import { zipTable } from 'utils/core'
 import { getDate } from 'utils/date'
 import { sheets_v4 } from 'googleapis'
-import {
-  user_meta,
-  user_data_by_type,
-  SpreadsheetIds,
-  TrainingType
-} from 'types/types'
+import { SpreadsheetIds, TrainingType } from 'types/types'
 
-async function getTrainingData(
-  sheets: sheets_v4.Sheets,
-  sheetID: string,
-  sheetTitle: string
-) {
-  const range = sheetTitle.concat('!A:Z')
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: sheetID,
-    range,
-  })
-  return response
-}
+const runTypes = ['DISTANCE', 'INTERVALS', 'ONOFF', 'TIMED']
 
-const getSpreadsheetsByType = (
-  spreadsheet_ids: SpreadsheetIds,
-  user_meta: user_meta,
-  type: TrainingType
-) => {
-  const start = user_meta.GradYear - 5
-  const active_years = [...Array(6)].map((_, index) => index + start)
-  const result = []
-  console.log('')
-  console.log('== <START> ====================================')
-  console.log(active_years)
-  spreadsheet_ids.forEach((e, index) => {
-    if (active_years.includes(parseInt(e.Year))) {
-      result.push(spreadsheet_ids[index][type] || null)
-    }
-  })
-  return result
-}
-
-async function getDataByType(
-  sheets: sheets_v4.Sheets,
-  spreadsheet_ids: SpreadsheetIds,
-  meta: user_meta,
-  type: TrainingType
-) {
-  const idList = getSpreadsheetsByType(spreadsheet_ids, meta, type)
-  const result = {}
-  await Promise.all(
-    idList.map(async (id) => {
-      result[id] = {}
-      const response = await sheets.spreadsheets.get({
-        spreadsheetId: id,
+export namespace data {
+  /* reads one sheet and returns an excel array
+   * (first element is an array of headers)
+   */
+  async function trainingData(
+    sheets: sheets_v4.Sheets,
+    spreadsheetId: string,
+    sheetTitle: string,
+    columns?: string
+  ) {
+    const _columns = columns || 'A:Z'
+    const range = [sheetTitle, '!', _columns].join('')
+    const response = (
+      await sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range,
       })
-      const sheetData = response.data.sheets
-      await Promise.all(
-        sheetData.map(async (eachSheetData) => {
-          const title = eachSheetData.properties.title
-          const r = await getTrainingData(sheets, id, title)
-          const trainingData = r.data.values
-          result[id][title] = trainingData
-        })
-      )
-    })
-  )
-  return result
-}
-
-const getUserTrainingData = (data: any, name: string) => {
-  const by_type: user_data_by_type = {
-    DISTANCE: [],
-    INTERVALS: [],
-    ONOFF: [],
-    TIMED: [],
+    ).data.values
+    return response
   }
-  console.log('reading data from ->', Object.keys(data))
-  for (const id in data) {
-    for (const week in data[id]) {
-      const data_week: Array<string> = data[id][week]
 
-      // data_week is an array of the week's trainings,
-      // with each day separated by a single cell ['>>>']
+  /* takes in metadata and training type,
+   *
+   * returns an array of strings,
+   * listing the spreadsheet ids to read from
+   */
+  const idList = (
+    spreadsheetIds: SpreadsheetIds,
+    gradYear: number,
+    type: TrainingType
+  ) => {
+    const start = gradYear - 5
 
-      const split_day = getSplitDay(data_week)
-      for (const day in split_day) {
-        const trg = eachDay(name, day, week, split_day)
-        trg && by_type[trg.Type].push(trg)
+    // an array of 6 numbers: years in which the paddler is active
+    const activeYears = [...Array(6)].map((_, index) => index + start)
+
+    console.log('')
+    console.log('== <START> ====================================')
+    console.log('active in', activeYears)
+
+    const idList = []
+    spreadsheetIds.forEach((e, index) => {
+      if (activeYears.includes(parseInt(e.Year))) {
+        idList.push(spreadsheetIds[index][type] || null)
+      }
+    })
+    return idList
+  }
+
+  /*
+   * returns an object of objects of array of strings
+   * containing the entire team's data
+   * in years which the user is active
+   * in the specific type that is queried
+   *
+   * data = {
+   *   <spreadsheet id>: {
+   *     <start of week>: [ team's data for the week ],
+   *     ...
+   *   },
+   *   ...
+   * }
+   */
+  export async function byType(
+    sheets: sheets_v4.Sheets,
+    spreadsheetIds: SpreadsheetIds,
+    gradYear: number,
+    type: TrainingType
+  ) {
+    const data = {}
+    const l = idList(spreadsheetIds, gradYear, type)
+    await Promise.all(
+      l.map(async (id) => {
+        data[id] = {}
+
+        /* returns an array of strings, containing all sheet titles within that
+         * spreadsheet
+         *
+         * note that these titles represent the date of the start of each
+         * training week (all Mondays)
+         */
+        const sheetTitles = (
+          await sheets.spreadsheets.get({ spreadsheetId: id })
+        ).data.sheets.map((sheet) => sheet.properties.title)
+
+        await Promise.all(
+          sheetTitles.map(async (title) => {
+            data[id][title] = await trainingData(sheets, id, title)
+          })
+        )
+      })
+    )
+    return data
+  }
+
+  /* takes in the output of byType
+   * returns an object containing only selected user's data,
+   * sorted into Distance, Intervals, OnOff, and Timed categories
+   */
+  export const filterUser = (data: any, name: string) => {
+    /* initialize a template object based on `runTypes` */
+    const userData = runTypes.reduce(function(userData, type) {
+      userData[type] = []
+      return userData
+    }, {})
+
+    console.log('reading data from ->', Object.keys(data))
+
+    for (const id in data) {
+      for (const week in data[id]) {
+        /* weekData is an array of the week's trainings, 
+         * with each day separated by a single cell ['>>>']
+         */
+        const weekData: Array<string> = data[id][week]
+        splitDay(weekData, week, name).forEach((e) => {
+          userData[e.type].push(e)
+        })
       }
     }
+    return userData
   }
-  return { by_type }
-}
 
-function eachDay(name: string, day: string, week: string, split_day: any) {
-  const dayOfWeek = split_day[day][1][0]
-  const date = getDate(week, dayOfWeek)
-  const day_arr = split_day[day]
-  const headers = day_arr.shift()
-  const type = headers.shift()
-  const _body = searchUserInDay(name, day_arr)
-  if (_body) {
-    const body = _body.slice(1)
-    const zipped: any = zipTable(headers, body)
-    Object.assign(zipped, {
-      Type: type,
-      Date: date,
+  /* returns an array of objects,
+   * containing training data specific to the user in a week
+   */
+  function splitDay(weekData: Array<string>, week: string, name: string) {
+    const splitDay = []
+    var arr = []
+    weekData.forEach((e, index) => {
+      if (e[0] === '>>>') {
+        // arr[1][0] is the day of week
+        arr.length > 1 && splitDay.push(eachDay(week, arr))
+        arr = []
+      } else {
+        if (e.includes(name) || runTypes.includes(e[0])) {
+          arr.push(e)
+        }
+        index == weekData.length - 1 && splitDay.push(eachDay(week, arr))
+      }
     })
-    delete zipped.Name
+    // key = day of week,
+    // value = user's data for that day
+    return splitDay
+  }
+
+  function eachDay(week: string, arr: Array<Array<string>>) {
+    const type = arr[0].shift()
+    const day = arr[1].shift()
+    const zipped: any = zipTable(arr[0].map((e) => e.toLowerCase()), arr[1])
+    zipped.type = type
+    zipped.date = getDate(week, day)
+    delete zipped.name
     return zipped
   }
 }
-
-function getSplitDay(data_week: Array<string>) {
-  const split_day = {}
-  var arr = []
-  data_week.forEach((e, index) => {
-    // const training_id = week + day
-    if (e[0] === '>>>') {
-      // arr[1][0] is the day of week
-      split_day[arr[1][0] + index] = arr
-      arr = []
-    } else {
-      arr.push(e)
-      index == data_week.length - 1 && (split_day[arr[1][0] + index] = arr)
-    }
-  })
-  // key = day of week,
-  // value = team's data for that day
-  return split_day
-}
-
-export { getDataByType, getUserTrainingData }

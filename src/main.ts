@@ -1,7 +1,7 @@
-import { niceCase } from 'utils/text'
-import { getMetadata } from 'utils/user-meta'
-import { query } from 'types/types'
-import { getDataByType, getUserTrainingData } from 'utils/get-data'
+import { text } from 'utils/text'
+import { userMeta } from 'utils/user-meta'
+import { query, user_data_by_type } from 'types/types'
+import { data } from 'utils/get-data'
 import { sheets_v4 } from 'googleapis'
 import {
   prettifyDistance,
@@ -13,13 +13,13 @@ import {
 export async function main(query: query, sheets: sheets_v4.Sheets) {
   const output: any = {}
   const { year, user } = query
-  const { meta, spreadsheet_ids } = await getMetadata(sheets, user, year)
+  const { meta, spreadsheetIds } = await userMeta.data(sheets, user, year)
+  const gradYear = parseInt(meta.GradYear)
 
-  const data_run = await getDataByType(sheets, spreadsheet_ids, meta, 'Run')
+  const data_run = await data.byType(sheets, spreadsheetIds, gradYear, 'Run')
 
-  const response = getUserTrainingData(data_run, meta.Name)
   // const user_data_by_day = response.by_day
-  const by_type = response.by_type
+  const by_type: user_data_by_type = data.filterUser(data_run, meta.Name)
 
   for (const type in by_type) {
     switch (type) {
@@ -42,7 +42,7 @@ export async function main(query: query, sheets: sheets_v4.Sheets) {
   }
 
   return {...output,
-    display_name: meta.DisplayName || niceCase(meta.Name),
+    display_name: meta.DisplayName || text.niceCase(meta.Name),
     distance: by_type.DISTANCE,
     intervals: by_type.INTERVALS,
     on_off: by_type.ONOFF,
