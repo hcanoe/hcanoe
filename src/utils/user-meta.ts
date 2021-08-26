@@ -1,4 +1,4 @@
-import { upperCase } from 'utils/text'
+import { text } from 'utils/text'
 import { zipTable, toObject } from 'utils/core'
 import { user_meta } from 'types/types'
 import { sheets_v4 } from 'googleapis'
@@ -39,7 +39,7 @@ const searchUser = (user: string, year: number, data: Array<Array<string>>) => {
   const full_year = ('20' + year).toString()
   const search_res = data.filter((arr) => {
     if (
-      (arr.includes(user) || arr.includes(upperCase(user))) &&
+      (arr.includes(user) || arr.includes(text.upperCase(user))) &&
       arr.includes(full_year)
     ) {
       return true

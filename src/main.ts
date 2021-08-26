@@ -1,4 +1,4 @@
-import { niceCase } from 'utils/text'
+import { text } from 'utils/text'
 import { getMetadata } from 'utils/user-meta'
 import { query, user_data_by_type } from 'types/types'
 import { data } from 'utils/get-data'
@@ -42,7 +42,7 @@ export async function main(query: query, sheets: sheets_v4.Sheets) {
   }
 
   return {...output,
-    display_name: meta.DisplayName || niceCase(meta.Name),
+    display_name: meta.DisplayName || text.niceCase(meta.Name),
     distance: by_type.DISTANCE,
     intervals: by_type.INTERVALS,
     on_off: by_type.ONOFF,

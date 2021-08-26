@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import FieldBox from '@components/FieldBox'
 import styles from '@styles/Table.module.css'
-import { medalDist } from 'utils/text'
+import { text } from 'utils/text'
 import { BsChevronUp, BsChevronDown } from 'react-icons/bs'
 
 const NoData = ({ message = 'no data' }) => {
@@ -42,7 +42,7 @@ const medal = (best: Array<number>) => {
         style={medalStyle}
         key={index}
       >
-        {medalDist(e)}
+        {text.medalDist(e)}
       </Kbd>
     ))
   } else return ''
