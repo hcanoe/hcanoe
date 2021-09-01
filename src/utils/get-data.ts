@@ -47,7 +47,7 @@ export namespace data {
 
     const idList = []
     spreadsheetIds.forEach((e, index) => {
-      if (activeYears.includes(parseInt(e.Year))) {
+      if (activeYears.includes(parseInt(e.year))) {
         idList.push(spreadsheetIds[index][type] || null)
       }
     })
