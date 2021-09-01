@@ -12,11 +12,11 @@ import {
 
 export async function main(query: query, sheets: sheets_v4.Sheets) {
   const output: any = {}
-  const { year, user } = query
+  const { year, user, trainingType } = query
   const { meta, spreadsheetIds } = await userMeta.data(sheets, user, year)
   const gradYear = parseInt(meta.GradYear)
 
-  const data_run = await data.byType(sheets, spreadsheetIds, gradYear, 'Run')
+  const data_run = await data.byType(sheets, spreadsheetIds, gradYear, 'run')
 
   // const user_data_by_day = response.by_day
   const by_type: user_data_by_type = data.filterUser(data_run, meta.Name)

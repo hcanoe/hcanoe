@@ -1,6 +1,7 @@
 export interface query {
   year: number,
   user: string,
+  trainingType: string,
 }
 
 export interface UserMeta {
@@ -63,10 +64,10 @@ export type Timed = Array<{
 }>
 
 export type SpreadsheetIds = Array<{
-  Year: string
-  Run?: string
-  Strength?: string
-  Paddling?: string
+  year: string
+  run?: string
+  strength?: string
+  paddling?: string
 }>
 
-export type TrainingType = 'Run' | 'Strength' | 'Paddling'
+export type TrainingType = 'run' | 'strength' | 'paddling'
