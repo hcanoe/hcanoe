@@ -2,6 +2,7 @@
   "env": {
     "GOOGLE_PRIVATE_KEY": "@google-private-key",
     "GOOGLE_CLIENT_EMAIL": "@google-client-email",
-    "GOOGLE_CLIENT_ID": "@google-client-id"
+    "GOOGLE_CLIENT_ID": "@google-client-id",
+    "VERCEL": "hides environment labels"
   }
 }
