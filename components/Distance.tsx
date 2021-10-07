@@ -1,6 +1,6 @@
-import { DistanceTable } from '@components/Table'
+import { DistanceTable } from '@/components/Table'
 import { useState } from 'react'
-import { sorter } from '@utils/sorter'
+import { sorter } from '@/lib/sorter'
 
 const Distance = ({ rows }) => {
   const [date, setDate] = useState({asc: true, active: true})

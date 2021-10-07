@@ -1,5 +1,5 @@
-import { zipTable } from 'utils/core'
-import { getDate } from 'utils/date'
+import { zipTable } from '@/lib/core'
+import { getDate } from '@/lib/date'
 import { sheets_v4 } from 'googleapis'
 import { SpreadsheetIds, TrainingType } from 'types/types'
 

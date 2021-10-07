@@ -1,5 +1,5 @@
 import { google } from 'googleapis'
-import { main } from 'main'
+import { main } from '@/lib/main'
 import {
   Container,
   Tabs,
@@ -9,12 +9,12 @@ import {
   TabPanel,
   Center,
 } from '@chakra-ui/react'
-import { OnOffTable, TimedTable } from '@components/Table'
-import Intervals from '@components/Intervals'
-import Distance from '@components/Distance'
-import BestSplits from '@components/BestSplits'
-import { Title, Name } from '@components/Typography'
-import { HomeButton } from '@components/Buttons'
+import { OnOffTable, TimedTable } from '@/components/Table'
+import Intervals from '@/components/Intervals'
+import Distance from '@/components/Distance'
+import BestSplits from '@/components/BestSplits'
+import { Title, Name } from '@/components/Typography'
+import { HomeButton } from '@/components/Buttons'
 
 /* getServerSideProps is a special function of nextjs.
  *
@@ -44,6 +44,8 @@ export async function getServerSideProps({ query }) {
 
   /* call `main` from /src/main.ts */
   const response = await main(query, sheets)
+
+  console.log(response)
 
   return {
     props: response,

@@ -14,7 +14,7 @@ import {
   Input,
 } from '@chakra-ui/react'
 import { useState } from 'react'
-import styles from 'styles/Homepage.module.css'
+import styles from '@/styles/Homepage.module.css'
 
 const dashify = (str) => {
   return str.replace(/ /g, '-').toLowerCase()

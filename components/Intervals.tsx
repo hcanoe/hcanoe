@@ -1,4 +1,4 @@
-import { IntervalsTable } from '@components/Table'
+import { IntervalsTable } from '@/components/Table'
 import {
   NumberInput,
   NumberInputField,

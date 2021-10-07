@@ -48,7 +48,7 @@ Discussions can be in the [Github PR page](https://github.com/hcanoe/hcanoe/pull
 │  ├─ components/
 │  ├─ styles/
 │  ├─ types/
-│  ├─ utils/
+│  ├─ lib/
 └─ .env.local
 ```
 

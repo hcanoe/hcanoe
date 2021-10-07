@@ -10,9 +10,9 @@ import {
   Table,
   Code,
 } from '@chakra-ui/react'
-import FieldBox from '@components/FieldBox'
-import styles from '@styles/Table.module.css'
-import { text } from 'utils/text'
+import FieldBox from '@/components/FieldBox'
+import styles from '@/styles/Table.module.css'
+import { text } from '@/lib/text'
 import { BsChevronUp, BsChevronDown } from 'react-icons/bs'
 
 const NoData = ({ message = 'no data' }) => {

@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { BestBox } from '@components/FieldBox'
+import { BestBox } from '@/components/FieldBox'
 import { RiVipCrownFill } from 'react-icons/ri'
-import { displayDistance, toHHMMSS } from '@utils/physics'
+import { displayDistance, toHHMMSS } from '@/lib/physics'
 import {
   Box,
   Th,

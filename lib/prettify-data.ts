@@ -6,9 +6,9 @@ import {
   displayDistance,
   quoteNotation,
   toHHMMSS,
-} from '@utils/physics'
-import { sorter } from '@utils/sorter'
-import { Distance, Intervals, OnOff, Timed } from 'types/types'
+} from '@/lib/physics'
+import { sorter } from '@/lib/sorter'
+import { Distance, Intervals, OnOff, Timed } from '@/lib/types'
 
 namespace sets {
   export type Intervals = Array<{

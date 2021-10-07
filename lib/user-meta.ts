@@ -1,6 +1,6 @@
-import { text } from 'utils/text'
-import { zipTable, toObject } from 'utils/core'
-import { UserMeta } from 'types/types'
+import { text } from '@/lib/text'
+import { zipTable, toObject } from '@/lib/core'
+import { UserMeta } from '@/lib/types'
 import { sheets_v4 } from 'googleapis'
 
 /*

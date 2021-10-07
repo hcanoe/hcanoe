@@ -1,4 +1,4 @@
-import { text } from '@utils/text'
+import { text } from '@/lib/text'
 
 const Page = () => {
   console.log(text.medalDist(42195))

@@ -1,5 +1,5 @@
 /* usage:
- * import { sorter } from '@utils/sorter'
+ * import { sorter } from '@/lib/sorter'
  * arr.sort(sorter.date)
  */
 namespace sorter {

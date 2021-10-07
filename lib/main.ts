@@ -1,14 +1,14 @@
-import { text } from 'utils/text'
-import { userMeta } from 'utils/user-meta'
-import { query, user_data_by_type } from 'types/types'
-import { data } from 'utils/get-data'
+import { text } from '@/lib/text'
+import { userMeta } from '@/lib/user-meta'
+import { query, user_data_by_type } from '@/lib/types'
+import { data } from '@/lib/get-data'
 import { sheets_v4 } from 'googleapis'
 import {
   prettifyDistance,
   prettifyIntervals,
   prettifyOnOff,
   prettifyTimed,
-} from 'utils/prettify-data'
+} from '@/lib/prettify-data'
 
 export async function main(query: query, sheets: sheets_v4.Sheets) {
   const output: any = {}
