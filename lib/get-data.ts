@@ -1,7 +1,9 @@
 import { zipTable } from '@/lib/core'
+import { text } from '@/lib/text'
+import { log } from '@/lib/log'
 import { getDate } from '@/lib/date'
 import { sheets_v4 } from 'googleapis'
-import { SpreadsheetIds, TrainingType } from 'types/types'
+import { SpreadsheetIds, TrainingType } from '@/lib/types'
 
 const runTypes = ['DISTANCE', 'INTERVALS', 'ONOFF', 'TIMED']
 
@@ -41,14 +43,13 @@ export namespace data {
     // an array of 6 numbers: years in which the paddler is active
     const activeYears = [...Array(6)].map((_, index) => index + start)
 
-    console.log('')
-    console.log('== <START> ====================================')
-    console.log('active in', activeYears)
+    log.divider()
+    console.log('user was active in', activeYears)
 
     const idList = []
-    spreadsheetIds.forEach((e, index) => {
+    spreadsheetIds.forEach((e, i) => {
       if (activeYears.includes(parseInt(e.year))) {
-        idList.push(spreadsheetIds[index][type] || null)
+        idList.push(spreadsheetIds[i][type] || null)
       }
     })
     return idList
@@ -110,6 +111,10 @@ export namespace data {
       userData[type] = []
       return userData
     }, {})
+    log.divider()
+    console.log('initialized user data')
+    console.log('userData:', userData)
+    log.divider()
 
     console.log('reading data from ->', Object.keys(data))
 

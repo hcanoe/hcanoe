@@ -2,6 +2,7 @@ import { text } from '@/lib/text'
 import { zipTable, toObject } from '@/lib/core'
 import { UserMeta } from '@/lib/types'
 import { sheets_v4 } from 'googleapis'
+import { log } from '@/lib/log'
 
 /*
  * reads from the meta spreadsheet
@@ -59,10 +60,29 @@ namespace userMeta {
     /*
      * retrieve basic data
      */
+
+    log.divider()
+    console.log('making first call to meta Google Sheet...')
     const response = await base(sheets)
     if (response) {
+      console.log('got response from meta Google Sheet.')
       const teamMetadata = response[0].values
-      const spreadsheetIds = toObject(response[1].values)
+      const _spreadsheetIds = toObject(response[1].values)
+
+      // make all keys lower case
+      const spreadsheetIds = _spreadsheetIds.map((y) => {
+        const keys = Object.keys(y)
+        var n = keys.length
+        const a = {}
+        while (n--) {
+          a[keys[n].toLowerCase()] = y[keys[n]]
+        }
+        return a
+      })
+
+      log.divider()
+      console.log('IDs of spreadsheets listed in meta sheet:', spreadsheetIds)
+      log.divider()
 
       /*
        * extract out just the current user's metadata
@@ -71,10 +91,11 @@ namespace userMeta {
       const headers = teamMetadata.shift()
       const body = searchUser(user, year, teamMetadata)
       const meta: UserMeta = zipTable(headers, body)
+      console.log("user's basic data:", meta)
 
       return { meta, spreadsheetIds }
     } else {
-      console.log('no response from google sheets')
+      console.log('no response from meta Google Sheet.')
     }
   }
 }

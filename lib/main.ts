@@ -16,7 +16,7 @@ export async function main(query: query, sheets: sheets_v4.Sheets) {
   const { meta, spreadsheetIds } = await userMeta.data(sheets, user, year)
   const gradYear = parseInt(meta.GradYear)
 
-  const data_run = await data.byType(sheets, spreadsheetIds, gradYear, 'run')
+  const data_run = await data.byType(sheets, spreadsheetIds, gradYear, trainingType)
 
   // const user_data_by_day = response.by_day
   const by_type: user_data_by_type = data.filterUser(data_run, meta.Name)
@@ -41,7 +41,8 @@ export async function main(query: query, sheets: sheets_v4.Sheets) {
     }
   }
 
-  return {...output,
+  return {
+    ...output,
     display_name: meta.DisplayName || text.niceCase(meta.Name),
     distance: by_type.DISTANCE,
     intervals: by_type.INTERVALS,

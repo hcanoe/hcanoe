@@ -45,8 +45,6 @@ export async function getServerSideProps({ query }) {
   /* call `main` from /src/main.ts */
   const response = await main(query, sheets)
 
-  console.log(response)
-
   return {
     props: response,
   }
