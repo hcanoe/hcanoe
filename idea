@@ -1,0 +1,14 @@
+create {{{
+  user goes to website
+  id's him/herself with name and grad year 
+  press button
+  creates a temporary google sheet with previous training data above
+  and a free field below to key in data
+  user does programme
+  keys in data below
+}}}
+submit {{{
+  user goes back to website and presses a button
+  temp sheet will be merged back into database
+  temp sheet will be deleted after 24hrs
+}}}
